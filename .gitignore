@@ -5,7 +5,8 @@
 !/LICENSE.*
 
 # Sources
-!/src
+!/core
+!/mc-1.7.10
 !/guidelines
 
 # github
