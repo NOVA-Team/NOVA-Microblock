@@ -2,10 +2,11 @@ package com.calclavia.microblock.mc1710
 
 import codechicken.multipart.TMultiPart
 import net.minecraft.nbt.NBTTagCompound
+import nova.core.block.Block
 import nova.core.game.Game
 import nova.core.retention.Storable
 import nova.core.util.transform.vector.Vector3i
-import nova.wrapper.mc1710.wrapper.block.forward.MCBlockWrapper
+import nova.wrapper.mc1710.wrapper.block.forward.{MCBlockTransform, MCBlockWrapper}
 
 /**
  * @author Calclavia
@@ -31,7 +32,11 @@ class PartWrapper(val novaID: String) extends TMultiPart {
 	/**
 	 * @return The block being wrapped.
 	 */
-	def wrapped = Game.instance.blockManager.getFactory(novaID).get().makeBlock(new MCBlockWrapper(Game.instance.nativeManager.toNova(world), new Vector3i(x, y, z)))
+	def wrapped: Block = {
+		val makeBlock = Game.instance.blockManager.getFactory(novaID).get().makeBlock(new MCBlockWrapper(Game.instance.nativeManager.toNova(world), new Vector3i(x, y, z)))
+		makeBlock.add(new MCBlockTransform(makeBlock))
+		return makeBlock
+	}
 
 	override def getType: String = novaID
 }
