@@ -8,18 +8,5 @@ import nova.core.loader.NovaMod;
  */
 @NovaMod(id = "microblock", name = "Microblock", version = "0.0.1", novaVersion = "0.0.1", isPlugin = true)
 public class MicroblockAPI implements Loadable {
-	@Override
-	public void preInit() {
 
-	}
-
-	@Override
-	public void init() {
-
-	}
-
-	@Override
-	public void postInit() {
-
-	}
 }
