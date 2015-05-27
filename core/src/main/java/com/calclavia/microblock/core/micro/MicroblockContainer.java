@@ -50,7 +50,7 @@ public class MicroblockContainer extends AbstractContainer {
 	 * @param blockFactory The block factory
 	 * @return This
 	 */
-	public void add(BlockFactory blockFactory, Entity entity, Item item) {
+	public void add(BlockFactory blockFactory, Block.BlockPlaceEvent evt) {
 		Block newBlock = blockFactory.makeBlock(new ContainerWrapper());
 		Microblock microblock = newBlock.get(Microblock.class);
 		microblock.setContainer(this);
@@ -59,8 +59,7 @@ public class MicroblockContainer extends AbstractContainer {
 			//TODO: Is awake in the right place?
 			((Stateful) newBlock).awake();
 
-			Block.BlockPlaceEvent event = new Block.BlockPlaceEvent(entity, item);
-			newBlock.placeEvent.publish(event);
+			newBlock.placeEvent.publish(evt);
 
 			((Stateful) newBlock).load();
 		}

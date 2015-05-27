@@ -1,9 +1,9 @@
 package com.calclavia.microblock.core.common;
 
-import com.calclavia.microblock.core.micro.Microblock;
-import com.calclavia.microblock.core.multi.Multiblock;
 import com.calclavia.microblock.core.MicroblockAPI;
+import com.calclavia.microblock.core.micro.Microblock;
 import com.calclavia.microblock.core.micro.MicroblockContainer;
+import com.calclavia.microblock.core.multi.Multiblock;
 import com.calclavia.microblock.core.multi.MultiblockContainer;
 import nova.core.block.Block;
 import nova.core.block.BlockFactory;
@@ -47,7 +47,7 @@ public class ItemBlockContainer extends ItemBlock {
 					//This is a microblock!
 					blockContainer
 						.getOrAdd(new MicroblockContainer(blockContainer))
-						.add(blockFactory);
+						.add(blockFactory, new Block.BlockPlaceEvent(entity, side, hit, this));
 					used = true;
 				}
 
@@ -66,7 +66,6 @@ public class ItemBlockContainer extends ItemBlock {
 				throw new NovaException("A block is using ItemBlockContainer without attaching a microblock or multiblock component!");
 			}
 		}
-		//TODO: Post add operation?
 		return false;
 	}
 
