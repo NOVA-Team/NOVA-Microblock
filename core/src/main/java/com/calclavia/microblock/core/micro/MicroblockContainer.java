@@ -2,16 +2,15 @@ package com.calclavia.microblock.core.micro;
 
 import com.calclavia.microblock.core.common.AbstractContainer;
 import com.calclavia.microblock.core.common.ContainerWrapper;
+import com.google.common.collect.HashBiMap;
 import nova.core.block.Block;
 import nova.core.block.BlockFactory;
 import nova.core.block.Stateful;
-import nova.core.entity.Entity;
-import nova.core.item.Item;
 import nova.core.util.exception.NovaException;
+import nova.core.util.transform.shape.Cuboid;
 import nova.core.util.transform.vector.Vector3i;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -27,12 +26,14 @@ public class MicroblockContainer extends AbstractContainer {
 	 * A sparse block map from (0,0) to (subdivision, subdivision) coordinates
 	 * of all the microblocks.
 	 */
-	public final Map<Vector3i, Microblock> blockMap = new HashMap<>();
+	public final HashBiMap<Vector3i, Microblock> blockMap = HashBiMap.create();
+
 	/**
 	 * The amount of subdivisions of the microblock.
 	 * Must be 2^n
 	 */
-	public int subdivisions = 16;
+	//TOD: Make this variable
+	public final int subdivisions = 16;
 
 	public MicroblockContainer(Block block) {
 		this.block = block;
@@ -52,15 +53,16 @@ public class MicroblockContainer extends AbstractContainer {
 	 */
 	public void add(BlockFactory blockFactory, Block.BlockPlaceEvent evt) {
 		Block newBlock = blockFactory.makeBlock(new ContainerWrapper());
+		//Copy the transform object of the container
+		newBlock.add(block.transform());
+
 		Microblock microblock = newBlock.get(Microblock.class);
 		microblock.setContainer(this);
 
 		if (newBlock instanceof Stateful) {
 			//TODO: Is awake in the right place?
 			((Stateful) newBlock).awake();
-
 			newBlock.placeEvent.publish(evt);
-
 			((Stateful) newBlock).load();
 		}
 	}
@@ -97,5 +99,15 @@ public class MicroblockContainer extends AbstractContainer {
 	 */
 	public Optional<Microblock> get(Vector3i internalPos) {
 		return Optional.ofNullable(blockMap.get(internalPos));
+	}
+
+	/**
+	 * Gets a single microblock that converts a specific region within the microblock space.
+	 * @param region
+	 * @return
+	 */
+	public Optional<Microblock> get(Cuboid region) {
+		//TOD: IMPLEMENT
+		return Optional.empty();
 	}
 }

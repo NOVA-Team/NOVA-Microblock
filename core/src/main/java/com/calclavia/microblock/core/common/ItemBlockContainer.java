@@ -19,7 +19,7 @@ import nova.core.world.World;
 import java.util.Optional;
 
 /**
- * ItemBlocks for microblocks
+ * ItemBlocks for microblocks and multiblocks
  * @author Calclavia
  */
 public class ItemBlockContainer extends ItemBlock {
@@ -42,12 +42,13 @@ public class ItemBlockContainer extends ItemBlock {
 
 				boolean used = false;
 				Block dummy = blockFactory.getDummy();
+				Block.BlockPlaceEvent evt = new Block.BlockPlaceEvent(entity, side, hit, this);
 
 				if (dummy.has(Microblock.class)) {
 					//This is a microblock!
 					blockContainer
 						.getOrAdd(new MicroblockContainer(blockContainer))
-						.add(blockFactory, new Block.BlockPlaceEvent(entity, side, hit, this));
+						.add(blockFactory, evt);
 					used = true;
 				}
 
@@ -55,7 +56,7 @@ public class ItemBlockContainer extends ItemBlock {
 					//This is a multiblock!
 					blockContainer
 						.getOrAdd(new MultiblockContainer(blockContainer))
-						.add(blockFactory);
+						.add(blockFactory, evt);
 					used = true;
 				}
 
