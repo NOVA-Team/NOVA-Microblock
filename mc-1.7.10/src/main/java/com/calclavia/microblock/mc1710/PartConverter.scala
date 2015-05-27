@@ -3,6 +3,7 @@ package com.calclavia.microblock.mc1710
 import codechicken.multipart.MultiPartRegistry.IPartFactory
 import codechicken.multipart.{MultiPartRegistry, TMultiPart}
 import com.calclavia.microblock.api.Microblock
+import com.calclavia.microblock.mc1710.wrapper.FWMultiPart
 import nova.core.block.BlockManager.BlockRegisteredEvent
 import nova.core.block.{Block, BlockFactory}
 import nova.core.event.EventListener
@@ -47,11 +48,11 @@ object PartConverter extends IPartFactory with NativeConverter[Block, TMultiPart
 
 	override def getNativeSide: Class[TMultiPart] = classOf[TMultiPart]
 
-	override def toNova(nativeObj: TMultiPart): Block = nativeObj.asInstanceOf[PartWrapper].wrapped
+	override def toNova(nativeObj: TMultiPart): Block = nativeObj.asInstanceOf[FWMultiPart].wrapped
 
-	override def toNative(novaObj: Block): TMultiPart = new PartWrapper(novaObj.getID)
+	override def toNative(novaObj: Block): TMultiPart = new FWMultiPart(novaObj.getID)
 
 	override def createPart(name: String, client: Boolean): TMultiPart = {
-		return new PartWrapper(name)
+		return new FWMultiPart(name)
 	}
 }

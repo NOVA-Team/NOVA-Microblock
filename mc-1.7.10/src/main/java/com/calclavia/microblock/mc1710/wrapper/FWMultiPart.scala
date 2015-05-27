@@ -1,4 +1,4 @@
-package com.calclavia.microblock.mc1710
+package com.calclavia.microblock.mc1710.wrapper
 
 import codechicken.multipart.TMultiPart
 import net.minecraft.nbt.NBTTagCompound
@@ -11,7 +11,7 @@ import nova.wrapper.mc1710.wrapper.block.forward.{MCBlockTransform, MCBlockWrapp
 /**
  * @author Calclavia
  */
-class PartWrapper(val novaID: String) extends TMultiPart {
+class FWMultiPart(val novaID: String) extends TMultiPart {
 
 	override def load(tag: NBTTagCompound) {
 		tag.setString("novaID", wrapped.getID)
