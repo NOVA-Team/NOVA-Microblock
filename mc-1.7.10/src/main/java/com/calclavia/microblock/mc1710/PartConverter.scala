@@ -2,7 +2,7 @@ package com.calclavia.microblock.mc1710
 
 import codechicken.multipart.MultiPartRegistry.IPartFactory
 import codechicken.multipart.{MultiPartRegistry, TMultiPart}
-import com.calclavia.microblock.api.Microblock
+import com.calclavia.microblock.api.micro.Microblock
 import com.calclavia.microblock.mc1710.wrapper.FWMultiPart
 import nova.core.block.BlockManager.BlockRegisteredEvent
 import nova.core.block.{Block, BlockFactory}
