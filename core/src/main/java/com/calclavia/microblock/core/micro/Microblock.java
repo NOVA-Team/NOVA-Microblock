@@ -1,7 +1,10 @@
-package com.calclavia.microblock.api.micro;
+package com.calclavia.microblock.core.micro;
 
+import com.calclavia.microblock.core.common.ContainedComponent;
 import nova.core.block.Block;
-import nova.core.component.Component;
+import nova.core.component.Require;
+import nova.core.component.misc.Collider;
+import nova.core.util.transform.vector.Vector3i;
 
 import java.util.function.Supplier;
 
@@ -9,9 +12,8 @@ import java.util.function.Supplier;
  * A component attached to microblocks. When applied to any class that extends Block, it will allow the block to behave as a microblock.
  * @author Calclavia
  */
-public class Microblock extends Component {
-
-	public final Block block;
+@Require(Collider.class)
+public class Microblock extends ContainedComponent<MicroblockContainer> {
 
 	/**
 	 * A slot mask to define the slots occupied by this microblock.
@@ -19,7 +21,7 @@ public class Microblock extends Component {
 	public Supplier<Integer> slotMask = null;
 
 	public Microblock(Block block) {
-		this.block = block;
+		super(block);
 	}
 
 	public Microblock setSlotMask(Supplier<Integer> slotMask) {
