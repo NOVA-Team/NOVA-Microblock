@@ -1,5 +1,7 @@
 package com.calclavia.microblock.core.common;
 
+import com.calclavia.microblock.core.micro.Microblock;
+import com.calclavia.microblock.core.multi.Multiblock;
 import nova.core.block.Block;
 import nova.core.game.Game;
 
@@ -13,6 +15,8 @@ public class BlockContainer extends Block {
 
 	public BlockContainer(String id) {
 		this.id = id;
+		//Debug
+		rightClickEvent.add(event -> Game.instance.logger.info(components().toString()));
 	}
 
 	@Override

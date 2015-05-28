@@ -25,6 +25,7 @@ public class MicroblockOperation {
 
 	public final Set<Vector3i> handledPositions = new HashSet<>();
 	private final World world;
+	private final MicroblockAPI.MicroblockInjectFactory injectFactory;
 	private final Block newBlock;
 	private final Vector3i globalPos;
 	private final Optional<Vector3i> localPos;
@@ -34,20 +35,22 @@ public class MicroblockOperation {
 	/**
 	 * Create a microblock operation handler
 	 * @param world
-	 * @param newBlock
+	 * @param injectFactory
 	 * @param globalPos
 	 * @param localPos
 	 */
-	public MicroblockOperation(World world, Block newBlock, Vector3i globalPos, Vector3i localPos) {
+	public MicroblockOperation(World world, MicroblockAPI.MicroblockInjectFactory injectFactory, Vector3i globalPos, Vector3i localPos) {
 		this.world = world;
-		this.newBlock = newBlock;
+		this.injectFactory = injectFactory;
+		this.newBlock = injectFactory.containedFactory.makeBlock();
 		this.globalPos = globalPos;
 		this.localPos = Optional.of(localPos);
 	}
 
-	public MicroblockOperation(World world, Block newBlock, Vector3i globalPos) {
+	public MicroblockOperation(World world, MicroblockAPI.MicroblockInjectFactory injectFactory, Vector3i globalPos) {
 		this.world = world;
-		this.newBlock = newBlock;
+		this.injectFactory = injectFactory;
+		this.newBlock = injectFactory.containedFactory.makeBlock();
 		this.globalPos = globalPos;
 		this.localPos = Optional.empty();
 	}
@@ -191,10 +194,10 @@ public class MicroblockOperation {
 			Block checkBlock = opCheckBlock.get();
 			if (checkBlock.sameType(Game.instance.blockManager.getAirBlockFactory())) {
 				//It's air, so let's create a container
-				world.setBlock(pos, MicroblockAPI.containedIDToContainer.get(newBlock.getID()));
+				world.setBlock(pos, injectFactory);
 				handledPositions.add(pos);
 				return world.getBlock(pos);
-			} else if (checkBlock.sameType(MicroblockAPI.containedIDToContainer.get(newBlock.getID()))) {
+			} else if (checkBlock.sameType(injectFactory)) {
 				//There's already a microblock there.
 				return Optional.of(checkBlock);
 			}

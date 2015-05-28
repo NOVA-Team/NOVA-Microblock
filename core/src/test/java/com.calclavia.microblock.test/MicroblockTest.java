@@ -57,7 +57,7 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 		Vector3i testPosition = new Vector3i(5, 5, 5);
 
 		MicroblockAPI.MicroblockInjectFactory injectionFactory = (MicroblockAPI.MicroblockInjectFactory) TestMicroblockMod.singleMicroblock;
-		MicroblockOperation microblockOperation = new MicroblockOperation(fakeWorld, injectionFactory.containedFactory.makeBlock(), testPosition, new Vector3i(0, 0, 0));
+		MicroblockOperation microblockOperation = new MicroblockOperation(fakeWorld, injectionFactory, testPosition, new Vector3i(0, 0, 0));
 
 		assertThat(microblockOperation.setBlock()).isTrue();
 
@@ -80,7 +80,7 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 		Vector3i testPosition = new Vector3i(5, 5, 5);
 
 		MicroblockAPI.MicroblockInjectFactory injectionFactory = (MicroblockAPI.MicroblockInjectFactory) TestMicroblockMod.singleMultiblock;
-		MicroblockOperation microblockOperation = new MicroblockOperation(fakeWorld, injectionFactory.containedFactory.makeBlock(), testPosition);
+		MicroblockOperation microblockOperation = new MicroblockOperation(fakeWorld, injectionFactory, testPosition);
 
 		assertThat(microblockOperation.setBlock()).isTrue();
 
@@ -111,7 +111,7 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 		Vector3i testPosition = new Vector3i(5, 5, 5);
 
 		MicroblockAPI.MicroblockInjectFactory injectionFactory = (MicroblockAPI.MicroblockInjectFactory) TestMicroblockMod.multiMicroblock1;
-		MicroblockOperation microblockOperation = new MicroblockOperation(fakeWorld, injectionFactory.containedFactory.makeBlock(), testPosition, new Vector3i(0, 0, 0));
+		MicroblockOperation microblockOperation = new MicroblockOperation(fakeWorld, injectionFactory, testPosition, new Vector3i(0, 0, 0));
 
 		assertThat(microblockOperation.setBlock()).isTrue();
 

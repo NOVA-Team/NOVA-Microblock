@@ -1,5 +1,6 @@
 package com.calclavia.microblock.core.common;
 
+import com.calclavia.microblock.core.MicroblockAPI;
 import com.calclavia.microblock.core.micro.Microblock;
 import com.calclavia.microblock.core.multi.Multiblock;
 import nova.core.block.Block;
@@ -11,7 +12,6 @@ import nova.core.util.exception.NovaException;
 import nova.core.util.transform.vector.Vector3d;
 import nova.core.util.transform.vector.Vector3i;
 import nova.core.world.World;
-import nova.internal.dummy.Wrapper;
 
 import java.util.Optional;
 
@@ -32,17 +32,18 @@ public class ItemBlockContainer extends ItemBlock {
 		Optional<Block> checkBlock = world.getBlock(placePos);
 		if (checkBlock.isPresent()) {
 
-			Block dummy = blockFactory.getDummy();
-			Block newBlock = blockFactory.makeBlock();
+			MicroblockAPI.MicroblockInjectFactory injectFactory = (MicroblockAPI.MicroblockInjectFactory) this.blockFactory;
+			BlockFactory containedFactory = injectFactory.containedFactory;
+			Block dummy = containedFactory.getDummy();
 
 			if (dummy.has(Microblock.class)) {
 				//Ask the microblock about how it would like to be placed.
 				Block.BlockPlaceEvent evt = new Block.BlockPlaceEvent(entity, side, hit, this);
-				return new MicroblockOperation(world, newBlock, placePos, newBlock.get(Microblock.class).onPlace.apply(evt)).setBlock();
+				return new MicroblockOperation(world, injectFactory, placePos, dummy.get(Microblock.class).onPlace.apply(evt)).setBlock();
 			} else if (dummy.has(Multiblock.class)) {
-				return new MicroblockOperation(world, newBlock, placePos).setBlock();
+				return new MicroblockOperation(world, injectFactory, placePos).setBlock();
 			} else {
-				throw new NovaException("Invalid blockFactory contained in ItemBlockContainer: " + blockFactory);
+				throw new NovaException("Invalid blockFactory contained in ItemBlockContainer: " + containedFactory);
 			}
 		}
 		return false;
