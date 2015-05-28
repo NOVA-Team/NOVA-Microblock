@@ -58,7 +58,7 @@ public class MicroblockOperation {
 	 * @return
 	 */
 	public boolean setBlock() {
-		Optional<Block> opContainer = getOrSetContainer();
+		Optional<Block> opContainer = getOrSetContainer(globalPos);
 
 		if (opContainer.isPresent()) {
 			Block container = opContainer.get();
@@ -109,12 +109,13 @@ public class MicroblockOperation {
 							localPositions.forEach(vec -> outerContainer.put(vec, innerContainer.get(Microblock.class)));
 						});
 					//TODO: What happens when we try to set it to the void? Fail/remove all the blocks.
-
+					return true;
 				} else {
 					/**
 					 * Build microblocks without multiblocks
 					 */
 					microblockContainer.put(localPos.get(), newBlock.get(Microblock.class));
+					return true;
 				}
 			} else if (newBlock.has(Multiblock.class)) {
 
@@ -130,13 +131,18 @@ public class MicroblockOperation {
 					(relativeBlockVec, outerContainerBlock) -> {
 						//Creates the outer container block that will exist in the world.
 						outerContainerBlock.getOrAdd(new MultiblockContainer(outerContainerBlock, newBlock));
-					})
-				;
+					}
+				);
+				return true;
 			}
 
 		}
 
 		return false;
+	}
+
+	protected void cleanup() {
+		appliedPositions.forEach(vector -> world.removeBlock(vector));
 	}
 
 	/**
@@ -150,7 +156,7 @@ public class MicroblockOperation {
 
 		blockSpace.forEach(relativeBlockVec -> {
 			//Note: relativeBlockVec is relative to globalPos.
-			Optional<Block> opInnerContainer = getOrSetContainer();
+			Optional<Block> opInnerContainer = getOrSetContainer(globalPos.add(relativeBlockVec));
 
 			if (opInnerContainer.isPresent()) {
 				//Creates the outer container block that will exist in the world.
@@ -166,15 +172,15 @@ public class MicroblockOperation {
 	 * Checks a position in the world and either gets or sets the position into {@link BlockContainer}
 	 * @return The container block
 	 */
-	public Optional<Block> getOrSetContainer() {
+	public Optional<Block> getOrSetContainer(Vector3i pos) {
 
-		Optional<Block> opCheckBlock = world.getBlock(globalPos);
+		Optional<Block> opCheckBlock = world.getBlock(pos);
 
 		if (opCheckBlock.isPresent()) {
 			Block checkBlock = opCheckBlock.get();
 			if (checkBlock.factory().equals(Game.instance.blockManager.getAirBlockFactory())) {
 				//It's air, so let's create a container
-				checkBlock.world().setBlock(checkBlock.position(), MicroblockAPI.blockContainer);
+				world.setBlock(pos, MicroblockAPI.blockContainer);
 				return checkBlock.world().getBlock(checkBlock.position());
 			} else if (checkBlock.factory().equals(MicroblockAPI.blockContainer)) {
 				//There's already a microblock there.

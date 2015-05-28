@@ -3,12 +3,16 @@ package com.calclavia.microblock.core;
 import com.calclavia.microblock.core.common.BlockContainer;
 import com.calclavia.microblock.core.micro.Microblock;
 import com.calclavia.microblock.core.multi.Multiblock;
+import nova.core.block.Block;
 import nova.core.block.BlockFactory;
 import nova.core.block.BlockManager;
 import nova.core.event.EventBus;
 import nova.core.game.Game;
 import nova.core.loader.Loadable;
 import nova.core.loader.NovaMod;
+import nova.internal.dummy.Wrapper;
+
+import java.util.function.Function;
 
 /**
  * Make sure your mod loads AFTER this mod, if your mod uses microblocks or multiblock.
@@ -32,8 +36,17 @@ public class MicroblockAPI implements Loadable {
 
 		//Handle microblock registration
 		if (blockFactory.getDummy().has(Microblock.class) || blockFactory.getDummy().has(Multiblock.class)) {
-			evt.blockFactory = blockContainer;
+			evt.blockFactory = new MicroblockInjectFactory(evt.blockFactory);
 			evt.cancel();
+		}
+	}
+
+	public static class MicroblockInjectFactory extends BlockFactory {
+		public final BlockFactory containedFactory;
+
+		public MicroblockInjectFactory(BlockFactory containedFactory) {
+			super(args -> blockContainer.makeBlock(new Wrapper(), args));
+			this.containedFactory = containedFactory;
 		}
 	}
 }
