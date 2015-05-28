@@ -2,8 +2,9 @@ package com.calclavia.microblock.test;
 
 import com.calclavia.microblock.core.MicroblockAPI;
 import com.calclavia.microblock.core.common.MicroblockOperation;
+import com.calclavia.microblock.core.micro.MicroblockContainer;
+import nova.core.block.Block;
 import nova.core.util.transform.vector.Vector3i;
-import nova.internal.dummy.Wrapper;
 import nova.internal.launch.NovaLauncher;
 import nova.testutils.FakeWorld;
 import org.junit.Test;
@@ -38,7 +39,7 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 		assertThat(TestMicroblockMod.smallMicroblock.makeBlock().sameType(MicroblockAPI.blockContainer)).isTrue();
 
 		MicroblockAPI.MicroblockInjectFactory injectionFactory = (MicroblockAPI.MicroblockInjectFactory) TestMicroblockMod.smallMicroblock;
-		assertThat(injectionFactory.getID()).isEqualTo("smallMicroblock");
+		assertThat(injectionFactory.containedFactory.getID()).isEqualTo("smallMicroblock");
 	}
 
 	@Test
@@ -49,9 +50,18 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 		 * Microblock placement
 		 */
 		FakeWorld fakeWorld = new FakeWorld();
+		Vector3i testPosition = new Vector3i(5, 5, 5);
+
 		MicroblockAPI.MicroblockInjectFactory injectionFactory = (MicroblockAPI.MicroblockInjectFactory) TestMicroblockMod.smallMicroblock;
-		MicroblockOperation microblockOperation = new MicroblockOperation(fakeWorld, injectionFactory.makeBlock(), new Vector3i(5, 5, 5));
+		MicroblockOperation microblockOperation = new MicroblockOperation(fakeWorld, injectionFactory.containedFactory.makeBlock(), testPosition, new Vector3i(0, 0, 0));
 
 		assertThat(microblockOperation.setBlock()).isTrue();
+
+		Block block = fakeWorld.getBlock(testPosition).get();
+		assertThat(block.getID()).isEqualTo("blockContainer");
+		assertThat(block.has(MicroblockContainer.class)).isTrue();
+
+		MicroblockContainer microblockContainer = block.get(MicroblockContainer.class);
+		assertThat(microblockContainer.get(new Vector3i(0, 0, 0)).get().block.getID()).isEqualTo("smallMicroblock");
 	}
 }
