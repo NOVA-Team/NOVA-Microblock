@@ -4,12 +4,14 @@ import com.calclavia.microblock.core.common.BlockComponent;
 import nova.core.block.Block;
 import nova.core.component.Require;
 import nova.core.component.misc.Collider;
+import nova.core.entity.Entity;
 import nova.core.util.math.MathUtil;
 import nova.core.util.transform.shape.Cuboid;
 import nova.core.util.transform.vector.Vector3d;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -33,7 +35,7 @@ public class Multiblock extends BlockComponent {
 	 * @return A set of vectors relative to the center block's bottom corner.
 	 */
 	public Set<Vector3d> getOccupiedSpace(float blockLength) {
-		List<Cuboid> collisionBoxes = block.get(Collider.class).collisionBoxes;
+		Set<Cuboid> collisionBoxes = block.get(Collider.class).occlusionBoxes.apply(Optional.empty());
 
 		Set<Vector3d> set = new HashSet<>();
 		int truncation = (int) (1 / blockLength);

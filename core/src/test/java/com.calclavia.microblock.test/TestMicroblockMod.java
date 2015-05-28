@@ -12,8 +12,6 @@ import nova.core.util.transform.vector.Vector3d;
 import nova.core.util.transform.vector.Vector3i;
 import nova.testutils.FakeBlock;
 
-import java.util.Arrays;
-
 /**
  * @author Calclavia
  */
@@ -41,7 +39,7 @@ public class TestMicroblockMod implements Loadable {
 		singleMultiblock = Game.instance.blockManager.register(args -> {
 			FakeBlock fakeBlock = new FakeBlock(singleMultiblockID);
 			fakeBlock.add(new Multiblock(fakeBlock));
-			fakeBlock.add(new Collider()).collisionBoxes = Arrays.asList(new Cuboid(Vector3i.zero, new Vector3i(1, 2, 1)));
+			fakeBlock.add(new Collider()).setBoundingBox(new Cuboid(Vector3i.zero, new Vector3i(1, 2, 1)));
 			return fakeBlock;
 		});
 
@@ -49,7 +47,7 @@ public class TestMicroblockMod implements Loadable {
 			FakeBlock fakeBlock = new FakeBlock(multiMicroblockID);
 			fakeBlock.add(new Multiblock(fakeBlock));
 			fakeBlock.add(new Microblock(fakeBlock, blockPlaceEvent -> Vector3i.zero));
-			fakeBlock.add(new Collider()).collisionBoxes = Arrays.asList(new Cuboid(Vector3d.zero, new Vector3d(1, 1.5, 1)));
+			fakeBlock.add(new Collider()).setBoundingBox(new Cuboid(Vector3d.zero, new Vector3d(1, 1.5, 1)));
 			return fakeBlock;
 		});
 
