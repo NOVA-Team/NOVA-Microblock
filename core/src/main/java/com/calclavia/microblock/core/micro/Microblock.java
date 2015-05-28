@@ -4,6 +4,8 @@ import com.calclavia.microblock.core.common.BlockComponent;
 import nova.core.block.Block;
 import nova.core.util.transform.vector.Vector3i;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -20,9 +22,13 @@ public class Microblock extends BlockComponent {
 	 */
 	public final Function<Block.BlockPlaceEvent, Vector3i> onPlace;
 	/**
-	 * The container holding the block.
+	 * The containers holding the block.
 	 */
-	public MicroblockContainer container;
+	public final Set<MicroblockContainer> containers = new HashSet<>();
+	/**
+	 * The local position within this microblock subspace. This value is read-only.
+	 */
+	public Vector3i position;
 	/**
 	 * A slot mask to define the slots occupied by this microblock.
 	 */
@@ -36,17 +42,6 @@ public class Microblock extends BlockComponent {
 	public Microblock setSlotMask(Supplier<Integer> slotMask) {
 		this.slotMask = slotMask;
 		return this;
-	}
-
-	/**
-	 * The local position occupied by the microblock.
-	 */
-	public Vector3i position() {
-		return container.map().inverse().get(this);
-	}
-
-	public void setContainer(MicroblockContainer container) {
-		this.container = container;
 	}
 
 }

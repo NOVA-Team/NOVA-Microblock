@@ -1,13 +1,13 @@
 package com.calclavia.microblock.core.micro;
 
 import com.calclavia.microblock.core.common.BlockComponent;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import nova.core.block.Block;
 import nova.core.util.transform.shape.Cuboid;
 import nova.core.util.transform.vector.Vector3i;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -26,7 +26,7 @@ public class MicroblockContainer extends BlockComponent {
 	 * A sparse block map from (0,0) to (subdivision, subdivision) coordinates
 	 * of all the microblocks.
 	 */
-	private final HashBiMap<Vector3i, Microblock> blockMap = HashBiMap.create();
+	private final Map<Vector3i, Microblock> blockMap = new HashMap<>();
 
 	public MicroblockContainer(Block block) {
 		super(block);
@@ -43,7 +43,7 @@ public class MicroblockContainer extends BlockComponent {
 		assert !new Cuboid(0, 0, 0, subdivisions, subdivisions, subdivisions).intersects(localPos);
 
 		if (!has(localPos)) {
-			microblock.container = this;
+			microblock.containers.add(this);
 			blockMap.put(localPos, microblock);
 			return true;
 		}
@@ -84,7 +84,7 @@ public class MicroblockContainer extends BlockComponent {
 		return Optional.empty();
 	}
 
-	public BiMap<Vector3i, Microblock> map() {
+	public Map<Vector3i, Microblock> map() {
 		return blockMap;
 	}
 }

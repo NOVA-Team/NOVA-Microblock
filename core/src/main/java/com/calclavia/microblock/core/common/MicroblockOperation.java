@@ -23,12 +23,13 @@ import java.util.stream.Collectors;
  */
 public class MicroblockOperation {
 
-	//Positions that the operation handled.
-	public final Set<Vector3i> appliedPositions = new HashSet<>();
+	public final Set<Vector3i> handledPositions = new HashSet<>();
 	private final World world;
 	private final Block newBlock;
 	private final Vector3i globalPos;
 	private final Optional<Vector3i> localPos;
+	//Positions that the operation handled.
+	public boolean fail = false;
 
 	/**
 	 * Create a microblock operation handler
@@ -85,7 +86,7 @@ public class MicroblockOperation {
 						.map(Vector3d::toInt)
 						.collect(Collectors.toSet());
 
-					Set<Vector3d> occupiedSpace = multiblock.getOccupiedSpace(microblockContainer.subdivisions);
+					Set<Vector3d> occupiedSpace = multiblock.getOccupiedSpace(1f / microblockContainer.subdivisions);
 
 					populateBlockSpace(blockSpace,
 						(relativeBlockVec, outerContainerBlock) -> {
@@ -94,28 +95,29 @@ public class MicroblockOperation {
 							//Create a new multiblock inner container that lives inside the microblock structure.
 							BlockContainer innerContainer = new BlockContainer();
 							innerContainer.add(new MultiblockContainer(innerContainer, newBlock));
-							innerContainer.add(new Microblock(innerContainer, blockPlaceEvent -> localPos.get())).setContainer(outerContainer);
+							innerContainer.add(new Microblock(innerContainer, blockPlaceEvent -> localPos.get()));
 
 							//Add transform component
 							innerContainer.add(outerContainerBlock.transform());
 
 							Set<Vector3i> localPositions = occupiedSpace.stream()
-								.filter(vec -> new Cuboid(relativeBlockVec, relativeBlockVec.add(1)).intersects(vec)) //Filters blocks relevant to the relativeBlockVec
 								.map(vec -> vec.subtract(relativeBlockVec.toDouble())) //Maps positions relative to its own block space
+								.filter(vec -> new Cuboid(Vector3i.zero, Vector3i.one).intersects(vec)) //Filters blocks relevant to the relativeBlockVec
 								.map(vec -> vec.multiply(microblockContainer.subdivisions))//Multiply all unit vectors by subdivision size, converting it to local vectors.
 								.map(Vector3d::toInt)
 								.collect(Collectors.toSet());
 
 							localPositions.forEach(vec -> outerContainer.put(vec, innerContainer.get(Microblock.class)));
 						});
-					//TODO: What happens when we try to set it to the void? Fail/remove all the blocks.
-					return true;
+
+					newBlock.get(Microblock.class).position = localPos.get();
+					return handleFail();
 				} else {
 					/**
 					 * Build microblocks without multiblocks
 					 */
 					microblockContainer.put(localPos.get(), newBlock.get(Microblock.class));
-					return true;
+					return handleFail();
 				}
 			} else if (newBlock.has(Multiblock.class)) {
 
@@ -133,16 +135,23 @@ public class MicroblockOperation {
 						outerContainerBlock.getOrAdd(new MultiblockContainer(outerContainerBlock, newBlock));
 					}
 				);
-				return true;
+				return handleFail();
 			}
-
 		}
 
 		return false;
 	}
 
+	protected boolean handleFail() {
+
+		if (fail) {
+			cleanup();
+		}
+		return fail;
+	}
+
 	protected void cleanup() {
-		appliedPositions.forEach(vector -> world.removeBlock(vector));
+		handledPositions.forEach(vector -> world.removeBlock(vector));
 	}
 
 	/**
@@ -181,6 +190,7 @@ public class MicroblockOperation {
 			if (checkBlock.sameType(Game.instance.blockManager.getAirBlockFactory())) {
 				//It's air, so let's create a container
 				world.setBlock(pos, MicroblockAPI.blockContainer);
+				handledPositions.add(pos);
 				return world.getBlock(pos);
 			} else if (checkBlock.sameType(MicroblockAPI.blockContainer)) {
 				//There's already a microblock there.
@@ -188,6 +198,7 @@ public class MicroblockOperation {
 			}
 		}
 
+		fail = true;
 		return Optional.empty();
 	}
 }
