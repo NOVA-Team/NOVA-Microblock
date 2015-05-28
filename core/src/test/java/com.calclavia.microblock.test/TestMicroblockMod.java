@@ -1,5 +1,6 @@
 package com.calclavia.microblock.test;
 
+import nova.core.game.Game;
 import nova.core.loader.Loadable;
 import nova.core.loader.NovaMod;
 
@@ -11,6 +12,6 @@ public class TestMicroblockMod implements Loadable {
 
 	@Override
 	public void preInit() {
-		System.out.println("test");
+		Game.instance.blockManager.register(BlockSmallMicroblock.class);
 	}
 }
