@@ -128,7 +128,7 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 
 		//Check bottom part
 		MicroblockContainer microblockContainerA = blockA.get(MicroblockContainer.class);
-		int sub = microblockContainerA.subdivisions;
+		int sub = microblockContainerA.subdivision;
 		assertThat(microblockContainerA.map().size()).isEqualTo(sub * sub * sub);
 
 		Microblock sampleA = microblockContainerA.get(new Vector3i(0, 0, 0)).get();

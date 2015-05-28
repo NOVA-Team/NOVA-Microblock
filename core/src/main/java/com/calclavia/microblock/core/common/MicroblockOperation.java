@@ -86,7 +86,7 @@ public class MicroblockOperation {
 						.map(Vector3d::toInt)
 						.collect(Collectors.toSet());
 
-					Set<Vector3d> occupiedSpace = multiblock.getOccupiedSpace(1f / microblockContainer.subdivisions);
+					Set<Vector3d> occupiedSpace = multiblock.getOccupiedSpace(1f / microblockContainer.subdivision);
 
 					populateBlockSpace(blockSpace,
 						(relativeBlockVec, outerContainerBlock) -> {
@@ -103,7 +103,7 @@ public class MicroblockOperation {
 							Set<Vector3i> localPositions = occupiedSpace.stream()
 								.map(vec -> vec.subtract(relativeBlockVec.toDouble())) //Maps positions relative to its own block space
 								.filter(vec -> new Cuboid(Vector3i.zero, Vector3i.one).intersects(vec)) //Filters blocks relevant to the relativeBlockVec
-								.map(vec -> vec.multiply(microblockContainer.subdivisions))//Multiply all unit vectors by subdivision size, converting it to local vectors.
+								.map(vec -> vec.multiply(microblockContainer.subdivision))//Multiply all unit vectors by subdivision size, converting it to local vectors.
 								.map(Vector3d::toInt)
 								.collect(Collectors.toSet());
 
