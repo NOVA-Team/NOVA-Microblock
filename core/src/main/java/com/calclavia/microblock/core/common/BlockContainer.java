@@ -1,10 +1,15 @@
 package com.calclavia.microblock.core.common;
 
+import com.calclavia.microblock.core.micro.MicroblockContainer;
 import nova.core.block.Block;
 import nova.core.block.Stateful;
+import nova.core.component.Component;
 import nova.core.game.Game;
+import nova.core.network.NetworkTarget;
 import nova.core.network.PacketHandler;
 import nova.core.retention.Storable;
+
+import java.util.Collection;
 
 /**
  * A block container can forward events, components and methods to their respective microblock or multiblocks
@@ -17,7 +22,30 @@ public class BlockContainer extends Block implements Stateful, Storable, PacketH
 	public BlockContainer(String id) {
 		this.id = id;
 		//Debug
-		rightClickEvent.add(event -> System.out.println("#: " + components().size()));
+		rightClickEvent.add(event -> {
+			if (NetworkTarget.Side.get().isServer()) {
+				System.out.println("--- " + this + " ---");
+				printComponents(components());
+			}
+		});
+	}
+
+	private void printComponents(Collection<Component> components) {
+		printComponents(components, "::");
+	}
+
+	private void printComponents(Collection<Component> components, String prefix) {
+		components.forEach(component -> {
+			System.out.println(prefix + component.getClass());
+
+			if (component instanceof MicroblockContainer) {
+				((MicroblockContainer) component).microblocks()
+					.forEach(microblock -> {
+						System.out.println("+++ " + microblock.block + " +++");
+						printComponents(microblock.block.components(), prefix + "::");
+					});
+			}
+		});
 	}
 
 	@Override

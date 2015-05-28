@@ -37,14 +37,14 @@ public class MicroblockOperation {
 	 * @param world
 	 * @param injectFactory
 	 * @param globalPos
-	 * @param localPos
+	 * @param evt The block place event
 	 */
-	public MicroblockOperation(World world, MicroblockAPI.MicroblockInjectFactory injectFactory, Vector3i globalPos, Vector3i localPos) {
+	public MicroblockOperation(World world, MicroblockAPI.MicroblockInjectFactory injectFactory, Vector3i globalPos, Block.BlockPlaceEvent evt) {
 		this.world = world;
 		this.injectFactory = injectFactory;
 		this.newBlock = injectFactory.containedFactory.makeBlock();
 		this.globalPos = globalPos;
-		this.localPos = Optional.of(localPos);
+		this.localPos = Optional.of(newBlock.get(Microblock.class).onPlace.apply(evt));
 	}
 
 	public MicroblockOperation(World world, MicroblockAPI.MicroblockInjectFactory injectFactory, Vector3i globalPos) {
@@ -110,8 +110,13 @@ public class MicroblockOperation {
 								.map(Vector3d::toInt)
 								.collect(Collectors.toSet());
 
-							localPositions.forEach(vec -> outerContainer.put(vec, innerContainer.get(Microblock.class)));
-						});
+							localPositions.forEach(vec -> {
+								if (!outerContainer.put(vec, innerContainer.get(Microblock.class))) {
+									fail = true;
+								}
+							});
+						}
+					);
 
 					newBlock.get(Microblock.class).position = localPos.get();
 					return handleFail();
@@ -119,7 +124,10 @@ public class MicroblockOperation {
 					/**
 					 * Build microblocks without multiblocks
 					 */
-					microblockContainer.put(localPos.get(), newBlock.get(Microblock.class));
+					if (!microblockContainer.put(localPos.get(), newBlock.get(Microblock.class))) {
+						fail = true;
+					}
+
 					return handleFail();
 				}
 			} else if (newBlock.has(Multiblock.class)) {

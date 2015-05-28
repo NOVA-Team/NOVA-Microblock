@@ -18,6 +18,7 @@ public class ComponentInjector {
 			//Check the contained factory's dummy, and inject components.
 			BlockContainer blockContainer = new BlockContainer("blockContainer-" + containedFactory.getID());
 			inject(containedFactory.getDummy(), blockContainer);
+			System.out.println("Makeblock called");
 			return blockContainer;
 		};
 	}
@@ -33,7 +34,7 @@ public class ComponentInjector {
 			.forEach(to::add);
 
 		from.onComponentAdded.add(event -> to.add(event.component));
-		from.onComponentRemoved.add(event -> to.add(event.component));
+		from.onComponentRemoved.add(event -> to.remove(event.component));
 
 		//Forward events to -> from (container -> contained)
 		//TODO: Use reflection, auto transfer events?
