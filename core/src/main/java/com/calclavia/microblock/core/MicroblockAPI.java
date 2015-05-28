@@ -45,7 +45,7 @@ public class MicroblockAPI implements Loadable {
 		public final BlockFactory containedFactory;
 
 		public MicroblockInjectFactory(BlockFactory containedFactory) {
-			super(args -> blockContainer.makeBlock(new Wrapper(), args));
+			super(blockContainer::makeBlock);
 			this.containedFactory = containedFactory;
 		}
 	}

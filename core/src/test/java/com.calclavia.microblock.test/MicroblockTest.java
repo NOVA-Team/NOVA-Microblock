@@ -35,7 +35,7 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 	public void testMicroblockInjection() {
 		NovaLauncher launcher = createLauncher();
 		//Microblock should be replaced with a container.
-		assertThat(TestMicroblockMod.smallMicroblock.makeBlock(new Wrapper()).sameType(MicroblockAPI.blockContainer)).isTrue();
+		assertThat(TestMicroblockMod.smallMicroblock.makeBlock().sameType(MicroblockAPI.blockContainer)).isTrue();
 
 		MicroblockAPI.MicroblockInjectFactory injectionFactory = (MicroblockAPI.MicroblockInjectFactory) TestMicroblockMod.smallMicroblock;
 		assertThat(injectionFactory.getID()).isEqualTo("smallMicroblock");
@@ -50,7 +50,7 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 		 */
 		FakeWorld fakeWorld = new FakeWorld();
 		MicroblockAPI.MicroblockInjectFactory injectionFactory = (MicroblockAPI.MicroblockInjectFactory) TestMicroblockMod.smallMicroblock;
-		MicroblockOperation microblockOperation = new MicroblockOperation(fakeWorld, injectionFactory.makeBlock(new Wrapper()), new Vector3i(5, 5, 5));
+		MicroblockOperation microblockOperation = new MicroblockOperation(fakeWorld, injectionFactory.makeBlock(), new Vector3i(5, 5, 5));
 
 		assertThat(microblockOperation.setBlock()).isTrue();
 	}

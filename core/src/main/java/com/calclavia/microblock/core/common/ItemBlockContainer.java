@@ -33,7 +33,7 @@ public class ItemBlockContainer extends ItemBlock {
 		if (checkBlock.isPresent()) {
 
 			Block dummy = blockFactory.getDummy();
-			Block newBlock = blockFactory.makeBlock(new Wrapper());
+			Block newBlock = blockFactory.makeBlock();
 
 			if (dummy.has(Microblock.class)) {
 				//Ask the microblock about how it would like to be placed.
