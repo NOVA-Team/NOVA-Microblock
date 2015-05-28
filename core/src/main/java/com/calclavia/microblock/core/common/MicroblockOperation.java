@@ -178,11 +178,11 @@ public class MicroblockOperation {
 
 		if (opCheckBlock.isPresent()) {
 			Block checkBlock = opCheckBlock.get();
-			if (checkBlock.factory().equals(Game.instance.blockManager.getAirBlockFactory())) {
+			if (checkBlock.sameType(Game.instance.blockManager.getAirBlockFactory())) {
 				//It's air, so let's create a container
 				world.setBlock(pos, MicroblockAPI.blockContainer);
-				return checkBlock.world().getBlock(checkBlock.position());
-			} else if (checkBlock.factory().equals(MicroblockAPI.blockContainer)) {
+				return world.getBlock(pos);
+			} else if (checkBlock.sameType(MicroblockAPI.blockContainer)) {
 				//There's already a microblock there.
 				return Optional.of(checkBlock);
 			}

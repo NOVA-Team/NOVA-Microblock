@@ -42,8 +42,8 @@ public class Multiblock extends BlockComponent {
 			cuboid -> {
 				//Truncate bounds to nearest block length
 				for (double x = MathUtil.truncate(cuboid.min.x, truncation); x < cuboid.max.x; x += blockLength) {
-					for (double y = MathUtil.truncate(cuboid.min.y, truncation); x < cuboid.max.y; y += blockLength) {
-						for (double z = MathUtil.truncate(cuboid.min.z, truncation); x < cuboid.max.z; z += blockLength) {
+					for (double y = MathUtil.truncate(cuboid.min.y, truncation); y < cuboid.max.y; y += blockLength) {
+						for (double z = MathUtil.truncate(cuboid.min.z, truncation); z < cuboid.max.z; z += blockLength) {
 							set.add(new Vector3d(x, y, z));
 						}
 					}
