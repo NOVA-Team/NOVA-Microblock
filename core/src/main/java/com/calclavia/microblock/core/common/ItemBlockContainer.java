@@ -1,20 +1,17 @@
 package com.calclavia.microblock.core.common;
 
-import com.calclavia.microblock.core.MicroblockAPI;
 import com.calclavia.microblock.core.micro.Microblock;
-import com.calclavia.microblock.core.micro.MicroblockContainer;
 import com.calclavia.microblock.core.multi.Multiblock;
-import com.calclavia.microblock.core.multi.MultiblockContainer;
 import nova.core.block.Block;
 import nova.core.block.BlockFactory;
 import nova.core.entity.Entity;
-import nova.core.game.Game;
 import nova.core.item.ItemBlock;
 import nova.core.util.Direction;
 import nova.core.util.exception.NovaException;
 import nova.core.util.transform.vector.Vector3d;
 import nova.core.util.transform.vector.Vector3i;
 import nova.core.world.World;
+import nova.internal.dummy.Wrapper;
 
 import java.util.Optional;
 
@@ -34,52 +31,20 @@ public class ItemBlockContainer extends ItemBlock {
 
 		Optional<Block> checkBlock = world.getBlock(placePos);
 		if (checkBlock.isPresent()) {
-			//Instantiate microblock
-			Optional<Block> opBlockContainer = getOrSetMicroblockContainer(checkBlock.get());
 
-			if (opBlockContainer.isPresent()) {
-				Block blockContainer = opBlockContainer.get();
+			Block dummy = blockFactory.getDummy();
+			Block newBlock = blockFactory.makeBlock(new Wrapper());
 
-				boolean used = false;
-				Block dummy = blockFactory.getDummy();
+			if (dummy.has(Microblock.class)) {
+				//Ask the microblock about how it would like to be placed.
 				Block.BlockPlaceEvent evt = new Block.BlockPlaceEvent(entity, side, hit, this);
-
-				if (dummy.has(Microblock.class)) {
-					//This is a microblock!
-					blockContainer
-						.getOrAdd(new MicroblockContainer(blockContainer))
-						.add(blockFactory, evt);
-					used = true;
-				}
-
-				if (dummy.has(Multiblock.class)) {
-					//This is a multiblock!
-					blockContainer
-						.getOrAdd(new MultiblockContainer(blockContainer))
-						.add(blockFactory, evt);
-					used = true;
-				}
-
-				if (used) {
-					return true;
-				}
-
-				throw new NovaException("A block is using ItemBlockContainer without attaching a microblock or multiblock component!");
+				return new MicroblockOperation(world, newBlock, placePos, newBlock.get(Microblock.class).onPlace.apply(evt)).setBlock();
+			} else if (dummy.has(Multiblock.class)) {
+				return new MicroblockOperation(world, newBlock, placePos).setBlock();
+			} else {
+				throw new NovaException("Invalid blockFactory contained in ItemBlockContainer: " + blockFactory);
 			}
 		}
 		return false;
-	}
-
-	protected Optional<Block> getOrSetMicroblockContainer(Block checkBlock) {
-		if (checkBlock.factory().equals(Game.instance.blockManager.getAirBlockFactory())) {
-			//It's air, so let's create a container
-			checkBlock.world().setBlock(checkBlock.position(), MicroblockAPI.blockContainer);
-			return checkBlock.world().getBlock(checkBlock.position());
-		} else if (checkBlock.factory().equals(MicroblockAPI.blockContainer)) {
-			//There's already a microblock there.
-			return Optional.of(checkBlock);
-		}
-
-		return Optional.empty();
 	}
 }

@@ -1,6 +1,6 @@
 package com.calclavia.microblock.core.multi;
 
-import com.calclavia.microblock.core.common.ContainedComponent;
+import com.calclavia.microblock.core.common.BlockComponent;
 import nova.core.block.Block;
 import nova.core.component.Require;
 import nova.core.component.misc.Collider;
@@ -17,7 +17,12 @@ import java.util.Set;
  * @author Calclavia
  */
 @Require(Collider.class)
-public class Multiblock extends ContainedComponent<MultiblockContainer> {
+public class Multiblock extends BlockComponent {
+
+	/**
+	 * The containers that contain (occupy block space) for this multiblock
+	 */
+	public final Set<MultiblockContainer> containers = new HashSet<>();
 
 	public Multiblock(Block block) {
 		super(block);

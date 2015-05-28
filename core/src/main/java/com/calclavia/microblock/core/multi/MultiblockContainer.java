@@ -1,32 +1,28 @@
 package com.calclavia.microblock.core.multi;
 
-import com.calclavia.microblock.core.common.AbstractContainer;
-import com.calclavia.microblock.core.common.ContainerWrapper;
+import com.calclavia.microblock.core.common.BlockComponent;
 import nova.core.block.Block;
-import nova.core.block.BlockFactory;
 
 /**
  * A component attached to any block that is a multiblock container.
  * @author Calclavia
  */
-public class MultiblockContainer extends AbstractContainer {
+public class MultiblockContainer extends BlockComponent {
 
-	public final Block block;
+	public final Block containedBlock;
+
+	//Used for data retention and ticking?
 	public boolean isPrimary;
 
-	public MultiblockContainer(Block block) {
-		this.block = block;
-	}
-
 	/**
-	 * Adds a block that contains a microblock component to this container.
-	 * @param blockFactory The block factory
-	 * @return This
+	 * Creates a new multiblock container
+	 * @param containerBlock The container block
+	 * @param containedBlock The block being contained.
 	 */
-	public void add(BlockFactory blockFactory, Block.BlockPlaceEvent evt) {
-		Block newBlock = blockFactory.makeBlock(new ContainerWrapper());
-		newBlock.get(Multiblock.class)
-			.setContainer(this);
-
+	public MultiblockContainer(Block containerBlock, Block containedBlock) {
+		super(containedBlock);
+		assert containerBlock.has(MultiblockContainer.class) && containedBlock.has(Multiblock.class);
+		this.containedBlock = containedBlock;
+		containedBlock.get(Multiblock.class).containers.add(this);
 	}
 }
