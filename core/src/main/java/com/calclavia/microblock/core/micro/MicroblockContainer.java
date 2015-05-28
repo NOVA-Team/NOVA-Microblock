@@ -25,7 +25,7 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 	 * Must be 2^n
 	 */
 	//TOD: Make this variable, or configurable?
-	public static final int subdivision = 16;
+	public static final int subdivision = 8;
 	/**
 	 * A sparse block map from (0,0) to (subdivision, subdivision) coordinates
 	 * of all the microblocks.
@@ -108,8 +108,10 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 		return blockMap;
 	}
 
+	//TODO: Create a custom ID for each microblock, send based on coordinates.
 	@Override
 	public void read(Packet packet) {
+		System.out.println("Received MIcroblock Packet");
 		//Description Packet
 		if (packet.getID() == 0) {
 			blockMap.clear();

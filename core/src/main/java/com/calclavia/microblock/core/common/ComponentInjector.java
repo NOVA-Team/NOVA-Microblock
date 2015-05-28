@@ -18,7 +18,6 @@ public class ComponentInjector {
 			//Check the contained factory's dummy, and inject components.
 			BlockContainer blockContainer = new BlockContainer("blockContainer-" + containedFactory.getID());
 			inject(containedFactory.getDummy(), blockContainer);
-			System.out.println("Makeblock called");
 			return blockContainer;
 		};
 	}

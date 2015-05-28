@@ -22,6 +22,7 @@ public class BlockContainer extends Block implements Stateful, Storable, PacketH
 
 	public BlockContainer(String id) {
 		this.id = id;
+
 		//Debug
 		rightClickEvent.add(event -> {
 			if (NetworkTarget.Side.get().isServer()) {
