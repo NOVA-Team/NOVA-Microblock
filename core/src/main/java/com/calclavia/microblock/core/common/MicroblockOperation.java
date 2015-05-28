@@ -127,7 +127,7 @@ public class MicroblockOperation {
 					if (!microblockContainer.put(localPos.get(), newBlock.get(Microblock.class))) {
 						fail = true;
 					}
-
+					System.out.println("MicroblockOperation:" + newBlock.get(Microblock.class));
 					return handleFail();
 				}
 			} else if (newBlock.has(Multiblock.class)) {

@@ -1,7 +1,10 @@
 package com.calclavia.microblock.core.micro;
 
+import com.calclavia.microblock.core.MicroblockAPI;
 import com.calclavia.microblock.core.common.BlockComponent;
 import nova.core.block.Block;
+import nova.core.network.Packet;
+import nova.core.network.PacketHandler;
 import nova.core.util.Direction;
 import nova.core.util.transform.shape.Cuboid;
 import nova.core.util.transform.vector.Vector3i;
@@ -15,7 +18,7 @@ import java.util.Optional;
  * A component added to microblocks
  * @author Calclavia
  */
-public class MicroblockContainer extends BlockComponent {
+public class MicroblockContainer extends BlockComponent implements PacketHandler {
 
 	/**
 	 * The amount of subdivisions of the microblock.
@@ -103,5 +106,47 @@ public class MicroblockContainer extends BlockComponent {
 
 	public Map<Vector3i, Microblock> map() {
 		return blockMap;
+	}
+
+	@Override
+	public void read(Packet packet) {
+		//Description Packet
+		if (packet.getID() == 0) {
+			blockMap.clear();
+			int size = packet.readInt();
+
+			for (int i = 0; i < size; i++) {
+				Vector3i microPos = packet.read(Vector3i.class);
+				String microID = packet.readString();
+
+				//Find microblock registered with such ID
+				MicroblockAPI.MicroblockInjectFactory injectionFactory = MicroblockAPI.containedIDToFactory.get(microID);
+				Block microblock = injectionFactory.makeBlock();
+
+				if (microblock instanceof PacketHandler) {
+					((PacketHandler) microblock).read(packet);
+				}
+
+				put(microPos, microblock.get(Microblock.class));
+			}
+		}
+	}
+
+	@Override
+	public void write(Packet packet) {
+		//Description Packet
+		if (packet.getID() == 0) {
+			packet.writeInt(microblocks().size());
+
+			//Write all microblocks over
+			map().forEach((k, v) -> {
+				packet.write(k);
+				packet.writeString(v.block.getID());
+
+				if (v.block instanceof PacketHandler) {
+					((PacketHandler) v.block).write(packet);
+				}
+			});
+		}
 	}
 }

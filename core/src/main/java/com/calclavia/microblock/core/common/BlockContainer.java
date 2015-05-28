@@ -6,6 +6,7 @@ import nova.core.block.Stateful;
 import nova.core.component.Component;
 import nova.core.game.Game;
 import nova.core.network.NetworkTarget;
+import nova.core.network.Packet;
 import nova.core.network.PacketHandler;
 import nova.core.retention.Storable;
 
