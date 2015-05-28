@@ -24,8 +24,8 @@ public class ComponentInjector {
 
 	/**
 	 * Marks a block and injects from the block to the block (and all future components)
-	 * @param from
-	 * @param to
+	 * @param from The contained
+	 * @param to The container
 	 */
 	public void inject(Block from, Block to) {
 		from.components().stream()
@@ -34,5 +34,15 @@ public class ComponentInjector {
 
 		from.onComponentAdded.add(event -> to.add(event.component));
 		from.onComponentRemoved.add(event -> to.add(event.component));
+
+		//Forward events to -> from (container -> contained)
+		//TODO: Use reflection, auto transfer events?
+		to.loadEvent.add(from.loadEvent::publish);
+		to.unloadEvent.add(from.unloadEvent::publish);
+		to.leftClickEvent.add(from.leftClickEvent::publish);
+		to.rightClickEvent.add(from.rightClickEvent::publish);
+		to.removeEvent.add(from.removeEvent::publish);
+		to.placeEvent.add(from.placeEvent::publish);
+		to.neighborChangeEvent.add(from.neighborChangeEvent::publish);
 	}
 }
