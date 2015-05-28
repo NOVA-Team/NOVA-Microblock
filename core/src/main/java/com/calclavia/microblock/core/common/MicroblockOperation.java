@@ -93,7 +93,7 @@ public class MicroblockOperation {
 							MicroblockContainer outerContainer = outerContainerBlock.getOrAdd(new MicroblockContainer(outerContainerBlock));
 
 							//Create a new multiblock inner container that lives inside the microblock structure.
-							BlockContainer innerContainer = new BlockContainer();
+							BlockContainer innerContainer = new BlockContainer("blockContainer");
 							innerContainer.add(new MultiblockContainer(innerContainer, newBlock));
 							innerContainer.add(new Microblock(innerContainer, blockPlaceEvent -> localPos.get()));
 
@@ -142,12 +142,14 @@ public class MicroblockOperation {
 		return false;
 	}
 
+	/**
+	 * @return False if failed
+	 */
 	protected boolean handleFail() {
-
 		if (fail) {
 			cleanup();
 		}
-		return fail;
+		return !fail;
 	}
 
 	protected void cleanup() {
@@ -189,10 +191,10 @@ public class MicroblockOperation {
 			Block checkBlock = opCheckBlock.get();
 			if (checkBlock.sameType(Game.instance.blockManager.getAirBlockFactory())) {
 				//It's air, so let's create a container
-				world.setBlock(pos, MicroblockAPI.blockContainer);
+				world.setBlock(pos, MicroblockAPI.containedIDToContainer.get(newBlock.getID()));
 				handledPositions.add(pos);
 				return world.getBlock(pos);
-			} else if (checkBlock.sameType(MicroblockAPI.blockContainer)) {
+			} else if (checkBlock.sameType(MicroblockAPI.containedIDToContainer.get(newBlock.getID()))) {
 				//There's already a microblock there.
 				return Optional.of(checkBlock);
 			}

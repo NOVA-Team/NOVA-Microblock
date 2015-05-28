@@ -1,6 +1,7 @@
 package com.calclavia.microblock.test;
 
 import com.calclavia.microblock.core.MicroblockAPI;
+import com.calclavia.microblock.core.common.BlockContainer;
 import com.calclavia.microblock.core.common.MicroblockOperation;
 import com.calclavia.microblock.core.micro.Microblock;
 import com.calclavia.microblock.core.micro.MicroblockContainer;
@@ -39,7 +40,7 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 	public void testMicroblockInjection() {
 		NovaLauncher launcher = createLauncher();
 		//Microblock should be replaced with a container.
-		assertThat(TestMicroblockMod.singleMicroblock.makeBlock().sameType(MicroblockAPI.blockContainer)).isTrue();
+		assertThat(TestMicroblockMod.singleMicroblock.makeBlock() instanceof BlockContainer).isTrue();
 
 		MicroblockAPI.MicroblockInjectFactory injectionFactory = (MicroblockAPI.MicroblockInjectFactory) TestMicroblockMod.singleMicroblock;
 		assertThat(injectionFactory.containedFactory.getID()).isEqualTo(TestMicroblockMod.singleMicroblockID);
@@ -61,7 +62,7 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 		assertThat(microblockOperation.setBlock()).isTrue();
 
 		Block block = fakeWorld.getBlock(testPosition).get();
-		assertThat(block.getID()).isEqualTo(TestMicroblockMod.containerID);
+		assertThat(block.getID()).contains(TestMicroblockMod.containerID);
 		assertThat(block.has(MicroblockContainer.class)).isTrue();
 
 		MicroblockContainer microblockContainer = block.get(MicroblockContainer.class);
@@ -89,7 +90,7 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 
 		Arrays.stream(multiblocks)
 			.forEach(block -> {
-					assertThat(block.getID()).isEqualTo(TestMicroblockMod.containerID);
+					assertThat(block.getID()).contains(TestMicroblockMod.containerID);
 					assertThat(block.has(MultiblockContainer.class)).isTrue();
 					MultiblockContainer container = blockA.get(MultiblockContainer.class);
 					assertThat(container.containedBlock.getID()).isEqualTo(TestMicroblockMod.singleMultiblockID);
@@ -121,7 +122,7 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 		//Check containers
 		Arrays.stream(multiblocks)
 			.forEach(block -> {
-					assertThat(block.getID()).isEqualTo(TestMicroblockMod.containerID);
+					assertThat(block.getID()).contains(TestMicroblockMod.containerID);
 					assertThat(block.has(MicroblockContainer.class)).isTrue();
 				}
 			);

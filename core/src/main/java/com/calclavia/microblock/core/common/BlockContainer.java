@@ -9,7 +9,10 @@ import nova.core.game.Game;
  */
 public class BlockContainer extends Block {
 
-	public BlockContainer() {
+	public final String id;
+
+	public BlockContainer(String id) {
+		this.id = id;
 	}
 
 	@Override
@@ -20,6 +23,6 @@ public class BlockContainer extends Block {
 
 	@Override
 	public String getID() {
-		return "blockContainer";
+		return id;
 	}
 }
