@@ -2,6 +2,7 @@ package com.calclavia.microblock.core.micro;
 
 import com.calclavia.microblock.core.MicroblockAPI;
 import com.calclavia.microblock.core.common.BlockComponent;
+import com.calclavia.microblock.core.common.ComponentInjector;
 import nova.core.block.Block;
 import nova.core.network.Packet;
 import nova.core.network.PacketHandler;
@@ -111,7 +112,6 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 	//TODO: Create a custom ID for each microblock, send based on coordinates.
 	@Override
 	public void read(Packet packet) {
-		System.out.println("Received MIcroblock Packet");
 		//Description Packet
 		if (packet.getID() == 0) {
 			blockMap.clear();
@@ -123,7 +123,9 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 
 				//Find microblock registered with such ID
 				MicroblockAPI.MicroblockInjectFactory injectionFactory = MicroblockAPI.containedIDToFactory.get(microID);
-				Block microblock = injectionFactory.makeBlock();
+				Block microblock = injectionFactory.containedFactory.makeBlock();
+
+				new ComponentInjector().inject(microblock, block);
 
 				if (microblock instanceof PacketHandler) {
 					((PacketHandler) microblock).read(packet);

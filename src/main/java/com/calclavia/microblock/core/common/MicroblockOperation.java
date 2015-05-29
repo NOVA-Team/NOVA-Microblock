@@ -7,6 +7,7 @@ import com.calclavia.microblock.core.multi.Multiblock;
 import com.calclavia.microblock.core.multi.MultiblockContainer;
 import nova.core.block.Block;
 import nova.core.game.Game;
+import nova.core.network.NetworkTarget;
 import nova.core.util.transform.shape.Cuboid;
 import nova.core.util.transform.vector.Vector3d;
 import nova.core.util.transform.vector.Vector3i;
@@ -62,6 +63,10 @@ public class MicroblockOperation {
 	 * @return
 	 */
 	public boolean setBlock() {
+		if (NetworkTarget.Side.get().isClient()) {
+			return true;
+		}
+
 		Optional<Block> opContainer = getOrSetContainer(globalPos);
 
 		if (opContainer.isPresent()) {

@@ -34,6 +34,11 @@ public class Microblock extends BlockComponent {
 	 */
 	public Supplier<Integer> slotMask = null;
 
+	/**
+	 * @param block The microblock block
+	 * @param onPlace The method that defines the local position the microblock is placed in, based on a blockPlaceEvent.
+	 */
+	//TODO: There must be a more elegant way to do this.
 	public Microblock(Block block, Function<Block.BlockPlaceEvent, Vector3i> onPlace) {
 		super(block);
 		this.onPlace = onPlace;

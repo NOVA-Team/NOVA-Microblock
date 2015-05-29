@@ -11,6 +11,7 @@ import nova.core.network.PacketHandler;
 import nova.core.retention.Storable;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * A block container can forward events, components and methods to their respective microblock or multiblocks
@@ -54,6 +55,31 @@ public class BlockContainer extends Block implements Stateful, Storable, PacketH
 	public void onRegister() {
 		//Register a custom itemblock
 		Game.instance.itemManager.register((args) -> new ItemBlockContainer(factory()));
+	}
+
+	@Override
+	public void read(Packet packet) {
+		System.out.println("read");
+		if (packet.getID() == 0) {
+			new HashSet<>(components()).forEach(this::remove);
+
+			if (packet.readBoolean()) {
+				add(new MicroblockContainer(this));
+			}
+		}
+
+		PacketHandler.super.read(packet);
+	}
+
+	@Override
+	public void write(Packet packet) {
+		System.out.println("write");
+		if (packet.getID() == 0) {
+			//Write the need to add components
+			packet.writeBoolean(has(MicroblockContainer.class));
+		}
+
+		PacketHandler.super.write(packet);
 	}
 
 	@Override
