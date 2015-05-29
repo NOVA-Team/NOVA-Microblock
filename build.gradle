@@ -17,6 +17,10 @@ apply plugin: "eclipse"
 apply plugin: "idea"
 apply plugin: "jacoco"
 
+configurations.all {
+	resolutionStrategy.cacheChangingModulesFor 5, 'minutes'
+}
+
 compileJava {
 	sourceCompatibility = 1.8
 }
@@ -61,5 +65,21 @@ jacocoTestReport {
 	reports {
 		xml.enabled = true // coveralls plugin depends on xml format report
 		html.enabled = true
+	}
+}
+
+test {
+	forkEvery = 1
+	maxParallelForks = 4
+
+	testLogging {
+		exceptionFormat = 'full'
+	}
+
+	testLogging.showStandardStreams = true
+
+	beforeTest {descriptor ->
+		def classPadded = String.format("%-50s", descriptor.className)
+		logger.lifecycle("Running test ${classPadded} ${descriptor.name}()")
 	}
 }
