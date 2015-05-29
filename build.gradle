@@ -1,14 +1,47 @@
-group 'com.calclavia'
-version '0.0.1'
+buildscript {
+	repositories {
+		mavenCentral()
+		jcenter()
+		maven {
+			name = "sonatype"
+			url = "https://oss.sonatype.org/content/repositories/snapshots/"
+		}
+		maven {
+			url 'http://maven.novaapi.net/'
+		}
+	}
+	dependencies {
+	}
+}
 
-apply plugin: 'java'
+apply plugin: "java"
+apply plugin: "eclipse"
+apply plugin: "idea"
 
-sourceCompatibility = 1.8
+version = version
+
+compileJava {
+	sourceCompatibility = 1.8
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+	compile 'com.google.guava:guava:18.0'
+	compile 'org.msgpack:msgpack-core:0.7.0-p4'
+	compile 'com.typesafe:config:1.2.1'
+	compile 'se.jbee:silk-di:0.6'
+	compile 'org.slf4j:slf4j-api:1.7.10'
+    compile group: "nova.core", name: "NovaCore", version: novaVersion, changing: true
+
+	testCompile "junit:junit:4.12"
+	testCompile 'org.assertj:assertj-core:3.0.0'
+	testCompile "org.mockito:mockito-core:1.+"
+	testRuntime 'org.slf4j:slf4j-simple:1.7.10'
+}
+
+artifacts {
+	archives jar
 }
