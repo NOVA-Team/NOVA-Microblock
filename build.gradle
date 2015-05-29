@@ -37,9 +37,8 @@ dependencies {
 	compile 'se.jbee:silk-di:0.6'
 	compile 'org.slf4j:slf4j-api:1.7.10'
     compile group: "nova.core", name: "NovaCore", version: novaVersion, changing: true
-    
-
-	testCompile	group: "nova.core", name: "NovaCore", version: novaVersion, changing: true
+	
+    testCompile group: "nova.core", name: "NovaCore", version: novaVersion, classifier: "wrappertests", changing: true
 	testCompile "junit:junit:4.12"
 	testCompile 'org.assertj:assertj-core:3.0.0'
 	testCompile "org.mockito:mockito-core:1.+"
