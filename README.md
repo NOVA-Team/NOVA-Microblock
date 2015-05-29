@@ -1,5 +1,8 @@
-# Microblock-API
-NOVA's Microblock API. This API makes it easy to create microblocks and multiblocks.
+[![Build Status](https://travis-ci.org/NOVAAPI/Microblock-Plugin.svg?branch=master)](https://travis-ci.org/NOVAAPI/Microblock-Plugin)
+[![codecov.io](http://codecov.io/github/NOVAAPI/Microblock-Plugin/coverage.svg?branch=master)](http://codecov.io/github/NOVAAPI/Microblock-Plugin?branch=master)
+
+# Microblock Plugin
+Microblock Plugin is a NOVA Plugin that adds a microblock and multiblock system to NOVA. This API makes it easy to create microblocks and multiblocks.
 
 ## Usage
 ### Microblock
