@@ -57,7 +57,7 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 	}
 
 	public boolean put(Vector3i localPos, Microblock microblock) {
-		assert !new Cuboid(0, 0, 0, subdivision, subdivision, subdivision).intersects(localPos);
+		assert new Cuboid(0, 0, 0, subdivision, subdivision, subdivision).intersects(localPos);
 
 		if (!has(localPos)) {
 			microblock.containers.add(this);

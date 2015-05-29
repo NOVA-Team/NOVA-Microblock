@@ -20,8 +20,8 @@ public class MultiblockContainer extends BlockComponent {
 	 * @param containedBlock The block being contained.
 	 */
 	public MultiblockContainer(Block containerBlock, Block containedBlock) {
-		super(containedBlock);
-		assert containerBlock.has(MultiblockContainer.class) && containedBlock.has(Multiblock.class);
+		super(containerBlock);
+		assert containedBlock.has(Multiblock.class);
 		this.containedBlock = containedBlock;
 		containedBlock.get(Multiblock.class).containers.add(this);
 	}
