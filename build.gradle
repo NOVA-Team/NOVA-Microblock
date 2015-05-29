@@ -15,8 +15,7 @@ buildscript {
 apply plugin: "java"
 apply plugin: "eclipse"
 apply plugin: "idea"
-
-version = version
+apply plugin: "jacoco"
 
 compileJava {
 	sourceCompatibility = 1.8
@@ -47,4 +46,20 @@ dependencies {
 
 artifacts {
 	archives jar
+}
+
+javadoc {
+	include 'com/calclavia/**'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+	from 'build/docs/javadoc'
+	classifier 'javadoc'
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled = true // coveralls plugin depends on xml format report
+		html.enabled = true
+	}
 }
