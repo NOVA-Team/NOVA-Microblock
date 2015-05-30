@@ -37,6 +37,16 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 	}
 
 	@Test
+	public void testVectorToID() {
+		MicroblockContainer microblockContainer = new MicroblockContainer(null);
+
+		forEachPos(Vector3i.zero, Vector3i.one.multiply(microblockContainer.subdivision), pos -> {
+			int id = microblockContainer.posToID(pos);
+			assertThat(microblockContainer.idToPos(id)).isEqualTo(pos);
+		});
+	}
+
+	@Test
 	public void testMicroblockInjection() {
 		NovaLauncher launcher = createLauncher();
 		//Microblock should be replaced with a container.

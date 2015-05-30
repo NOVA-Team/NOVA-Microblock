@@ -6,7 +6,10 @@ import com.calclavia.microblock.core.common.ComponentInjector;
 import nova.core.block.Block;
 import nova.core.network.Packet;
 import nova.core.network.PacketHandler;
+import nova.core.retention.Data;
+import nova.core.retention.Storable;
 import nova.core.util.Direction;
+import nova.core.util.math.MathUtil;
 import nova.core.util.transform.shape.Cuboid;
 import nova.core.util.transform.vector.Vector3i;
 
@@ -19,7 +22,7 @@ import java.util.Optional;
  * A component added to microblocks
  * @author Calclavia
  */
-public class MicroblockContainer extends BlockComponent implements PacketHandler {
+public class MicroblockContainer extends BlockComponent implements PacketHandler, Storable {
 
 	/**
 	 * The amount of subdivisions of the microblock.
@@ -118,14 +121,13 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 	//TODO: Consider component syncer?
 	@Override
 	public void read(Packet packet) {
-		System.out.println(this + " read: " + packet.getID());
 		//Description Packet
 		if (packet.getID() == 0) {
 			blockMap.clear();
 			int size = packet.readInt();
 
 			for (int i = 0; i < size; i++) {
-				Vector3i microPos = packet.read(Vector3i.class);
+				Vector3i microPos = idToPos(packet.readInt());
 				String microID = packet.readString();
 
 				//Find microblock registered with such ID
@@ -146,15 +148,13 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 
 	@Override
 	public void write(Packet packet) {
-		System.out.println(this + " write: " + packet.getID());
-
 		//Description Packet
 		if (packet.getID() == 0) {
 			packet.writeInt(microblocks().size());
 
 			//Write all microblocks over
 			map().forEach((k, v) -> {
-				packet.write(k);
+				packet.write(posToID(k));
 				packet.writeString(v.block.getID());
 
 				if (v.block instanceof PacketHandler) {
@@ -162,5 +162,46 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 				}
 			});
 		}
+	}
+
+	@Override
+	public void load(Data data) {
+		blockMap.clear();
+		((Data) data.get("microblockContainer")).forEach((k, v) -> {
+			Block savedBlock = (Block) Data.unserialize((Data) v);
+			Microblock microblock = savedBlock.get(Microblock.class);
+			put(idToPos(Integer.parseInt(k)), microblock);
+			ComponentInjector.backInject(savedBlock, block);
+			ComponentInjector.inject(savedBlock, block);
+		});
+	}
+
+	@Override
+	public void save(Data data) {
+		Data microblockData = new Data();
+
+		map().forEach((k, v) -> {
+				if (v.block instanceof Storable) {
+					microblockData.put(posToID(k) + "", v.block);
+				}
+			}
+		);
+
+		data.put("microblockContainer", microblockData);
+	}
+
+	public int posToID(Vector3i pos) {
+		int shift = MathUtil.log(subdivision, 2);
+		return (pos.x << (shift * 2)) | (pos.y << (shift)) | pos.z;
+	}
+
+	public Vector3i idToPos(int id) {
+		int shift = MathUtil.log(subdivision, 2);
+		int propogateReference = 1 << (shift - 1);
+		int ones = propogateReference | (propogateReference - 1);
+		int z = id & ones;
+		int y = (id & (ones << shift)) >> shift;
+		int x = id >> (shift * 2);
+		return new Vector3i(x, y, z);
 	}
 }

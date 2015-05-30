@@ -5,13 +5,12 @@ import nova.core.block.Block;
 import nova.core.block.Stateful;
 import nova.core.component.Component;
 import nova.core.game.Game;
-import nova.core.network.NetworkTarget;
 import nova.core.network.Packet;
 import nova.core.network.PacketHandler;
+import nova.core.retention.Data;
 import nova.core.retention.Storable;
 
 import java.util.Collection;
-import java.util.HashSet;
 
 /**
  * A block container can forward events, components and methods to their respective microblock or multiblocks
@@ -61,7 +60,6 @@ public class BlockContainer extends Block implements Stateful, Storable, PacketH
 	@Override
 	public void read(Packet packet) {
 		if (packet.getID() == 0) {
-
 			if (packet.readBoolean()) {
 				add(new MicroblockContainer(this));
 			}
@@ -78,6 +76,15 @@ public class BlockContainer extends Block implements Stateful, Storable, PacketH
 		}
 
 		PacketHandler.super.write(packet);
+	}
+
+	@Override
+	public void load(Data data) {
+		if (data.containsKey("microblockContainer")) {
+			add(new MicroblockContainer(this));
+		}
+
+		Storable.super.load(data);
 	}
 
 	@Override
