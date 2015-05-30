@@ -69,15 +69,17 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 		return false;
 	}
 
-	/**
-	 * Gets a microblock based on the slot.
-	 * @param side See {@link MicroblockSlot}
-	 * @return
-	 */
+	@Deprecated
 	public Optional<Microblock> get(int side) {
 		return get(Direction.fromOrdinal(side));
 	}
 
+	/**
+	 * Gets a microblock based on the slot.
+	 * @param side The side of the microblock
+	 * @return The microblock that is occupying this specific side.
+	 */
+	//TODO: Change to region
 	public Optional<Microblock> get(Direction side) {
 		return get(sidePosition(side));
 	}
@@ -88,7 +90,7 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 
 	/**
 	 * Gets the microblock at a specific internal position.
-	 * @param localPos
+	 * @param localPos Te local position within the microblock space
 	 * @return The optional microblock.
 	 */
 	public Optional<Microblock> get(Vector3i localPos) {
@@ -97,14 +99,17 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 
 	/**
 	 * Gets a single microblock that converts a specific region within the microblock space.
-	 * @param region
-	 * @return
+	 * @param region A region in the microblock space
+	 * @return A single microblock if that microblock occupies the entire region.
 	 */
 	public Optional<Microblock> get(Cuboid region) {
-		//TOD: IMPLEMENT
+		//NO-OP. TODO: IMPLEMENT
 		return Optional.empty();
 	}
 
+	/**
+	 * @return A man of local positions to their microblocks.
+	 */
 	public Map<Vector3i, Microblock> map() {
 		return blockMap;
 	}

@@ -32,6 +32,7 @@ public class Multiblock extends BlockComponent {
 
 	/**
 	 * Gets the occupied space within this multiblock that is outside the default blockLength bounds.
+	 * @param blockLength The length of each microblock/block. Used to calculate collision subdivision.
 	 * @return A set of vectors relative to the center block's bottom corner.
 	 */
 	public Set<Vector3d> getOccupiedSpace(float blockLength) {
