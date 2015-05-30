@@ -1,16 +1,14 @@
 package com.calclavia.microblock.injection;
 
-import com.calclavia.microblock.micro.Microblock;
-import com.calclavia.microblock.micro.MicroblockContainer;
-import com.calclavia.microblock.multi.Multiblock;
-import com.calclavia.microblock.multi.MultiblockContainer;
 import nova.core.block.Block;
+import nova.core.component.Component;
 import nova.core.util.Factory;
 import nova.core.util.Manager;
 import nova.core.util.Registry;
 
-import java.util.Arrays;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Inject components across containers from the contained block
@@ -28,15 +26,13 @@ public class ComponentInjection extends Manager<ComponentInjector, Factory<Compo
 	 * @param container The container
 	 */
 	public void injectForward(Block contained, Block container) {
-		contained.components().stream()
-			.forEach(component ->
-					registry
-						.stream()
-						.filter(factory -> factory.getDummy().componentType().equals(component.getClass()))
-						.forEach(factory -> factory.getDummy().injectForward(component, contained, container))
-			);
+		contained
+			.components()
+			.stream()
+			.forEach(component -> findInjectors(component.getClass()).forEach(injector -> injector.injectForward(component, contained, container)));
 
-		contained.onComponentAdded.add(event -> container.add(event.component));
+		//TODO: Test component added after constructor.
+		contained.onComponentAdded.add(evt -> findInjectors(evt.component.getClass()).forEach(injector -> injector.injectForward(evt.component, contained, container)));
 		contained.onComponentRemoved.add(event -> container.remove(event.component));
 
 		//Forward events to -> from (container -> contained)
@@ -52,13 +48,18 @@ public class ComponentInjection extends Manager<ComponentInjector, Factory<Compo
 
 	public void injectBackward(Block contained, Block container) {
 		//Inject the special components from the container to the contained (such as BlockTransform).
-		container.components().stream()
-			.forEach(component ->
-					registry
-						.stream()
-						.filter(factory -> factory.getDummy().componentType().equals(component.getClass()))
-						.forEach(factory -> factory.getDummy().injectBackward(component, contained, container))
-			);
+		container
+			.components()
+			.stream()
+			.forEach(component -> findInjectors(component.getClass()).forEach(injector -> injector.injectBackward(component, contained, container)));
+	}
+
+	public <C extends Component> Set<ComponentInjector> findInjectors(Class<C> clazz) {
+		return registry
+			.stream()
+			.map(factory -> factory.getDummy())
+			.filter(injector -> injector.componentType().isAssignableFrom(clazz))
+			.collect(Collectors.toSet());
 	}
 
 	@Override
