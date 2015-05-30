@@ -2,7 +2,9 @@ package com.calclavia.microblock.core.common;
 
 import com.calclavia.microblock.core.MicroblockAPI;
 import com.calclavia.microblock.core.micro.Microblock;
+import com.calclavia.microblock.core.micro.MicroblockContainer;
 import com.calclavia.microblock.core.multi.Multiblock;
+import com.calclavia.microblock.core.multi.MultiblockContainer;
 import nova.core.block.Block;
 import nova.core.block.BlockFactory;
 import nova.core.entity.Entity;
@@ -15,7 +17,6 @@ import nova.core.util.transform.vector.Vector3d;
 import nova.core.util.transform.vector.Vector3i;
 import nova.core.world.World;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -29,22 +30,30 @@ public class ItemBlockContainer extends ItemBlock {
 
 		rightClickEvent.add(
 			evt -> {
-				//if (NetworkTarget.Side.get().isServer()) {
+				if (NetworkTarget.Side.get().isServer()) {
 					//Do ray trace to find which block it hit
-					//TODO
-				Optional<RayTracer.RayTraceBlockResult> hit = RayTracer.rayTraceBlock(evt.entity, 7).stream().findFirst();
-
-				if (hit.isPresent()) {
-					RayTracer.RayTraceBlockResult rayTraceBlockResult = hit.get();
-					System.out.println(rayTraceBlockResult.block.getID());
+					//TODO: Check server ray trace inaccurancy?
+					Optional<RayTracer.RayTraceBlockResult> hit = RayTracer.rayTraceBlock(evt.entity, 7).stream().findFirst();
+					if (hit.isPresent()) {
+						RayTracer.RayTraceBlockResult result = hit.get();
+						//TODO: WHy shift one block?
+						Vector3i placePos = result.block.position().add(result.side.toVector()).subtract(new Vector3i(0, 1, 0));
+						Optional<Block> opBlock = evt.entity.world().getBlock(placePos);
+						System.out.println(placePos);
+						opBlock.ifPresent(
+							block ->
+							{
+								if (block.has(MicroblockContainer.class) || block.has(MultiblockContainer.class)) {
+									placeContainer(evt.entity, evt.entity.world(), result.block.position(), result.side, result.hit.subtract(result.block.position().toDouble()));
+								}
+							}
+						);
+					}
 				}
-				//}
 			}
 		);
 
-		useEvent.add(evt -> {
-			evt.action = placeContainer(evt.entity, evt.entity.world(), evt.position, evt.side, evt.hit);
-		});
+		useEvent.add(evt -> evt.action = placeContainer(evt.entity, evt.entity.world(), evt.position, evt.side, evt.hit));
 	}
 
 	public boolean placeContainer(Entity entity, World world, Vector3i position, Direction side, Vector3d hit) {

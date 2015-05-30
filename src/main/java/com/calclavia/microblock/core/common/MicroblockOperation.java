@@ -1,6 +1,7 @@
 package com.calclavia.microblock.core.common;
 
 import com.calclavia.microblock.core.MicroblockAPI;
+import com.calclavia.microblock.core.injection.ComponentInjector;
 import com.calclavia.microblock.core.micro.Microblock;
 import com.calclavia.microblock.core.micro.MicroblockContainer;
 import com.calclavia.microblock.core.multi.Multiblock;
@@ -81,7 +82,7 @@ public class MicroblockOperation {
 
 				//This is a microblock
 				//Attach microblock container to the container
-				MicroblockContainer microblockContainer = container.add(new MicroblockContainer(container));
+				MicroblockContainer microblockContainer = container.getOrAdd(new MicroblockContainer(container));
 
 				if (newBlock.has(Multiblock.class)) {
 					/**
@@ -133,8 +134,9 @@ public class MicroblockOperation {
 					 */
 					if (!microblockContainer.put(localPos.get(), newBlock.get(Microblock.class))) {
 						fail = true;
+					} else {
+						ComponentInjector.inject(newBlock, microblockContainer.block);
 					}
-					ComponentInjector.inject(newBlock, microblockContainer.block);
 					return handleFail();
 				}
 			} else if (newBlock.has(Multiblock.class)) {

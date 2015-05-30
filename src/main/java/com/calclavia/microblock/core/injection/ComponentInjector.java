@@ -1,4 +1,4 @@
-package com.calclavia.microblock.core.common;
+package com.calclavia.microblock.core.injection;
 
 import com.calclavia.microblock.core.micro.Microblock;
 import com.calclavia.microblock.core.micro.MicroblockContainer;

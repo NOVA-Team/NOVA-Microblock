@@ -2,7 +2,7 @@ package com.calclavia.microblock.core.micro;
 
 import com.calclavia.microblock.core.MicroblockAPI;
 import com.calclavia.microblock.core.common.BlockComponent;
-import com.calclavia.microblock.core.common.ComponentInjector;
+import com.calclavia.microblock.core.injection.ComponentInjector;
 import nova.core.block.Block;
 import nova.core.network.Packet;
 import nova.core.network.PacketHandler;

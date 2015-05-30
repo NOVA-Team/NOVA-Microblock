@@ -1,7 +1,7 @@
 package com.calclavia.microblock.core;
 
 import com.calclavia.microblock.core.common.BlockContainer;
-import com.calclavia.microblock.core.common.ComponentInjector;
+import com.calclavia.microblock.core.injection.ComponentInjector;
 import com.calclavia.microblock.core.micro.Microblock;
 import com.calclavia.microblock.core.multi.Multiblock;
 import nova.core.block.Block;
