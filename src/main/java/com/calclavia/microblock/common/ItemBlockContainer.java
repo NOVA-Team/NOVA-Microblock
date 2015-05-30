@@ -7,6 +7,7 @@ import com.calclavia.microblock.multi.Multiblock;
 import com.calclavia.microblock.multi.MultiblockContainer;
 import nova.core.block.Block;
 import nova.core.block.BlockFactory;
+import nova.core.component.misc.Collider;
 import nova.core.entity.Entity;
 import nova.core.item.ItemBlock;
 import nova.core.network.NetworkTarget;
@@ -44,7 +45,7 @@ public class ItemBlockContainer extends ItemBlock {
 							block ->
 							{
 								if (block.has(MicroblockContainer.class) || block.has(MultiblockContainer.class)) {
-									placeContainer(evt.entity, evt.entity.world(), result.block.position(), result.side, result.hit.subtract(result.block.position().toDouble()));
+									//placeContainer(evt.entity, evt.entity.world(), result.block.position(), result.side, result.hit.subtract(result.block.position().toDouble()));
 								}
 							}
 						);

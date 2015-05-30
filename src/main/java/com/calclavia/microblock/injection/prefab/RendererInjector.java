@@ -20,13 +20,13 @@ public class RendererInjector<COMPONENT extends Renderer> extends DefaultInjecto
 		Renderer renderer = null;
 
 		if (component instanceof DynamicRenderer) {
-			renderer = container.add(new DynamicRenderer(container));
+			renderer = container.getOrAdd(new DynamicRenderer(container));
 		} else if (component instanceof StaticBlockRenderer) {
-			renderer = container.add(new StaticBlockRenderer(container));
+			renderer = container.getOrAdd(new StaticBlockRenderer(container));
 		} else if (component instanceof StaticRenderer) {
-			renderer = container.add(new StaticRenderer(container));
+			renderer = container.getOrAdd(new StaticRenderer(container));
 		} else if (component instanceof ItemRenderer) {
-			renderer = container.add(new ItemRenderer(container));
+			renderer = container.getOrAdd(new ItemRenderer(container));
 		}
 
 		if (renderer != null) {

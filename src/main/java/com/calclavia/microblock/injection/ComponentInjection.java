@@ -64,6 +64,7 @@ public class ComponentInjection extends Manager<ComponentInjector, Factory<Compo
 
 	@Override
 	public Factory<ComponentInjector> register(Function<Object[], ComponentInjector> constructor) {
-		return new Factory<>(constructor);
+		return register(new Factory<>(constructor));
 	}
+
 }
