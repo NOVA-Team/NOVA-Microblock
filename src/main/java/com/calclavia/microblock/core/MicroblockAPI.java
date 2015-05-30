@@ -1,7 +1,8 @@
 package com.calclavia.microblock.core;
 
 import com.calclavia.microblock.core.common.BlockContainer;
-import com.calclavia.microblock.core.injection.ComponentInjector;
+import com.calclavia.microblock.core.injection.ComponentInjection;
+import com.calclavia.microblock.core.injection.ComponentInjectionModule;
 import com.calclavia.microblock.core.micro.Microblock;
 import com.calclavia.microblock.core.multi.Multiblock;
 import nova.core.block.Block;
@@ -19,11 +20,18 @@ import java.util.Map;
  * Make sure your mod loads AFTER this mod, if your mod uses microblocks or multiblock.
  * @author Calclavia
  */
-@NovaMod(id = "microblock", name = "Microblock", version = "0.0.1", novaVersion = "0.0.1", isPlugin = true)
+@NovaMod(id = "microblock", name = "Microblock", version = "0.0.1", novaVersion = "0.0.1", modules = { ComponentInjectionModule.class }, isPlugin = true)
 public class MicroblockAPI implements Loadable {
 
+	public static MicroblockAPI instance;
 	public static Map<String, MicroblockInjectFactory> containedIDToFactory = new HashMap<>();
 	public static Map<BlockFactory, MicroblockInjectFactory> containedFactoryToFactory = new HashMap<>();
+	public final ComponentInjectionModule componentInjection;
+
+	public MicroblockAPI(ComponentInjectionModule componentInjection) {
+		this.componentInjection = componentInjection;
+		instance = this;
+	}
 
 	@Override
 	public void preInit() {
@@ -50,9 +58,9 @@ public class MicroblockAPI implements Loadable {
 		public MicroblockInjectFactory(BlockFactory containedFactory) {
 			super(args -> new BlockContainer("blockContainer-" + containedFactory.getID()));
 			this.containedFactory = containedFactory;
-			//Check the contained factory's dummy, and inject components.
+			//Check the contained factory's dummy, and injectForward components.
 			dummy = new BlockContainer("blockContainer-" + containedFactory.getID());
-			ComponentInjector.inject(containedFactory.getDummy(), dummy);
+			ComponentInjection.injectForward(containedFactory.getDummy(), dummy);
 		}
 
 		@Override

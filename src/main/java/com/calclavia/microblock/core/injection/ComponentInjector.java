@@ -1,53 +1,34 @@
 package com.calclavia.microblock.core.injection;
 
-import com.calclavia.microblock.core.micro.Microblock;
-import com.calclavia.microblock.core.micro.MicroblockContainer;
-import com.calclavia.microblock.core.multi.Multiblock;
-import com.calclavia.microblock.core.multi.MultiblockContainer;
 import nova.core.block.Block;
-import nova.core.block.BlockFactory;
-
-import java.util.Arrays;
-import java.util.function.Function;
+import nova.core.component.Component;
+import nova.core.util.Identifiable;
 
 /**
- * Inject components across containers from the contained block
+ * Handles how a component is injected from a container to the contained.
  * @author Calclavia
  */
-public class ComponentInjector {
+public abstract class ComponentInjector<COMPONENT extends Component> implements Identifiable {
 
-	private static final Class[] injectionBlacklist = { Multiblock.class, Microblock.class, MultiblockContainer.class, MicroblockContainer.class };
+	//The component being injected
+	public final COMPONENT component;
+
+	public ComponentInjector(COMPONENT component) {
+		this.component = component;
+	}
 
 	/**
-	 * Marks a block and injects from the block to the block (and all future components)
-	 * @param contained The contained
-	 * @param container The container
+	 * Handles how a component is injected from the contained to the container.
+	 * @param contained The contained block
+	 * @param container The container block
 	 */
-	public static void inject(Block contained, Block container) {
-		contained.components().stream()
-			.filter(component -> !Arrays.stream(injectionBlacklist).anyMatch(aClass -> aClass.isAssignableFrom(component.getClass())))
-			.filter(component -> !container.has(component.getClass()))
-			.forEach(container::add);
+	public abstract void injectForward(Block contained, Block container);
 
-		contained.onComponentAdded.add(event -> container.add(event.component));
-		contained.onComponentRemoved.add(event -> container.remove(event.component));
+	/**
+	 * Handles how a component is injected backwards from load
+	 * @param contained The contained block
+	 * @param container The container block
+	 */
+	public abstract void injectBackward(Block contained, Block container);
 
-		//Forward events to -> from (container -> contained)
-		//TODO: Use reflection, auto transfer events?
-		container.loadEvent.add(contained.loadEvent::publish);
-		container.unloadEvent.add(contained.unloadEvent::publish);
-		container.leftClickEvent.add(contained.leftClickEvent::publish);
-		container.rightClickEvent.add(contained.rightClickEvent::publish);
-		container.removeEvent.add(contained.removeEvent::publish);
-		container.placeEvent.add(contained.placeEvent::publish);
-		container.neighborChangeEvent.add(contained.neighborChangeEvent::publish);
-	}
-
-	public static void backInject(Block contained, Block container) {
-		//Inject the special components from the container to the contained (such as BlockTransform).
-		container.components().stream()
-			.filter(component -> !Arrays.stream(injectionBlacklist).anyMatch(aClass -> aClass.isAssignableFrom(component.getClass())))
-			.filter(component -> !contained.has(component.getClass()))
-			.forEach(contained::add);
-	}
 }

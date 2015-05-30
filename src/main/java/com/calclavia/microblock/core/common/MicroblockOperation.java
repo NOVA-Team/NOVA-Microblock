@@ -1,7 +1,7 @@
 package com.calclavia.microblock.core.common;
 
 import com.calclavia.microblock.core.MicroblockAPI;
-import com.calclavia.microblock.core.injection.ComponentInjector;
+import com.calclavia.microblock.core.injection.ComponentInjection;
 import com.calclavia.microblock.core.micro.Microblock;
 import com.calclavia.microblock.core.micro.MicroblockContainer;
 import com.calclavia.microblock.core.multi.Multiblock;
@@ -38,7 +38,7 @@ public class MicroblockOperation {
 	/**
 	 * Create a microblock operation handler
 	 * @param world The world
-	 * @param injectFactory The factory to inject
+	 * @param injectFactory The factory to injectForward
 	 * @param globalPos The world position to handle wth block
 	 * @param evt The block place event
 	 */
@@ -135,7 +135,7 @@ public class MicroblockOperation {
 					if (!microblockContainer.put(localPos.get(), newBlock.get(Microblock.class))) {
 						fail = true;
 					} else {
-						ComponentInjector.inject(newBlock, microblockContainer.block);
+						ComponentInjection.injectForward(newBlock, microblockContainer.block);
 					}
 					return handleFail();
 				}
