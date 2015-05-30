@@ -26,21 +26,21 @@ public class ItemBlockContainer extends ItemBlock {
 
 	public ItemBlockContainer(BlockFactory blockFactory) {
 		super(blockFactory);
-	}
 
-	@Override
-	public void onRightClick(Entity entity) {
-		if (NetworkTarget.Side.get().isServer()) {
-			//Do ray trace to find which block it hit
-			//TODO:
-			List<RayTracer.RayTraceBlockResult> rayTraceBlockResults = RayTracer.rayTraceBlock(entity, 7);
-			System.out.println(rayTraceBlockResults);
-		}
-	}
+		rightClickEvent.add(
+			evt -> {
+				if (NetworkTarget.Side.get().isServer()) {
+					//Do ray trace to find which block it hit
+					//TODO
+					List<RayTracer.RayTraceBlockResult> rayTraceBlockResults = RayTracer.rayTraceBlock(evt.entity, 7);
+					System.out.println(rayTraceBlockResults);
+				}
+			}
+		);
 
-	@Override
-	public boolean onUse(Entity entity, World world, Vector3i position, Direction side, Vector3d hit) {
-		return placeContainer(entity, world, position, side, hit);
+		useEvent.add(evt -> {
+			evt.action = placeContainer(evt.entity, evt.entity.world(), evt.position, evt.side, evt.hit);
+		});
 	}
 
 	public boolean placeContainer(Entity entity, World world, Vector3i position, Direction side, Vector3d hit) {
