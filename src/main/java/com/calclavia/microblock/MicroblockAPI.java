@@ -4,11 +4,15 @@ import com.calclavia.microblock.common.BlockContainer;
 import com.calclavia.microblock.injection.ComponentInjection;
 import com.calclavia.microblock.injection.ComponentInjectionModule;
 import com.calclavia.microblock.injection.prefab.ColliderInjector;
+import com.calclavia.microblock.injection.prefab.RendererInjector;
 import com.calclavia.microblock.micro.Microblock;
 import com.calclavia.microblock.multi.Multiblock;
 import nova.core.block.Block;
 import nova.core.block.BlockFactory;
 import nova.core.block.BlockManager;
+import nova.core.component.renderer.DynamicRenderer;
+import nova.core.component.renderer.ItemRenderer;
+import nova.core.component.renderer.StaticRenderer;
 import nova.core.event.EventBus;
 import nova.core.game.Game;
 import nova.core.loader.Loadable;
@@ -40,6 +44,9 @@ public class MicroblockAPI implements Loadable {
 		Game.instance.blockManager.blockRegisteredListeners.add(this::blockRegisterEvent, EventBus.PRIORITY_HIGH);
 
 		componentInjection.register(ColliderInjector.class);
+		componentInjection.register(args -> new RendererInjector<>(DynamicRenderer.class));
+		componentInjection.register(args -> new RendererInjector<>(ItemRenderer.class));
+		componentInjection.register(args -> new RendererInjector<>(StaticRenderer.class));
 	}
 
 	private void blockRegisterEvent(BlockManager.BlockRegisteredEvent evt) {
