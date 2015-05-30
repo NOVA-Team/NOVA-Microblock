@@ -1,9 +1,11 @@
 package com.calclavia.microblock.micro;
 
-import com.calclavia.microblock.MicroblockAPI;
+import com.calclavia.microblock.MicroblockPlugin;
 import com.calclavia.microblock.common.BlockComponent;
-import com.calclavia.microblock.injection.ComponentInjection;
+import com.calclavia.microblock.common.BlockContainer;
 import nova.core.block.Block;
+import nova.core.game.Game;
+import nova.core.network.NetworkTarget;
 import nova.core.network.Packet;
 import nova.core.network.PacketHandler;
 import nova.core.retention.Data;
@@ -65,7 +67,12 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 
 		if (!has(localPos)) {
 			microblock.containers.add(this);
+			microblock.position = localPos;
 			blockMap.put(localPos, microblock);
+
+			if (NetworkTarget.Side.get().isServer()) {
+				Game.instance().networkManager().sync((BlockContainer) block);
+			}
 			return true;
 		}
 
@@ -131,11 +138,11 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 				String microID = packet.readString();
 
 				//Find microblock registered with such ID
-				MicroblockAPI.MicroblockInjectFactory injectionFactory = MicroblockAPI.containedIDToFactory.get(microID);
+				MicroblockPlugin.MicroblockInjectFactory injectionFactory = MicroblockPlugin.containedIDToFactory.get(microID);
 				Block microblock = injectionFactory.containedFactory.makeBlock();
 
-				MicroblockAPI.instance.componentInjection.injectBackward(microblock, block);
-				MicroblockAPI.instance.componentInjection.injectForward(microblock, block);
+				MicroblockPlugin.instance.componentInjection.injectBackward(microblock, block);
+				MicroblockPlugin.instance.componentInjection.injectForward(microblock, block);
 
 				if (microblock instanceof PacketHandler) {
 					((PacketHandler) microblock).read(packet);
@@ -171,8 +178,8 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 			Block savedBlock = (Block) Data.unserialize((Data) v);
 			Microblock microblock = savedBlock.get(Microblock.class);
 			put(idToPos(Integer.parseInt(k)), microblock);
-			MicroblockAPI.instance.componentInjection.injectBackward(savedBlock, block);
-			MicroblockAPI.instance.componentInjection.injectForward(savedBlock, block);
+			MicroblockPlugin.instance.componentInjection.injectBackward(savedBlock, block);
+			MicroblockPlugin.instance.componentInjection.injectForward(savedBlock, block);
 		});
 	}
 

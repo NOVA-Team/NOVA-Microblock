@@ -1,13 +1,12 @@
 package com.calclavia.microblock.common;
 
-import com.calclavia.microblock.MicroblockAPI;
+import com.calclavia.microblock.MicroblockPlugin;
 import com.calclavia.microblock.micro.Microblock;
 import com.calclavia.microblock.micro.MicroblockContainer;
 import com.calclavia.microblock.multi.Multiblock;
 import com.calclavia.microblock.multi.MultiblockContainer;
 import nova.core.block.Block;
 import nova.core.block.BlockFactory;
-import nova.core.component.misc.Collider;
 import nova.core.entity.Entity;
 import nova.core.item.ItemBlock;
 import nova.core.network.NetworkTarget;
@@ -34,7 +33,7 @@ public class ItemBlockContainer extends ItemBlock {
 				if (NetworkTarget.Side.get().isServer()) {
 					//Do ray trace to find which block it hit
 					//TODO: Check server ray trace inaccurancy?
-					Optional<RayTracer.RayTraceBlockResult> hit = RayTracer.rayTraceBlock(evt.entity, 7).stream().findFirst();
+					Optional<RayTracer.RayTraceBlockResult> hit = RayTracer.rayTraceBlock(evt.entity, 4).stream().findFirst();
 					if (hit.isPresent()) {
 						RayTracer.RayTraceBlockResult result = hit.get();
 						//TODO: WHy shift one block?
@@ -45,7 +44,7 @@ public class ItemBlockContainer extends ItemBlock {
 							block ->
 							{
 								if (block.has(MicroblockContainer.class) || block.has(MultiblockContainer.class)) {
-									//placeContainer(evt.entity, evt.entity.world(), result.block.position(), result.side, result.hit.subtract(result.block.position().toDouble()));
+									placeContainer(evt.entity, evt.entity.world(), result.block.position().subtract(new Vector3i(0, 1, 0)), result.side, result.hit.subtract(result.block.position().toDouble()));
 								}
 							}
 						);
@@ -64,14 +63,16 @@ public class ItemBlockContainer extends ItemBlock {
 			Optional<Block> checkBlock = world.getBlock(placePos);
 			if (checkBlock.isPresent()) {
 
-				MicroblockAPI.MicroblockInjectFactory injectFactory = (MicroblockAPI.MicroblockInjectFactory) this.blockFactory;
+				MicroblockPlugin.MicroblockInjectFactory injectFactory = (MicroblockPlugin.MicroblockInjectFactory) this.blockFactory;
 				BlockFactory containedFactory = injectFactory.containedFactory;
 				Block dummy = containedFactory.getDummy();
 
 				if (dummy.has(Microblock.class)) {
 					//Ask the microblock about how it would like to be placed.
 					Block.BlockPlaceEvent evt = new Block.BlockPlaceEvent(entity, side, hit, this);
-					return new MicroblockOperation(world, injectFactory, placePos, evt).setBlock();
+					boolean b = new MicroblockOperation(world, injectFactory, placePos, evt).setBlock();
+					System.out.println("Attempt to place microblock: " + b);
+					return b;
 				} else if (dummy.has(Multiblock.class)) {
 					return new MicroblockOperation(world, injectFactory, placePos).setBlock();
 				} else {

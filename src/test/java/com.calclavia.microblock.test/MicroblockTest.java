@@ -1,6 +1,6 @@
 package com.calclavia.microblock.test;
 
-import com.calclavia.microblock.MicroblockAPI;
+import com.calclavia.microblock.MicroblockPlugin;
 import com.calclavia.microblock.common.BlockContainer;
 import com.calclavia.microblock.common.MicroblockOperation;
 import com.calclavia.microblock.micro.Microblock;
@@ -35,17 +35,17 @@ public class MicroblockTest {
 
 	@Test
 	public void testMicroblockInjection() {
-		NovaLauncher launcher = new NovaLauncherTestFactory(MicroblockAPI.class, TestMicroblockMod.class).createLauncher();
+		NovaLauncher launcher = new NovaLauncherTestFactory(MicroblockPlugin.class, TestMicroblockMod.class).createLauncher();
 		//Microblock should be replaced with a container.
 		assertThat(TestMicroblockMod.singleMicroblock.makeBlock() instanceof BlockContainer).isTrue();
 
-		MicroblockAPI.MicroblockInjectFactory injectionFactory = (MicroblockAPI.MicroblockInjectFactory) TestMicroblockMod.singleMicroblock;
+		MicroblockPlugin.MicroblockInjectFactory injectionFactory = (MicroblockPlugin.MicroblockInjectFactory) TestMicroblockMod.singleMicroblock;
 		assertThat(injectionFactory.containedFactory.getID()).isEqualTo(TestMicroblockMod.singleMicroblockID);
 	}
 
 	@Test
 	public void testMicroblockPlacement() {
-		NovaLauncher launcher = new NovaLauncherTestFactory(MicroblockAPI.class, TestMicroblockMod.class).createLauncher();
+		NovaLauncher launcher = new NovaLauncherTestFactory(MicroblockPlugin.class, TestMicroblockMod.class).createLauncher();
 
 		/**
 		 * Microblock placement
@@ -53,7 +53,7 @@ public class MicroblockTest {
 		FakeWorld fakeWorld = new FakeWorld();
 		Vector3i testPosition = new Vector3i(5, 5, 5);
 
-		MicroblockAPI.MicroblockInjectFactory injectionFactory = (MicroblockAPI.MicroblockInjectFactory) TestMicroblockMod.singleMicroblock;
+		MicroblockPlugin.MicroblockInjectFactory injectionFactory = (MicroblockPlugin.MicroblockInjectFactory) TestMicroblockMod.singleMicroblock;
 		MicroblockOperation microblockOperation = new MicroblockOperation(fakeWorld, injectionFactory, testPosition, new Block.BlockPlaceEvent(null, null, null, null));
 
 		assertThat(microblockOperation.setBlock()).isTrue();
@@ -68,7 +68,7 @@ public class MicroblockTest {
 
 	@Test
 	public void testMultiblockPlacement() {
-		NovaLauncher launcher = new NovaLauncherTestFactory(MicroblockAPI.class, TestMicroblockMod.class).createLauncher();
+		NovaLauncher launcher = new NovaLauncherTestFactory(MicroblockPlugin.class, TestMicroblockMod.class).createLauncher();
 
 		/**
 		 * Microblock placement
@@ -76,7 +76,7 @@ public class MicroblockTest {
 		FakeWorld fakeWorld = new FakeWorld();
 		Vector3i testPosition = new Vector3i(5, 5, 5);
 
-		MicroblockAPI.MicroblockInjectFactory injectionFactory = (MicroblockAPI.MicroblockInjectFactory) TestMicroblockMod.singleMultiblock;
+		MicroblockPlugin.MicroblockInjectFactory injectionFactory = (MicroblockPlugin.MicroblockInjectFactory) TestMicroblockMod.singleMultiblock;
 		MicroblockOperation microblockOperation = new MicroblockOperation(fakeWorld, injectionFactory, testPosition);
 
 		assertThat(microblockOperation.setBlock()).isTrue();
@@ -98,7 +98,7 @@ public class MicroblockTest {
 
 	@Test
 	public void testMultiMicroblock1() {
-		NovaLauncher launcher = new NovaLauncherTestFactory(MicroblockAPI.class, TestMicroblockMod.class).createLauncher();
+		NovaLauncher launcher = new NovaLauncherTestFactory(MicroblockPlugin.class, TestMicroblockMod.class).createLauncher();
 
 		/**
 		 * Microblock placement
@@ -106,7 +106,7 @@ public class MicroblockTest {
 		FakeWorld fakeWorld = new FakeWorld();
 		Vector3i testPosition = new Vector3i(5, 5, 5);
 
-		MicroblockAPI.MicroblockInjectFactory injectionFactory = (MicroblockAPI.MicroblockInjectFactory) TestMicroblockMod.multiMicroblock1;
+		MicroblockPlugin.MicroblockInjectFactory injectionFactory = (MicroblockPlugin.MicroblockInjectFactory) TestMicroblockMod.multiMicroblock1;
 		MicroblockOperation microblockOperation = new MicroblockOperation(fakeWorld, injectionFactory, testPosition, new Block.BlockPlaceEvent(null, null, null, null));
 
 		assertThat(microblockOperation.setBlock()).isTrue();

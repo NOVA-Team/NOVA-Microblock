@@ -19,12 +19,9 @@ public abstract class ComponentInjector<COMPONENT extends Component> implements 
 	 * @param container The container block
 	 * @return True if the injection was successful
 	 */
+	//container.add(component);
 	public boolean injectForward(COMPONENT component, Block contained, Block container) {
-		if (!container.has(component.getClass())) {
-			container.add(component);
-			return true;
-		}
-		return false;
+		return true;
 	}
 
 	/**
@@ -33,13 +30,10 @@ public abstract class ComponentInjector<COMPONENT extends Component> implements 
 	 * @param container The container block
 	 * @return True if the injection was successful
 	 */
+	//contained.add(component);
 	public boolean injectBackward(COMPONENT component, Block contained, Block container) {
-		if (!contained.has(component.getClass())) {
+		return true;
 
-			contained.add(component);
-			return true;
-		}
-		return false;
 	}
 
 	@Override

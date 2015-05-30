@@ -61,7 +61,7 @@ public class BlockContainer extends Block implements Stateful, Storable, PacketH
 	public void read(Packet packet) {
 		if (packet.getID() == 0) {
 			if (packet.readBoolean()) {
-				add(new MicroblockContainer(this));
+				getOrAdd(new MicroblockContainer(this));
 			}
 		}
 
@@ -81,7 +81,7 @@ public class BlockContainer extends Block implements Stateful, Storable, PacketH
 	@Override
 	public void load(Data data) {
 		if (data.containsKey("microblockContainer")) {
-			add(new MicroblockContainer(this));
+			getOrAdd(new MicroblockContainer(this));
 		}
 
 		Storable.super.load(data);

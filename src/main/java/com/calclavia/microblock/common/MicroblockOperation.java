@@ -1,7 +1,6 @@
 package com.calclavia.microblock.common;
 
-import com.calclavia.microblock.MicroblockAPI;
-import com.calclavia.microblock.injection.ComponentInjection;
+import com.calclavia.microblock.MicroblockPlugin;
 import com.calclavia.microblock.micro.Microblock;
 import com.calclavia.microblock.micro.MicroblockContainer;
 import com.calclavia.microblock.multi.Multiblock;
@@ -28,7 +27,7 @@ public class MicroblockOperation {
 
 	public final Set<Vector3i> handledPositions = new HashSet<>();
 	private final World world;
-	private final MicroblockAPI.MicroblockInjectFactory injectFactory;
+	private final MicroblockPlugin.MicroblockInjectFactory injectFactory;
 	private final Block newBlock;
 	private final Vector3i globalPos;
 	private final Optional<Vector3i> localPos;
@@ -42,7 +41,7 @@ public class MicroblockOperation {
 	 * @param globalPos The world position to handle wth block
 	 * @param evt The block place event
 	 */
-	public MicroblockOperation(World world, MicroblockAPI.MicroblockInjectFactory injectFactory, Vector3i globalPos, Block.BlockPlaceEvent evt) {
+	public MicroblockOperation(World world, MicroblockPlugin.MicroblockInjectFactory injectFactory, Vector3i globalPos, Block.BlockPlaceEvent evt) {
 		this.world = world;
 		this.injectFactory = injectFactory;
 		this.newBlock = injectFactory.containedFactory.makeBlock();
@@ -50,7 +49,7 @@ public class MicroblockOperation {
 		this.localPos = Optional.of(newBlock.get(Microblock.class).onPlace.apply(evt));
 	}
 
-	public MicroblockOperation(World world, MicroblockAPI.MicroblockInjectFactory injectFactory, Vector3i globalPos) {
+	public MicroblockOperation(World world, MicroblockPlugin.MicroblockInjectFactory injectFactory, Vector3i globalPos) {
 		this.world = world;
 		this.injectFactory = injectFactory;
 		this.newBlock = injectFactory.containedFactory.makeBlock();
@@ -135,7 +134,7 @@ public class MicroblockOperation {
 					if (!microblockContainer.put(localPos.get(), newBlock.get(Microblock.class))) {
 						fail = true;
 					} else {
-						MicroblockAPI.instance.componentInjection.injectForward(newBlock, microblockContainer.block);
+						MicroblockPlugin.instance.componentInjection.injectForward(newBlock, microblockContainer.block);
 					}
 					return handleFail();
 				}
