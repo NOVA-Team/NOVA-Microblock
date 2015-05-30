@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/NOVA-Team/Microblock-Plugin.svg?style=flat-square)](https://travis-ci.org/NOVAAPI/Microblock-Plugin)
-[![codecov.io](http://codecov.io/github/NOVA-Team/Microblock-Plugin/coverage.svg?style=flat-square)](http://codecov.io/github/NOVAAPI/Microblock-Plugin?branch=master)
+[![Build Status](https://travis-ci.org/NOVA-Team/Microblock-Plugin.svg?style=flat-square)](https://travis-ci.org/NOVA-Team/Microblock-Plugin)
+[![codecov.io](http://codecov.io/github/NOVA-Team/Microblock-Plugin/coverage.svg?style=flat-square)](http://codecov.io/github/NOVA-Team/Microblock-Plugin?branch=master)
 
 # Microblock Plugin
 Microblock Plugin is a NOVA Plugin that adds a microblock and multiblock system to NOVA. This API makes it easy to create microblocks and multiblocks.

@@ -6,7 +6,6 @@ import com.calclavia.microblock.core.multi.Multiblock;
 import nova.core.block.Block;
 import nova.core.block.BlockFactory;
 import nova.core.entity.Entity;
-import nova.core.game.Game;
 import nova.core.item.ItemBlock;
 import nova.core.network.NetworkTarget;
 import nova.core.util.Direction;
@@ -28,7 +27,19 @@ public class ItemBlockContainer extends ItemBlock {
 	}
 
 	@Override
+	public void onRightClick(Entity entity) {
+		if (NetworkTarget.Side.get().isServer()) {
+			//Do Raycast
+
+		}
+	}
+
+	@Override
 	public boolean onUse(Entity entity, World world, Vector3i position, Direction side, Vector3d hit) {
+		return placeContainer(entity, world, position, side, hit);
+	}
+
+	public boolean placeContainer(Entity entity, World world, Vector3i position, Direction side, Vector3d hit) {
 		if (NetworkTarget.Side.get().isServer()) {
 			Vector3i placePos = position.add(side.toVector());
 

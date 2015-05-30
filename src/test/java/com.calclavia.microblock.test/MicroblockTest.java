@@ -7,6 +7,7 @@ import com.calclavia.microblock.core.micro.Microblock;
 import com.calclavia.microblock.core.micro.MicroblockContainer;
 import com.calclavia.microblock.core.multi.MultiblockContainer;
 import nova.core.block.Block;
+import nova.core.util.transform.shape.Cuboid;
 import nova.core.util.transform.vector.Vector3i;
 import nova.internal.launch.NovaLauncher;
 import nova.testutils.FakeWorld;
@@ -15,7 +16,6 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,7 +40,7 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 	public void testVectorToID() {
 		MicroblockContainer microblockContainer = new MicroblockContainer(null);
 
-		forEachPos(Vector3i.zero, Vector3i.one.multiply(microblockContainer.subdivision), pos -> {
+		new Cuboid(Vector3i.zero, Vector3i.one.multiply(microblockContainer.subdivision)).forEach(pos -> {
 			int id = microblockContainer.posToID(pos);
 			assertThat(microblockContainer.idToPos(id)).isEqualTo(pos);
 		});
@@ -142,20 +142,13 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 		assertThat(microblockContainerA.map().size()).isEqualTo(sub * sub * sub);
 
 		Microblock sampleA = microblockContainerA.get(new Vector3i(0, 0, 0)).get();
-		forEachPos(Vector3i.zero, Vector3i.one.multiply(sub), pos -> assertThat(microblockContainerA.get(pos)).contains(sampleA));
+		new Cuboid(Vector3i.zero, Vector3i.one.multiply(sub)).forEach(pos -> assertThat(microblockContainerA.get(pos)).contains(sampleA));
 
 		//Check top part
 		MicroblockContainer microblockContainerB = blockB.get(MicroblockContainer.class);
 		Microblock sampleB = microblockContainerB.get(new Vector3i(0, 0, 0)).get();
 		assertThat(microblockContainerB.map().size()).isEqualTo(sub * sub / 2 * sub);
-		forEachPos(Vector3i.zero, new Vector3i(sub, sub / 2, sub), pos -> assertThat(microblockContainerB.get(pos)).contains(sampleB));
-		forEachPos(new Vector3i(sub, sub / 2, sub), Vector3i.one.multiply(sub), pos -> assertThat(microblockContainerB.get(pos)).isEmpty());
-	}
-
-	public void forEachPos(Vector3i min, Vector3i max, Consumer<Vector3i> consumer) {
-		for (int x = min.x; x < max.x; x++)
-			for (int y = min.y; y < max.y; y++)
-				for (int z = min.z; z < max.z; z++)
-					consumer.accept(new Vector3i(x, y, z));
+		new Cuboid(Vector3i.zero, new Vector3i(sub, sub / 2, sub)).forEach(pos -> assertThat(microblockContainerB.get(pos)).contains(sampleB));
+		new Cuboid(new Vector3i(sub, sub / 2, sub), Vector3i.one.multiply(sub)).forEach(pos -> assertThat(microblockContainerB.get(pos)).isEmpty());
 	}
 }
