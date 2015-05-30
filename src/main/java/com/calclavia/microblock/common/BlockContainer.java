@@ -5,7 +5,6 @@ import nova.core.block.Block;
 import nova.core.block.Stateful;
 import nova.core.component.Component;
 import nova.core.game.Game;
-import nova.core.network.NetworkTarget;
 import nova.core.network.Packet;
 import nova.core.network.PacketHandler;
 import nova.core.retention.Data;
@@ -25,10 +24,8 @@ public class BlockContainer extends Block implements Stateful, Storable, PacketH
 		this.id = id;
 
 		rightClickEvent.add(event -> {
-			if (NetworkTarget.Side.get().isServer()) {
-				System.out.println("--- " + this + " ---");
-				printComponents(components());
-			}
+			System.out.println("--- " + this + " ---");
+			printComponents(components());
 		});
 	}
 

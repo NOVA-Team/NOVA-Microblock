@@ -4,6 +4,7 @@ import com.calclavia.microblock.MicroblockPlugin;
 import com.calclavia.microblock.common.BlockComponent;
 import com.calclavia.microblock.common.BlockContainer;
 import nova.core.block.Block;
+import nova.core.component.transform.BlockTransform;
 import nova.core.game.Game;
 import nova.core.network.NetworkTarget;
 import nova.core.network.Packet;
@@ -17,6 +18,7 @@ import nova.core.util.transform.vector.Vector3i;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 
@@ -130,7 +132,15 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 	public void read(Packet packet) {
 		//Description Packet
 		if (packet.getID() == 0) {
+			//Reset microblocks
 			blockMap.clear();
+			//Reset container components
+
+			new HashSet<>(block.components())
+				.stream()
+				.filter(c -> !(c instanceof BlockTransform) && !(c instanceof MicroblockContainer))
+				.forEach(block::remove);
+
 			int size = packet.readInt();
 
 			for (int i = 0; i < size; i++) {
