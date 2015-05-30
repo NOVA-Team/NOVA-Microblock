@@ -23,14 +23,14 @@ public class BlockContainer extends Block implements Stateful, Storable, PacketH
 
 	public BlockContainer(String id) {
 		this.id = id;
-
+/*
 		//Debug
 		rightClickEvent.add(event -> {
 			if (NetworkTarget.Side.get().isServer()) {
 				System.out.println("--- " + this + " ---");
 				printComponents(components());
 			}
-		});
+		});*/
 	}
 
 	private void printComponents(Collection<Component> components) {
@@ -48,6 +48,7 @@ public class BlockContainer extends Block implements Stateful, Storable, PacketH
 						printComponents(microblock.block.components(), prefix + "::");
 					});
 			}
+
 		});
 	}
 
@@ -59,9 +60,7 @@ public class BlockContainer extends Block implements Stateful, Storable, PacketH
 
 	@Override
 	public void read(Packet packet) {
-		System.out.println("read");
 		if (packet.getID() == 0) {
-			new HashSet<>(components()).forEach(this::remove);
 
 			if (packet.readBoolean()) {
 				add(new MicroblockContainer(this));
@@ -73,7 +72,6 @@ public class BlockContainer extends Block implements Stateful, Storable, PacketH
 
 	@Override
 	public void write(Packet packet) {
-		System.out.println("write");
 		if (packet.getID() == 0) {
 			//Write the need to add components
 			packet.writeBoolean(has(MicroblockContainer.class));

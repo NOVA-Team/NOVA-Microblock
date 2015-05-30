@@ -115,8 +115,10 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 	}
 
 	//TODO: Create a custom ID for each microblock, send based on coordinates.
+	//TODO: Consider component syncer?
 	@Override
 	public void read(Packet packet) {
+		System.out.println(this + " read: " + packet.getID());
 		//Description Packet
 		if (packet.getID() == 0) {
 			blockMap.clear();
@@ -130,7 +132,8 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 				MicroblockAPI.MicroblockInjectFactory injectionFactory = MicroblockAPI.containedIDToFactory.get(microID);
 				Block microblock = injectionFactory.containedFactory.makeBlock();
 
-				new ComponentInjector().inject(microblock, block);
+				ComponentInjector.backInject(microblock, block);
+				ComponentInjector.inject(microblock, block);
 
 				if (microblock instanceof PacketHandler) {
 					((PacketHandler) microblock).read(packet);
@@ -143,6 +146,8 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 
 	@Override
 	public void write(Packet packet) {
+		System.out.println(this + " write: " + packet.getID());
+
 		//Description Packet
 		if (packet.getID() == 0) {
 			packet.writeInt(microblocks().size());

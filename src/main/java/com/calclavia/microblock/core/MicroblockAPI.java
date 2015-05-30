@@ -1,8 +1,10 @@
 package com.calclavia.microblock.core;
 
+import com.calclavia.microblock.core.common.BlockContainer;
 import com.calclavia.microblock.core.common.ComponentInjector;
 import com.calclavia.microblock.core.micro.Microblock;
 import com.calclavia.microblock.core.multi.Multiblock;
+import nova.core.block.Block;
 import nova.core.block.BlockFactory;
 import nova.core.block.BlockManager;
 import nova.core.event.EventBus;
@@ -43,10 +45,19 @@ public class MicroblockAPI implements Loadable {
 
 	public static class MicroblockInjectFactory extends BlockFactory {
 		public final BlockFactory containedFactory;
+		private final BlockContainer dummy;
 
 		public MicroblockInjectFactory(BlockFactory containedFactory) {
-			super(new ComponentInjector().construct(containedFactory));
+			super(args -> new BlockContainer("blockContainer-" + containedFactory.getID()));
 			this.containedFactory = containedFactory;
+			//Check the contained factory's dummy, and inject components.
+			dummy = new BlockContainer("blockContainer-" + containedFactory.getID());
+			ComponentInjector.inject(containedFactory.getDummy(), dummy);
+		}
+
+		@Override
+		public Block getDummy() {
+			return dummy;
 		}
 	}
 }

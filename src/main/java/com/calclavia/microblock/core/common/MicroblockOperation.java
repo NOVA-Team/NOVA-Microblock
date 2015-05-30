@@ -74,7 +74,7 @@ public class MicroblockOperation {
 			Block container = opContainer.get();
 
 			//Add transform component
-			newBlock.add(container.transform());
+			//newBlock.add(container.transform());
 
 			if (newBlock.has(Microblock.class)) {
 				assert localPos.isPresent();
@@ -125,6 +125,7 @@ public class MicroblockOperation {
 					);
 
 					newBlock.get(Microblock.class).position = localPos.get();
+					//TODO: Handle injection
 					return handleFail();
 				} else {
 					/**
@@ -133,7 +134,7 @@ public class MicroblockOperation {
 					if (!microblockContainer.put(localPos.get(), newBlock.get(Microblock.class))) {
 						fail = true;
 					}
-					System.out.println("MicroblockOperation:" + newBlock.get(Microblock.class));
+					ComponentInjector.inject(newBlock, microblockContainer.block);
 					return handleFail();
 				}
 			} else if (newBlock.has(Multiblock.class)) {
@@ -152,6 +153,7 @@ public class MicroblockOperation {
 						outerContainerBlock.getOrAdd(new MultiblockContainer(outerContainerBlock, newBlock));
 					}
 				);
+				//TODO: Handle injection
 				return handleFail();
 			}
 		}
