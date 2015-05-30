@@ -9,11 +9,13 @@ import nova.core.entity.Entity;
 import nova.core.item.ItemBlock;
 import nova.core.network.NetworkTarget;
 import nova.core.util.Direction;
+import nova.core.util.RayTracer;
 import nova.core.util.exception.NovaException;
 import nova.core.util.transform.vector.Vector3d;
 import nova.core.util.transform.vector.Vector3i;
 import nova.core.world.World;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -29,8 +31,10 @@ public class ItemBlockContainer extends ItemBlock {
 	@Override
 	public void onRightClick(Entity entity) {
 		if (NetworkTarget.Side.get().isServer()) {
-			//Do Raycast
-
+			//Do ray trace to find which block it hit
+			//TODO:
+			List<RayTracer.RayTraceBlockResult> rayTraceBlockResults = RayTracer.rayTraceBlock(entity, 7);
+			System.out.println(rayTraceBlockResults);
 		}
 	}
 

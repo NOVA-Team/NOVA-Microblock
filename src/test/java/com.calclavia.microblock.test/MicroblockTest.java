@@ -11,30 +11,18 @@ import nova.core.util.transform.shape.Cuboid;
 import nova.core.util.transform.vector.Vector3i;
 import nova.internal.launch.NovaLauncher;
 import nova.testutils.FakeWorld;
+import nova.wrappertests.NovaLauncherTest;
+import nova.wrappertests.NovaLauncherTestFactory;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Calclavia
  */
-public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
-	@Override
-	public Set<Class<?>> getTestModClasses() {
-		return new HashSet<>(Arrays.asList(MicroblockAPI.class, TestMicroblockMod.class));
-	}
-
-	@Override
-	public void doLaunchAssert(NovaLauncher launcher) {
-		assertThat(launcher.getModClasses())
-			.hasSize(2)
-			.containsValue(MicroblockAPI.class)
-			.containsValues(TestMicroblockMod.class);
-	}
+public class MicroblockTest {
 
 	@Test
 	public void testVectorToID() {
@@ -48,7 +36,7 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 
 	@Test
 	public void testMicroblockInjection() {
-		NovaLauncher launcher = createLauncher();
+		NovaLauncher launcher = new NovaLauncherTestFactory(MicroblockAPI.class, TestMicroblockMod.class).createLauncher();
 		//Microblock should be replaced with a container.
 		assertThat(TestMicroblockMod.singleMicroblock.makeBlock() instanceof BlockContainer).isTrue();
 
@@ -58,7 +46,7 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 
 	@Test
 	public void testMicroblockPlacement() {
-		NovaLauncher launcher = createLauncher();
+		NovaLauncher launcher = new NovaLauncherTestFactory(MicroblockAPI.class, TestMicroblockMod.class).createLauncher();
 
 		/**
 		 * Microblock placement
@@ -81,7 +69,7 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 
 	@Test
 	public void testMultiblockPlacement() {
-		NovaLauncher launcher = createLauncher();
+		NovaLauncher launcher = new NovaLauncherTestFactory(MicroblockAPI.class, TestMicroblockMod.class).createLauncher();
 
 		/**
 		 * Microblock placement
@@ -111,7 +99,7 @@ public class MicroblockTest extends nova.wrappertests.NovaLauncherTest {
 
 	@Test
 	public void testMultiMicroblock1() {
-		NovaLauncher launcher = createLauncher();
+		NovaLauncher launcher = new NovaLauncherTestFactory(MicroblockAPI.class, TestMicroblockMod.class).createLauncher();
 
 		/**
 		 * Microblock placement
