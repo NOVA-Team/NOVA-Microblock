@@ -1,4 +1,4 @@
-package com.calclavia.microblock.core.common;
+package com.calclavia.microblock.common;
 
 import nova.core.block.Block;
 import nova.core.component.Component;

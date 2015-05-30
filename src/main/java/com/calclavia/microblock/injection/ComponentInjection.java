@@ -1,9 +1,9 @@
-package com.calclavia.microblock.core.injection;
+package com.calclavia.microblock.injection;
 
-import com.calclavia.microblock.core.micro.Microblock;
-import com.calclavia.microblock.core.micro.MicroblockContainer;
-import com.calclavia.microblock.core.multi.Multiblock;
-import com.calclavia.microblock.core.multi.MultiblockContainer;
+import com.calclavia.microblock.micro.Microblock;
+import com.calclavia.microblock.micro.MicroblockContainer;
+import com.calclavia.microblock.multi.Multiblock;
+import com.calclavia.microblock.multi.MultiblockContainer;
 import nova.core.block.Block;
 import nova.core.util.Factory;
 import nova.core.util.Manager;
@@ -18,8 +18,6 @@ import java.util.function.Function;
  */
 public class ComponentInjection extends Manager<ComponentInjector, Factory<ComponentInjector>> {
 
-	private static final Class[] injectionBlacklist = { Multiblock.class, Microblock.class, MultiblockContainer.class, MicroblockContainer.class };
-
 	public ComponentInjection(Registry<Factory<ComponentInjector>> registry) {
 		super(registry);
 	}
@@ -29,11 +27,14 @@ public class ComponentInjection extends Manager<ComponentInjector, Factory<Compo
 	 * @param contained The contained
 	 * @param container The container
 	 */
-	public static void injectForward(Block contained, Block container) {
+	public void injectForward(Block contained, Block container) {
 		contained.components().stream()
-			.filter(component -> !Arrays.stream(injectionBlacklist).anyMatch(aClass -> aClass.isAssignableFrom(component.getClass())))
-			.filter(component -> !container.has(component.getClass()))
-			.forEach(container::add);
+			.forEach(component ->
+					registry
+						.stream()
+						.filter(factory -> factory.getDummy().componentType().equals(component.getClass()))
+						.forEach(factory -> factory.getDummy().injectForward(component, contained, container))
+			);
 
 		contained.onComponentAdded.add(event -> container.add(event.component));
 		contained.onComponentRemoved.add(event -> container.remove(event.component));
@@ -49,12 +50,15 @@ public class ComponentInjection extends Manager<ComponentInjector, Factory<Compo
 		container.neighborChangeEvent.add(contained.neighborChangeEvent::publish);
 	}
 
-	public static void injectBackward(Block contained, Block container) {
+	public void injectBackward(Block contained, Block container) {
 		//Inject the special components from the container to the contained (such as BlockTransform).
 		container.components().stream()
-			.filter(component -> !Arrays.stream(injectionBlacklist).anyMatch(aClass -> aClass.isAssignableFrom(component.getClass())))
-			.filter(component -> !contained.has(component.getClass()))
-			.forEach(contained::add);
+			.forEach(component ->
+					registry
+						.stream()
+						.filter(factory -> factory.getDummy().componentType().equals(component.getClass()))
+						.forEach(factory -> factory.getDummy().injectBackward(component, contained, container))
+			);
 	}
 
 	@Override

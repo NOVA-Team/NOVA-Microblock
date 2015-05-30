@@ -1,4 +1,4 @@
-package com.calclavia.microblock.core.injection;
+package com.calclavia.microblock.injection;
 
 import se.jbee.inject.bind.BinderModule;
 import se.jbee.inject.util.Scoped;

@@ -1,8 +1,8 @@
-package com.calclavia.microblock.core.micro;
+package com.calclavia.microblock.micro;
 
-import com.calclavia.microblock.core.MicroblockAPI;
-import com.calclavia.microblock.core.common.BlockComponent;
-import com.calclavia.microblock.core.injection.ComponentInjection;
+import com.calclavia.microblock.MicroblockAPI;
+import com.calclavia.microblock.common.BlockComponent;
+import com.calclavia.microblock.injection.ComponentInjection;
 import nova.core.block.Block;
 import nova.core.network.Packet;
 import nova.core.network.PacketHandler;
@@ -134,8 +134,8 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 				MicroblockAPI.MicroblockInjectFactory injectionFactory = MicroblockAPI.containedIDToFactory.get(microID);
 				Block microblock = injectionFactory.containedFactory.makeBlock();
 
-				ComponentInjection.injectBackward(microblock, block);
-				ComponentInjection.injectForward(microblock, block);
+				MicroblockAPI.instance.componentInjection.injectBackward(microblock, block);
+				MicroblockAPI.instance.componentInjection.injectForward(microblock, block);
 
 				if (microblock instanceof PacketHandler) {
 					((PacketHandler) microblock).read(packet);
@@ -171,8 +171,8 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 			Block savedBlock = (Block) Data.unserialize((Data) v);
 			Microblock microblock = savedBlock.get(Microblock.class);
 			put(idToPos(Integer.parseInt(k)), microblock);
-			ComponentInjection.injectBackward(savedBlock, block);
-			ComponentInjection.injectForward(savedBlock, block);
+			MicroblockAPI.instance.componentInjection.injectBackward(savedBlock, block);
+			MicroblockAPI.instance.componentInjection.injectForward(savedBlock, block);
 		});
 	}
 

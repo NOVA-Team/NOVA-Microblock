@@ -1,7 +1,7 @@
 package com.calclavia.microblock.test;
 
-import com.calclavia.microblock.core.micro.Microblock;
-import com.calclavia.microblock.core.multi.Multiblock;
+import com.calclavia.microblock.micro.Microblock;
+import com.calclavia.microblock.multi.Multiblock;
 import nova.core.block.BlockFactory;
 import nova.core.component.misc.Collider;
 import nova.core.game.Game;

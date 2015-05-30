@@ -1,6 +1,6 @@
-package com.calclavia.microblock.core.micro;
+package com.calclavia.microblock.micro;
 
-import com.calclavia.microblock.core.common.BlockComponent;
+import com.calclavia.microblock.common.BlockComponent;
 import nova.core.block.Block;
 import nova.core.util.transform.vector.Vector3i;
 

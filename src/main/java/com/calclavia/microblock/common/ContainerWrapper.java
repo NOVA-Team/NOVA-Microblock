@@ -1,4 +1,4 @@
-package com.calclavia.microblock.core.common;
+package com.calclavia.microblock.common;
 
 import nova.internal.dummy.Wrapper;
 

@@ -1,16 +1,14 @@
-package com.calclavia.microblock.core.multi;
+package com.calclavia.microblock.multi;
 
-import com.calclavia.microblock.core.common.BlockComponent;
+import com.calclavia.microblock.common.BlockComponent;
 import nova.core.block.Block;
 import nova.core.component.Require;
 import nova.core.component.misc.Collider;
-import nova.core.entity.Entity;
 import nova.core.util.math.MathUtil;
 import nova.core.util.transform.shape.Cuboid;
 import nova.core.util.transform.vector.Vector3d;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 

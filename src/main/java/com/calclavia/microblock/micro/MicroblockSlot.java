@@ -1,4 +1,4 @@
-package com.calclavia.microblock.core.micro;
+package com.calclavia.microblock.micro;
 
 /**
  * All the types of Microblock slots

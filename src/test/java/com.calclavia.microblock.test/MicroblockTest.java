@@ -1,17 +1,16 @@
 package com.calclavia.microblock.test;
 
-import com.calclavia.microblock.core.MicroblockAPI;
-import com.calclavia.microblock.core.common.BlockContainer;
-import com.calclavia.microblock.core.common.MicroblockOperation;
-import com.calclavia.microblock.core.micro.Microblock;
-import com.calclavia.microblock.core.micro.MicroblockContainer;
-import com.calclavia.microblock.core.multi.MultiblockContainer;
+import com.calclavia.microblock.MicroblockAPI;
+import com.calclavia.microblock.common.BlockContainer;
+import com.calclavia.microblock.common.MicroblockOperation;
+import com.calclavia.microblock.micro.Microblock;
+import com.calclavia.microblock.micro.MicroblockContainer;
+import com.calclavia.microblock.multi.MultiblockContainer;
 import nova.core.block.Block;
 import nova.core.util.transform.shape.Cuboid;
 import nova.core.util.transform.vector.Vector3i;
 import nova.internal.launch.NovaLauncher;
 import nova.testutils.FakeWorld;
-import nova.wrappertests.NovaLauncherTest;
 import nova.wrappertests.NovaLauncherTestFactory;
 import org.junit.Test;
 

@@ -1,10 +1,11 @@
-package com.calclavia.microblock.core;
+package com.calclavia.microblock;
 
-import com.calclavia.microblock.core.common.BlockContainer;
-import com.calclavia.microblock.core.injection.ComponentInjection;
-import com.calclavia.microblock.core.injection.ComponentInjectionModule;
-import com.calclavia.microblock.core.micro.Microblock;
-import com.calclavia.microblock.core.multi.Multiblock;
+import com.calclavia.microblock.common.BlockContainer;
+import com.calclavia.microblock.injection.ComponentInjection;
+import com.calclavia.microblock.injection.ComponentInjectionModule;
+import com.calclavia.microblock.injection.prefab.ColliderInjector;
+import com.calclavia.microblock.micro.Microblock;
+import com.calclavia.microblock.multi.Multiblock;
 import nova.core.block.Block;
 import nova.core.block.BlockFactory;
 import nova.core.block.BlockManager;
@@ -26,9 +27,9 @@ public class MicroblockAPI implements Loadable {
 	public static MicroblockAPI instance;
 	public static Map<String, MicroblockInjectFactory> containedIDToFactory = new HashMap<>();
 	public static Map<BlockFactory, MicroblockInjectFactory> containedFactoryToFactory = new HashMap<>();
-	public final ComponentInjectionModule componentInjection;
+	public final ComponentInjection componentInjection;
 
-	public MicroblockAPI(ComponentInjectionModule componentInjection) {
+	public MicroblockAPI(ComponentInjection componentInjection) {
 		this.componentInjection = componentInjection;
 		instance = this;
 	}
@@ -37,6 +38,8 @@ public class MicroblockAPI implements Loadable {
 	public void preInit() {
 		//Replace block registration by sneakily providing our own way to put container blocks instead of the actual block.
 		Game.instance.blockManager.blockRegisteredListeners.add(this::blockRegisterEvent, EventBus.PRIORITY_HIGH);
+
+		componentInjection.register(ColliderInjector.class);
 	}
 
 	private void blockRegisterEvent(BlockManager.BlockRegisteredEvent evt) {
@@ -60,7 +63,7 @@ public class MicroblockAPI implements Loadable {
 			this.containedFactory = containedFactory;
 			//Check the contained factory's dummy, and injectForward components.
 			dummy = new BlockContainer("blockContainer-" + containedFactory.getID());
-			ComponentInjection.injectForward(containedFactory.getDummy(), dummy);
+			MicroblockAPI.instance.componentInjection.injectForward(containedFactory.getDummy(), dummy);
 		}
 
 		@Override

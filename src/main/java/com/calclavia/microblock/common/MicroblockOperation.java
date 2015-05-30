@@ -1,11 +1,11 @@
-package com.calclavia.microblock.core.common;
+package com.calclavia.microblock.common;
 
-import com.calclavia.microblock.core.MicroblockAPI;
-import com.calclavia.microblock.core.injection.ComponentInjection;
-import com.calclavia.microblock.core.micro.Microblock;
-import com.calclavia.microblock.core.micro.MicroblockContainer;
-import com.calclavia.microblock.core.multi.Multiblock;
-import com.calclavia.microblock.core.multi.MultiblockContainer;
+import com.calclavia.microblock.MicroblockAPI;
+import com.calclavia.microblock.injection.ComponentInjection;
+import com.calclavia.microblock.micro.Microblock;
+import com.calclavia.microblock.micro.MicroblockContainer;
+import com.calclavia.microblock.multi.Multiblock;
+import com.calclavia.microblock.multi.MultiblockContainer;
 import nova.core.block.Block;
 import nova.core.game.Game;
 import nova.core.network.NetworkTarget;
@@ -135,7 +135,7 @@ public class MicroblockOperation {
 					if (!microblockContainer.put(localPos.get(), newBlock.get(Microblock.class))) {
 						fail = true;
 					} else {
-						ComponentInjection.injectForward(newBlock, microblockContainer.block);
+						MicroblockAPI.instance.componentInjection.injectForward(newBlock, microblockContainer.block);
 					}
 					return handleFail();
 				}
