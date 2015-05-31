@@ -32,8 +32,8 @@ public class ItemBlockContainer extends ItemBlock {
 			evt -> {
 				if (NetworkTarget.Side.get().isServer()) {
 					//Do ray trace to find which block it hit
-					//TODO: Check server ray trace inaccurancy?
-					Optional<RayTracer.RayTraceBlockResult> hit = RayTracer.rayTraceBlock(evt.entity, 10).stream().findFirst();
+					//TODO: Check server ray trace inaccuracy?
+					Optional<RayTracer.RayTraceBlockResult> hit = new RayTracer(evt.entity).setDistance(10).rayTraceBlocks(evt.entity.world()).findFirst();
 					if (hit.isPresent()) {
 						RayTracer.RayTraceBlockResult result = hit.get();
 						//TODO: WHy shift one block?

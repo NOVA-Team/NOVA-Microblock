@@ -31,7 +31,11 @@ public class ColliderInjector extends DefaultInjector<Collider> {
 					//Do ray trace to see which microblock is being looked at.
 					if (NetworkTarget.Side.get().isClient()) {
 						Entity player = Game.instance().clientManager().getPlayer();
-						Optional<RayTracer.RayTraceBlockResult> result = RayTracer.rayTraceBlock(player, 7).stream().findFirst();
+
+						Optional<RayTracer.RayTraceBlockResult> result = new RayTracer(player)
+							.setDistance(7)
+							.rayTraceBlocks(player.world())
+							.findFirst();
 
 						if (result.isPresent()) {
 							return result.get().hitCuboid.subtract(result.get().block.position());
