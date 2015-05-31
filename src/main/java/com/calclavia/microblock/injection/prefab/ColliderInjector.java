@@ -1,5 +1,6 @@
 package com.calclavia.microblock.injection.prefab;
 
+import com.calclavia.microblock.micro.MicroblockContainer;
 import nova.core.block.Block;
 import nova.core.component.misc.Collider;
 import nova.core.entity.Entity;
@@ -8,6 +9,7 @@ import nova.core.network.NetworkTarget;
 import nova.core.util.RayTracer;
 import nova.core.util.transform.shape.Cuboid;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -34,12 +36,10 @@ public class ColliderInjector extends DefaultInjector<Collider> {
 
 						Optional<RayTracer.RayTraceBlockResult> result = new RayTracer(player)
 							.setDistance(7)
-							.rayTraceBlocks(player.world())
+							.rayTraceBlocks(Collections.singleton(container.get(MicroblockContainer.class).block))
 							.findFirst();
 
-						if (result.isPresent()) {
-							return result.get().hitCuboid.subtract(result.get().block.position());
-						}
+						return result.map(res -> res.hitCuboid.subtract(container.transform().position())).orElseGet(() -> Cuboid.zero);
 					}
 
 					return boundingBox.get();
