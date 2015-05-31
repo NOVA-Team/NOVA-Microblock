@@ -32,19 +32,19 @@ public class ItemBlockContainer extends ItemBlock {
 			evt -> {
 				if (NetworkTarget.Side.get().isServer()) {
 					//Do ray trace to find which block it hit
-					//TODO: Check server ray trace inaccuracy?
-					Optional<RayTracer.RayTraceBlockResult> hit = new RayTracer(evt.entity).setDistance(10).rayTraceBlocks(evt.entity.world()).findFirst();
+					RayTracer rayTracer = new RayTracer(evt.entity).setDistance(10);
+					System.out.println("origin: " + rayTracer.ray.dir);
+					Optional<RayTracer.RayTraceBlockResult> hit = rayTracer.rayTraceBlocks(evt.entity.world()).findFirst();
 					if (hit.isPresent()) {
 						RayTracer.RayTraceBlockResult result = hit.get();
-						//TODO: WHy shift one block?
-						Vector3i placePos = result.block.position().add(result.side.toVector()).subtract(new Vector3i(0, 1, 0));
+						Vector3i placePos = result.block.position().add(result.side.toVector());
 						Optional<Block> opBlock = evt.entity.world().getBlock(placePos);
 						System.out.println(placePos);
 						opBlock.ifPresent(
 							block ->
 							{
 								if (block.has(MicroblockContainer.class) || block.has(MultiblockContainer.class)) {
-									placeContainer(evt.entity, evt.entity.world(), result.block.position().subtract(new Vector3i(0, 1, 0)), result.side, result.hit.subtract(result.block.position().toDouble()));
+									placeContainer(evt.entity, evt.entity.world(), result.block.position(), result.side, result.hit.subtract(result.block.position().toDouble()));
 								}
 							}
 						);
