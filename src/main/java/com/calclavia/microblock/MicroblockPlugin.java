@@ -48,7 +48,6 @@ public class MicroblockPlugin implements Loadable {
 		componentInjection.register(args -> new RendererInjector<>(DynamicRenderer.class));
 		componentInjection.register(args -> new RendererInjector<>(ItemRenderer.class));
 		componentInjection.register(args -> new RendererInjector<>(StaticRenderer.class));
-		componentInjection.register(args -> new RendererInjector<>(StaticBlockRenderer.class));
 		componentInjection.register(args -> new CopyInjector<>(BlockTransform.class));
 		componentInjection.register(args -> new CopyInjector<>(Category.class));
 

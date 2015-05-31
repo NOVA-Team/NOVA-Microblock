@@ -46,7 +46,7 @@ public class MicroblockOperation {
 		this.injectFactory = injectFactory;
 		this.newBlock = injectFactory.containedFactory.makeBlock();
 		this.globalPos = globalPos;
-		this.localPos = Optional.of(newBlock.get(Microblock.class).onPlace.apply(evt));
+		this.localPos = newBlock.get(Microblock.class).onPlace.apply(evt);
 	}
 
 	public MicroblockOperation(World world, MicroblockPlugin.MicroblockInjectFactory injectFactory, Vector3i globalPos) {
@@ -104,7 +104,7 @@ public class MicroblockOperation {
 							//Create a new multiblock inner container that lives inside the microblock structure.
 							BlockContainer innerContainer = new BlockContainer("blockContainer");
 							innerContainer.add(new MultiblockContainer(innerContainer, newBlock));
-							innerContainer.add(new Microblock(innerContainer, blockPlaceEvent -> localPos.get()));
+							innerContainer.add(new Microblock(innerContainer)).setOnPlace(blockPlaceEvent -> localPos);
 
 							//Add transform component
 							innerContainer.add(outerContainerBlock.transform());

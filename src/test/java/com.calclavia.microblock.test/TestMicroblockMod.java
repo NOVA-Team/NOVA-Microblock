@@ -12,6 +12,8 @@ import nova.core.util.transform.vector.Vector3d;
 import nova.core.util.transform.vector.Vector3i;
 import nova.testutils.FakeBlock;
 
+import java.util.Optional;
+
 /**
  * @author Calclavia
  */
@@ -32,7 +34,7 @@ public class TestMicroblockMod implements Loadable {
 		Game.instance.logger.info("Preinit on TestMicroblockMod");
 		singleMicroblock = Game.instance.blockManager.register(args -> {
 			FakeBlock fakeBlock = new FakeBlock(singleMicroblockID);
-			fakeBlock.add(new Microblock(fakeBlock, blockPlaceEvent -> new Vector3i(0, 0, 0)));
+			fakeBlock.add(new Microblock(fakeBlock)).setOnPlace(blockPlaceEvent -> Optional.of(new Vector3i(0, 0, 0)));
 			return fakeBlock;
 		});
 
@@ -46,7 +48,7 @@ public class TestMicroblockMod implements Loadable {
 		multiMicroblock1 = Game.instance.blockManager.register(args -> {
 			FakeBlock fakeBlock = new FakeBlock(multiMicroblockID);
 			fakeBlock.add(new Multiblock(fakeBlock));
-			fakeBlock.add(new Microblock(fakeBlock, blockPlaceEvent -> Vector3i.zero));
+			fakeBlock.add(new Microblock(fakeBlock)).setOnPlace(blockPlaceEvent -> Optional.of(Vector3i.zero));
 			fakeBlock.add(new Collider()).setBoundingBox(new Cuboid(Vector3d.zero, new Vector3d(1, 1.5, 1)));
 			return fakeBlock;
 		});

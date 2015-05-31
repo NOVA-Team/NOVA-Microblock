@@ -19,15 +19,19 @@ public class RendererInjector<COMPONENT extends Renderer> extends DefaultInjecto
 	public boolean injectForward(COMPONENT component, Block contained, Block container) {
 		Renderer renderer = null;
 
-		boolean hadRenderer = container.has(DynamicRenderer.class) || container.has(StaticRenderer.class) || container.has(ItemRenderer.class);
+		boolean hadRenderer = false;
 
 		if (component instanceof DynamicRenderer) {
+			hadRenderer = container.has(DynamicRenderer.class);
 			renderer = container.getOrAdd(new DynamicRenderer(container));
 		} else if (component instanceof StaticBlockRenderer) {
+			hadRenderer = container.has(StaticBlockRenderer.class);
 			renderer = container.getOrAdd(new StaticBlockRenderer(container));
 		} else if (component instanceof StaticRenderer) {
+			hadRenderer = container.has(StaticRenderer.class);
 			renderer = container.getOrAdd(new StaticRenderer(container));
 		} else if (component instanceof ItemRenderer) {
+			hadRenderer = container.has(ItemRenderer.class);
 			renderer = container.getOrAdd(new ItemRenderer(container));
 		}
 
