@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * A component added to microblocks
@@ -65,17 +66,15 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 		return blockMap.values();
 	}
 
+	public Stream<Microblock> stream() {
+		return blockMap.values().stream();
+	}
+
 	/**
 	 * Puts a microblock into this container.
 	 */
 	public boolean put(Vector3i localPos, Microblock microblock) {
-		assert new Cuboid(0, 0, 0, subdivision, subdivision, subdivision).intersects(localPos);
-
-		if (!has(localPos)) {
-			microblock.containers.add(this);
-			microblock.position = localPos;
-			blockMap.put(localPos, microblock);
-
+		if (doPut(localPos, microblock)) {
 			//Invoke load event
 			microblock.block.loadEvent.publish(new Stateful.LoadEvent());
 
@@ -87,6 +86,20 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 			if (NetworkTarget.Side.get().isServer()) {
 				Game.instance().networkManager().sync((BlockContainer) block);
 			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	protected boolean doPut(Vector3i localPos, Microblock microblock) {
+		assert new Cuboid(0, 0, 0, subdivision, subdivision, subdivision).intersects(localPos);
+
+		if (!has(localPos)) {
+			microblock.containers.add(this);
+			microblock.position = localPos;
+			blockMap.put(localPos, microblock);
 			return true;
 		}
 
@@ -181,7 +194,7 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 					((PacketHandler) microblock).read(packet);
 				}
 
-				put(microPos, microblock.get(Microblock.class));
+				doPut(microPos, microblock.get(Microblock.class));
 			}
 		}
 	}
@@ -210,7 +223,8 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 		((Data) data.get("microblockContainer")).forEach((k, v) -> {
 			Block savedBlock = (Block) Data.unserialize((Data) v);
 			Microblock microblock = savedBlock.get(Microblock.class);
-			put(idToPos(Integer.parseInt(k)), microblock);
+			doPut(idToPos(Integer.parseInt(k)), microblock);
+			//TODO: Call awake event on microblocks
 			MicroblockPlugin.instance.componentInjection.injectBackward(savedBlock, block);
 			MicroblockPlugin.instance.componentInjection.injectForward(savedBlock, block);
 		});

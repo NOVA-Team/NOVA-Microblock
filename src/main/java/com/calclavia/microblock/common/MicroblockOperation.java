@@ -131,6 +131,7 @@ public class MicroblockOperation {
 					/**
 					 * Build microblocks without multiblocks
 					 */
+					//TODO: cannot invoke events without transform. Messy.
 					if (!microblockContainer.put(localPos.get(), newBlock.get(Microblock.class))) {
 						fail = true;
 					} else {

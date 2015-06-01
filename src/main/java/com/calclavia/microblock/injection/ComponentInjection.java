@@ -21,6 +21,8 @@ public class ComponentInjection extends Manager<ComponentInjector, Factory<Compo
 	}
 
 	/**
+	 * Injection should occur AFTER the contained block is placed.
+	 *
 	 * Marks a block and injects from the block to the block (and all future components)
 	 * @param contained The contained
 	 * @param container The container
