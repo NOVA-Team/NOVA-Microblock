@@ -1,6 +1,7 @@
-package com.calclavia.microblock.common;
+package com.calclavia.microblock.operation;
 
 import com.calclavia.microblock.MicroblockPlugin;
+import com.calclavia.microblock.common.BlockContainer;
 import com.calclavia.microblock.micro.Microblock;
 import com.calclavia.microblock.micro.MicroblockContainer;
 import com.calclavia.microblock.multi.Multiblock;
@@ -23,16 +24,12 @@ import java.util.stream.Collectors;
  * Handles mciroblock set operations.
  * @author Calclavia
  */
-public class MicroblockOperation {
-
+public class ContainerPlace extends ContainerOperation {
+	//Positions that the operation handled.
 	public final Set<Vector3i> handledPositions = new HashSet<>();
-	private final World world;
 	private final MicroblockPlugin.MicroblockInjectFactory injectFactory;
 	private final Block newBlock;
-	private final Vector3i globalPos;
 	private final Optional<Vector3i> localPos;
-	//Positions that the operation handled.
-	public boolean fail = false;
 
 	/**
 	 * Create a microblock operation handler
@@ -41,29 +38,23 @@ public class MicroblockOperation {
 	 * @param globalPos The world position to handle wth block
 	 * @param evt The block place event
 	 */
-	public MicroblockOperation(World world, MicroblockPlugin.MicroblockInjectFactory injectFactory, Vector3i globalPos, Block.BlockPlaceEvent evt) {
-		this.world = world;
+	public ContainerPlace(World world, MicroblockPlugin.MicroblockInjectFactory injectFactory, Vector3i globalPos, Block.BlockPlaceEvent evt) {
+		super(world, globalPos);
 		this.injectFactory = injectFactory;
 		this.newBlock = injectFactory.containedFactory.makeBlock();
-		this.globalPos = globalPos;
 		this.localPos = newBlock.get(Microblock.class).onPlace.apply(evt);
 	}
 
-	public MicroblockOperation(World world, MicroblockPlugin.MicroblockInjectFactory injectFactory, Vector3i globalPos) {
-		this.world = world;
+	public ContainerPlace(World world, MicroblockPlugin.MicroblockInjectFactory injectFactory, Vector3i globalPos) {
+		super(world, globalPos);
 		this.injectFactory = injectFactory;
 		this.newBlock = injectFactory.containedFactory.makeBlock();
-		this.globalPos = globalPos;
 		this.localPos = Optional.empty();
 	}
 
 	//TODO: What happens when we try to set it to the void? Fail/remove all the blocks.
-
-	/**
-	 * Sets a block to be either a microblock or a multiblock, or both.
-	 * @return True if the block was successfully set
-	 */
-	public boolean setBlock() {
+	@Override
+	public boolean operate() {
 		if (NetworkTarget.Side.get().isClient()) {
 			return true;
 		}

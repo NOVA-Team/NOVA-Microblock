@@ -5,6 +5,7 @@ import com.calclavia.microblock.micro.Microblock;
 import com.calclavia.microblock.micro.MicroblockContainer;
 import com.calclavia.microblock.multi.Multiblock;
 import com.calclavia.microblock.multi.MultiblockContainer;
+import com.calclavia.microblock.operation.ContainerPlace;
 import nova.core.block.Block;
 import nova.core.block.BlockFactory;
 import nova.core.entity.Entity;
@@ -68,11 +69,11 @@ public class ItemBlockContainer extends ItemBlock {
 				if (dummy.has(Microblock.class)) {
 					//Ask the microblock about how it would like to be placed.
 					Block.BlockPlaceEvent evt = new Block.BlockPlaceEvent(entity, side, hit, this);
-					boolean b = new MicroblockOperation(world, injectFactory, placePos, evt).setBlock();
+					boolean b = new ContainerPlace(world, injectFactory, placePos, evt).operate();
 					System.out.println("Attempt to place microblock: " + b);
 					return b;
 				} else if (dummy.has(Multiblock.class)) {
-					return new MicroblockOperation(world, injectFactory, placePos).setBlock();
+					return new ContainerPlace(world, injectFactory, placePos).operate();
 				} else {
 					throw new NovaException("Invalid blockFactory contained in ItemBlockContainer: " + containedFactory);
 				}

@@ -2,7 +2,7 @@ package com.calclavia.microblock.test;
 
 import com.calclavia.microblock.MicroblockPlugin;
 import com.calclavia.microblock.common.BlockContainer;
-import com.calclavia.microblock.common.MicroblockOperation;
+import com.calclavia.microblock.operation.ContainerPlace;
 import com.calclavia.microblock.micro.Microblock;
 import com.calclavia.microblock.micro.MicroblockContainer;
 import com.calclavia.microblock.multi.MultiblockContainer;
@@ -54,9 +54,9 @@ public class MicroblockTest {
 		Vector3i testPosition = new Vector3i(5, 5, 5);
 
 		MicroblockPlugin.MicroblockInjectFactory injectionFactory = (MicroblockPlugin.MicroblockInjectFactory) TestMicroblockMod.singleMicroblock;
-		MicroblockOperation microblockOperation = new MicroblockOperation(fakeWorld, injectionFactory, testPosition, new Block.BlockPlaceEvent(null, null, null, null));
+		ContainerPlace microblockPlace = new ContainerPlace(fakeWorld, injectionFactory, testPosition, new Block.BlockPlaceEvent(null, null, null, null));
 
-		assertThat(microblockOperation.setBlock()).isTrue();
+		assertThat(microblockPlace.operate()).isTrue();
 
 		Block block = fakeWorld.getBlock(testPosition).get();
 		assertThat(block.getID()).contains(TestMicroblockMod.containerID);
@@ -77,9 +77,9 @@ public class MicroblockTest {
 		Vector3i testPosition = new Vector3i(5, 5, 5);
 
 		MicroblockPlugin.MicroblockInjectFactory injectionFactory = (MicroblockPlugin.MicroblockInjectFactory) TestMicroblockMod.singleMultiblock;
-		MicroblockOperation microblockOperation = new MicroblockOperation(fakeWorld, injectionFactory, testPosition);
+		ContainerPlace microblockPlace = new ContainerPlace(fakeWorld, injectionFactory, testPosition);
 
-		assertThat(microblockOperation.setBlock()).isTrue();
+		assertThat(microblockPlace.operate()).isTrue();
 
 		Block blockA = fakeWorld.getBlock(testPosition).get();
 		Block blockB = fakeWorld.getBlock(testPosition.add(Vector3i.yAxis)).get();
@@ -107,9 +107,9 @@ public class MicroblockTest {
 		Vector3i testPosition = new Vector3i(5, 5, 5);
 
 		MicroblockPlugin.MicroblockInjectFactory injectionFactory = (MicroblockPlugin.MicroblockInjectFactory) TestMicroblockMod.multiMicroblock1;
-		MicroblockOperation microblockOperation = new MicroblockOperation(fakeWorld, injectionFactory, testPosition, new Block.BlockPlaceEvent(null, null, null, null));
+		ContainerPlace microblockPlace = new ContainerPlace(fakeWorld, injectionFactory, testPosition, new Block.BlockPlaceEvent(null, null, null, null));
 
-		assertThat(microblockOperation.setBlock()).isTrue();
+		assertThat(microblockPlace.operate()).isTrue();
 
 		Block blockA = fakeWorld.getBlock(testPosition).get();
 		Block blockB = fakeWorld.getBlock(testPosition.add(Vector3i.yAxis)).get();

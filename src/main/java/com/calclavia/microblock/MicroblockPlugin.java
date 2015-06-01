@@ -11,6 +11,7 @@ import com.calclavia.microblock.injection.prefab.CopyInjector;
 import com.calclavia.microblock.injection.prefab.ForwardInjector;
 import com.calclavia.microblock.micro.Microblock;
 import com.calclavia.microblock.multi.Multiblock;
+import com.calclavia.microblock.operation.ContainerRemove;
 import nova.core.block.Block;
 import nova.core.block.BlockFactory;
 import nova.core.block.BlockManager;
@@ -20,13 +21,19 @@ import nova.core.component.renderer.DynamicRenderer;
 import nova.core.component.renderer.ItemRenderer;
 import nova.core.component.renderer.StaticRenderer;
 import nova.core.component.transform.BlockTransform;
+import nova.core.entity.Entity;
+import nova.core.event.Event;
 import nova.core.event.EventBus;
+import nova.core.event.GlobalEvents;
 import nova.core.game.Game;
 import nova.core.loader.Loadable;
 import nova.core.loader.NovaMod;
+import nova.core.util.RayTracer;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Make sure your mod loads AFTER this mod, if your mod uses microblocks or multiblock.
@@ -53,6 +60,9 @@ public class MicroblockPlugin implements Loadable {
 		componentInjection.register(args -> new ForwardInjector<>(StaticRenderer.class, ContainerStaticRenderer::new));
 		componentInjection.register(args -> new CopyInjector<>(BlockTransform.class));
 		componentInjection.register(args -> new CopyInjector<>(Category.class));
+
+		//Break microblock hold
+		Game.instance().eventManager().playerInteract.add(ContainerRemove::interactEventHandler);
 
 		//Replace block registration by sneakily providing our own way to put container blocks instead of the actual block.
 		Game.instance().blockManager().blockRegisteredListeners.add(this::blockRegisterEvent, EventBus.PRIORITY_HIGH);
