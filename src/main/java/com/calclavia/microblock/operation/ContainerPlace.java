@@ -200,7 +200,7 @@ public class ContainerPlace extends ContainerOperation {
 
 		if (opCheckBlock.isPresent()) {
 			Block checkBlock = opCheckBlock.get();
-			if (checkBlock.sameType(Game.blockManager().getAirBlockFactory())) {
+			if (checkBlock.sameType(Game.blocks().getAirBlockFactory())) {
 				//It's air, so let's create a container
 				world.setBlock(pos, injectFactory);
 				handledPositions.add(pos);

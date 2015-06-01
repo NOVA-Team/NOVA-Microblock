@@ -21,19 +21,13 @@ import nova.core.component.renderer.DynamicRenderer;
 import nova.core.component.renderer.ItemRenderer;
 import nova.core.component.renderer.StaticRenderer;
 import nova.core.component.transform.BlockTransform;
-import nova.core.entity.Entity;
-import nova.core.event.Event;
 import nova.core.event.EventBus;
-import nova.core.event.GlobalEvents;
 import nova.core.game.Game;
 import nova.core.loader.Loadable;
 import nova.core.loader.NovaMod;
-import nova.core.util.RayTracer;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Make sure your mod loads AFTER this mod, if your mod uses microblocks or multiblock.
@@ -62,10 +56,10 @@ public class MicroblockPlugin implements Loadable {
 		componentInjection.register(args -> new CopyInjector<>(Category.class));
 
 		//Break microblock hold
-		Game.eventManager().playerInteract.add(ContainerRemove::interactEventHandler);
+		Game.events().playerInteract.add(ContainerRemove::interactEventHandler);
 
 		//Replace block registration by sneakily providing our own way to put container blocks instead of the actual block.
-		Game.blockManager().blockRegisteredListeners.add(this::blockRegisterEvent, EventBus.PRIORITY_HIGH);
+		Game.blocks().blockRegisteredListeners.add(this::blockRegisterEvent, EventBus.PRIORITY_HIGH);
 	}
 
 	private void blockRegisterEvent(BlockManager.BlockRegisteredEvent evt) {

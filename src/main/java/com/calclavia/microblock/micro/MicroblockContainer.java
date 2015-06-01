@@ -100,7 +100,7 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 				.forEach(m -> m.microblockChangeEvent.publish(new Block.NeighborChangeEvent(Optional.of(localPos))));
 
 			if (NetworkTarget.Side.get().isServer()) {
-				Game.networkManager().sync((BlockContainer) block);
+				Game.network().sync((BlockContainer) block);
 			}
 
 			return true;

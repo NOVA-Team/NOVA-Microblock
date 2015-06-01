@@ -32,20 +32,20 @@ public class TestMicroblockMod implements Loadable {
 	@Override
 	public void preInit() {
 		Game.logger().info("Preinit on TestMicroblockMod");
-		singleMicroblock = Game.blockManager().register(args -> {
+		singleMicroblock = Game.blocks().register(args -> {
 			FakeBlock fakeBlock = new FakeBlock(singleMicroblockID);
 			fakeBlock.add(new Microblock(fakeBlock)).setOnPlace(blockPlaceEvent -> Optional.of(new Vector3i(0, 0, 0)));
 			return fakeBlock;
 		});
 
-		singleMultiblock = Game.blockManager().register(args -> {
+		singleMultiblock = Game.blocks().register(args -> {
 			FakeBlock fakeBlock = new FakeBlock(singleMultiblockID);
 			fakeBlock.add(new Multiblock(fakeBlock));
 			fakeBlock.add(new Collider()).setBoundingBox(new Cuboid(Vector3i.zero, new Vector3i(1, 2, 1)));
 			return fakeBlock;
 		});
 
-		multiMicroblock1 = Game.blockManager().register(args -> {
+		multiMicroblock1 = Game.blocks().register(args -> {
 			FakeBlock fakeBlock = new FakeBlock(multiMicroblockID);
 			fakeBlock.add(new Multiblock(fakeBlock));
 			fakeBlock.add(new Microblock(fakeBlock)).setOnPlace(blockPlaceEvent -> Optional.of(Vector3i.zero));
