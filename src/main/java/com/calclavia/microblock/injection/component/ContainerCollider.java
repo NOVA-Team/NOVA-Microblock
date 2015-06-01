@@ -12,7 +12,6 @@ import nova.core.util.transform.shape.Cuboid;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author Calclavia
@@ -23,44 +22,39 @@ public class ContainerCollider extends Collider {
 	public ContainerCollider(Block container) {
 		this.blockContainer = container;
 
-		setBoundingBox(() -> {
-			//Do ray trace to see which microblock is being looked at.
-			if (NetworkTarget.Side.get().isClient()) {
-				Entity player = Game.instance().clientManager().getPlayer();
+		if (blockContainer.has(MicroblockContainer.class)) {
+			MicroblockContainer microblockContainer = blockContainer.get(MicroblockContainer.class);
 
-				Optional<RayTracer.RayTraceBlockResult> result = new RayTracer(player)
-					.setDistance(7)
-					.rayTraceBlocks(Collections.singleton(blockContainer))
-					.findFirst();
+			setBoundingBox(() -> {
+				//Do ray trace to see which microblock is being looked at.
+				if (NetworkTarget.Side.get().isClient()) {
+					Entity player = Game.instance().clientManager().getPlayer();
 
-				return result.map(res -> res.hitCuboid.subtract(container.transform().position())).orElseGet(() -> Cuboid.zero);
-			}
+					Optional<RayTracer.RayTraceBlockResult> result = new RayTracer(player)
+						.setDistance(7)
+						.rayTraceBlocks(Collections.singleton(blockContainer))
+						.findFirst();
 
-			//TODO: Is this the right thing to return?
-			return boundingBox.get();
-		});
+					return result.map(res -> res.hitCuboid.subtract(container.transform().position())).orElseGet(() -> Cuboid.zero);
+				}
 
-		setOcclusionBoxes(entity ->
-				microblockColliders()
-					.flatMap(collider -> collider.occlusionBoxes.apply(entity).stream())
-					.collect(Collectors.toSet())
-		);
+				//TODO: Is this the right thing to return?
+				return boundingBox.get();
+			});
 
-		setSelectionBoxes(entity ->
-				microblockColliders()
-					.flatMap(collider -> collider.selectionBoxes.apply(entity).stream())
-					.collect(Collectors.toSet())
-		);
+			setOcclusionBoxes(entity ->
+					microblockContainer.microblocks(Collider.class)
+						.flatMap(collider -> collider.occlusionBoxes.apply(entity).stream())
+						.collect(Collectors.toSet())
+			);
 
+			setSelectionBoxes(entity ->
+					microblockContainer.microblocks(Collider.class)
+						.flatMap(collider -> collider.selectionBoxes.apply(entity).stream())
+						.collect(Collectors.toSet())
+			);
+		}
 		isCube(false);
 		isOpaqueCube(false);
-	}
-
-	public Stream<Collider> microblockColliders() {
-		return blockContainer.get(MicroblockContainer.class)
-			.stream()
-			.map(microblock -> microblock.block.getOp(Collider.class))
-			.filter(Optional::isPresent)
-			.map(Optional::get);
 	}
 }

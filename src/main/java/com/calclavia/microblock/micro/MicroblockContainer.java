@@ -5,6 +5,7 @@ import com.calclavia.microblock.common.BlockComponent;
 import com.calclavia.microblock.common.BlockContainer;
 import nova.core.block.Block;
 import nova.core.block.Stateful;
+import nova.core.component.Component;
 import nova.core.component.transform.BlockTransform;
 import nova.core.game.Game;
 import nova.core.network.NetworkTarget;
@@ -36,6 +37,8 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 	 */
 	//TOD: Make this variable, or configurable?
 	public static final int subdivision = 8;
+	private final String saveID = "microblockContainer";
+
 	/**
 	 * A sparse block map from (0,0) to (subdivision, subdivision) coordinates
 	 * of all the microblocks.
@@ -60,10 +63,23 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 	}
 
 	/**
-	 * Operates on all microblocks
+	 * Gets a collection of all microblocks.
 	 */
 	public Collection<Microblock> microblocks() {
 		return blockMap.values();
+	}
+
+	/**
+	 * Gets a collection of all components of the same type in all microblocks.
+	 * @param componentClass The component class
+	 * @param <C> The component type
+	 * @return Gets a stream of components in the microblocks
+	 */
+	public <C extends Component> Stream<C> microblocks(Class<C> componentClass) {
+		return stream()
+			.map(microblock -> microblock.block.getOp(componentClass))
+			.filter(Optional::isPresent)
+			.map(Optional::get);
 	}
 
 	public Stream<Microblock> stream() {
@@ -71,10 +87,10 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 	}
 
 	/**
-	 * Puts a microblock into this container.
+	 * Puts a new microblock into this container.
 	 */
-	public boolean put(Vector3i localPos, Microblock microblock) {
-		if (doPut(localPos, microblock)) {
+	public boolean putNew(Vector3i localPos, Microblock microblock) {
+		if (put(localPos, microblock)) {
 			//Invoke load event
 			microblock.block.loadEvent.publish(new Stateful.LoadEvent());
 
@@ -93,13 +109,23 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 		return false;
 	}
 
-	protected boolean doPut(Vector3i localPos, Microblock microblock) {
+	/**
+	 * Puts a microblock directly into this container.
+	 * No events will be invoked.
+	 */
+	public boolean put(Vector3i localPos, Microblock microblock) {
 		assert new Cuboid(0, 0, 0, subdivision, subdivision, subdivision).intersects(localPos);
 
 		if (!has(localPos)) {
+			//Place microblock
 			microblock.containers.add(this);
 			microblock.position = localPos;
 			blockMap.put(localPos, microblock);
+
+			//Inject components
+			MicroblockPlugin.instance.componentInjection.injectToContained(microblock.block, block);
+			MicroblockPlugin.instance.componentInjection.injectToContainer(microblock.block, block);
+
 			return true;
 		}
 
@@ -187,14 +213,11 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 				MicroblockPlugin.MicroblockInjectFactory injectionFactory = MicroblockPlugin.containedIDToFactory.get(microID);
 				Block microblock = injectionFactory.containedFactory.makeBlock();
 
-				MicroblockPlugin.instance.componentInjection.injectBackward(microblock, block);
-				MicroblockPlugin.instance.componentInjection.injectForward(microblock, block);
+				put(microPos, microblock.get(Microblock.class));
 
 				if (microblock instanceof PacketHandler) {
 					((PacketHandler) microblock).read(packet);
 				}
-
-				doPut(microPos, microblock.get(Microblock.class));
 			}
 		}
 	}
@@ -220,13 +243,11 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 	@Override
 	public void load(Data data) {
 		blockMap.clear();
-		((Data) data.get("microblockContainer")).forEach((k, v) -> {
+		((Data) data.get(saveID)).forEach((k, v) -> {
 			Block savedBlock = (Block) Data.unserialize((Data) v);
 			Microblock microblock = savedBlock.get(Microblock.class);
-			doPut(idToPos(Integer.parseInt(k)), microblock);
-			//TODO: Call awake event on microblocks
-			MicroblockPlugin.instance.componentInjection.injectBackward(savedBlock, block);
-			MicroblockPlugin.instance.componentInjection.injectForward(savedBlock, block);
+			put(idToPos(Integer.parseInt(k)), microblock);
+			microblock.block.loadEvent.publish(new Stateful.LoadEvent());
 		});
 	}
 
@@ -241,7 +262,7 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 			}
 		);
 
-		data.put("microblockContainer", microblockData);
+		data.put(saveID, microblockData);
 	}
 
 	public int posToID(Vector3i pos) {

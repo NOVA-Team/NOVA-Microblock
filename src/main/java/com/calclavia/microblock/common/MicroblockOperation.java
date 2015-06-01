@@ -37,7 +37,7 @@ public class MicroblockOperation {
 	/**
 	 * Create a microblock operation handler
 	 * @param world The world
-	 * @param injectFactory The factory to injectForward
+	 * @param injectFactory The factory to injectToContainer
 	 * @param globalPos The world position to handle wth block
 	 * @param evt The block place event
 	 */
@@ -131,12 +131,10 @@ public class MicroblockOperation {
 					/**
 					 * Build microblocks without multiblocks
 					 */
-					//TODO: cannot invoke events without transform. Messy.
-					if (!microblockContainer.put(localPos.get(), newBlock.get(Microblock.class))) {
+					if (!microblockContainer.putNew(localPos.get(), newBlock.get(Microblock.class))) {
 						fail = true;
-					} else {
-						MicroblockPlugin.instance.componentInjection.injectForward(newBlock, microblockContainer.block);
 					}
+
 					return handleFail();
 				}
 			} else if (newBlock.has(Multiblock.class)) {

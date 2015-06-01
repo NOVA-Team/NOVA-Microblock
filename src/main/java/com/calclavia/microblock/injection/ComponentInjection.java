@@ -21,24 +21,24 @@ public class ComponentInjection extends Manager<ComponentInjector, Factory<Compo
 	}
 
 	/**
+	 * Injects components from the contained block to the container.
 	 * Injection should occur AFTER the contained block is placed.
-	 *
-	 * Marks a block and injects from the block to the block (and all future components)
 	 * @param contained The contained
 	 * @param container The container
 	 */
-	public void injectForward(Block contained, Block container) {
+	public void injectToContainer(Block contained, Block container) {
 		contained
 			.components()
 			.stream()
 			.forEach(component -> findInjectors(component.getClass()).forEach(injector -> injector.injectForward(component, contained, container)));
 
 		//TODO: Test component added after constructor.
+		//When future components are added to the contained, it will auto-inject to the container.
 		contained.onComponentAdded.add(evt -> findInjectors(evt.component.getClass()).forEach(injector -> injector.injectForward(evt.component, contained, container)));
 		contained.onComponentRemoved.add(event -> container.remove(event.component));
 
+		//TODO: Maybe events should not be injected this way.
 		//Forward events to -> from (container -> contained)
-		//TODO: Use reflection, auto transfer events?
 		container.loadEvent.add(contained.loadEvent::publish);
 		container.unloadEvent.add(contained.unloadEvent::publish);
 		container.leftClickEvent.add(contained.leftClickEvent::publish);
@@ -48,7 +48,12 @@ public class ComponentInjection extends Manager<ComponentInjector, Factory<Compo
 		container.neighborChangeEvent.add(contained.neighborChangeEvent::publish);
 	}
 
-	public void injectBackward(Block contained, Block container) {
+	/**
+	 * Injects components from the container block to the contained.
+	 * @param contained The contained
+	 * @param container The container
+	 */
+	public void injectToContained(Block contained, Block container) {
 		//Inject the special components from the container to the contained (such as BlockTransform).
 		container
 			.components()
@@ -59,7 +64,7 @@ public class ComponentInjection extends Manager<ComponentInjector, Factory<Compo
 	public <C extends Component> Set<ComponentInjector> findInjectors(Class<C> clazz) {
 		return registry
 			.stream()
-			.map(factory -> factory.getDummy())
+			.map(Factory::getDummy)
 			.filter(injector -> injector.componentType().isAssignableFrom(clazz))
 			.collect(Collectors.toSet());
 	}

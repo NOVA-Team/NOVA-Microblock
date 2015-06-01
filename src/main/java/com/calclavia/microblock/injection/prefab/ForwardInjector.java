@@ -23,7 +23,7 @@ public class ForwardInjector<COMPONENT extends Component> extends DefaultInjecto
 
 	@Override
 	public boolean injectForward(COMPONENT component, Block contained, Block container) {
-		if (!contained.has(componentType())) {
+		if (!container.has(componentType())) {
 			container.add(constructor.apply(container));
 			return true;
 		}

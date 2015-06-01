@@ -4,9 +4,11 @@ import com.calclavia.microblock.common.BlockContainer;
 import com.calclavia.microblock.injection.ComponentInjection;
 import com.calclavia.microblock.injection.ComponentInjectionModule;
 import com.calclavia.microblock.injection.component.ContainerCollider;
+import com.calclavia.microblock.injection.component.ContainerDynamicRenderer;
+import com.calclavia.microblock.injection.component.ContainerItemRenderer;
+import com.calclavia.microblock.injection.component.ContainerStaticRenderer;
 import com.calclavia.microblock.injection.prefab.CopyInjector;
 import com.calclavia.microblock.injection.prefab.ForwardInjector;
-import com.calclavia.microblock.injection.prefab.RendererInjector;
 import com.calclavia.microblock.micro.Microblock;
 import com.calclavia.microblock.multi.Multiblock;
 import nova.core.block.Block;
@@ -46,9 +48,9 @@ public class MicroblockPlugin implements Loadable {
 	@Override
 	public void preInit() {
 		componentInjection.register(args -> new ForwardInjector<>(Collider.class, ContainerCollider::new));
-		componentInjection.register(args -> new RendererInjector<>(DynamicRenderer.class));
-		componentInjection.register(args -> new RendererInjector<>(ItemRenderer.class));
-		componentInjection.register(args -> new RendererInjector<>(StaticRenderer.class));
+		componentInjection.register(args -> new ForwardInjector<>(DynamicRenderer.class, ContainerDynamicRenderer::new));
+		componentInjection.register(args -> new ForwardInjector<>(ItemRenderer.class, ContainerItemRenderer::new));
+		componentInjection.register(args -> new ForwardInjector<>(StaticRenderer.class, ContainerStaticRenderer::new));
 		componentInjection.register(args -> new CopyInjector<>(BlockTransform.class));
 		componentInjection.register(args -> new CopyInjector<>(Category.class));
 
@@ -75,9 +77,9 @@ public class MicroblockPlugin implements Loadable {
 		public MicroblockInjectFactory(BlockFactory containedFactory) {
 			super(args -> new BlockContainer("blockContainer-" + containedFactory.getID()));
 			this.containedFactory = containedFactory;
-			//Check the contained factory's dummy, and injectForward components.
+			//Check the contained factory's dummy, and injectToContainer components.
 			dummy = new BlockContainer("blockContainer-" + containedFactory.getID());
-			MicroblockPlugin.instance.componentInjection.injectForward(containedFactory.getDummy(), dummy);
+			MicroblockPlugin.instance.componentInjection.injectToContainer(containedFactory.getDummy(), dummy);
 		}
 
 		@Override
