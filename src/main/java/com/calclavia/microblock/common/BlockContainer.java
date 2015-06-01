@@ -1,6 +1,7 @@
 package com.calclavia.microblock.common;
 
 import com.calclavia.microblock.micro.MicroblockContainer;
+import com.calclavia.microblock.operation.ContainerRemove;
 import nova.core.block.Block;
 import nova.core.block.Stateful;
 import nova.core.component.Component;
@@ -27,6 +28,8 @@ public class BlockContainer extends Block implements Stateful, Storable, PacketH
 			System.out.println("--- " + this + " ---");
 			printComponents(components());
 		});
+
+		removeEvent.add(evt -> ContainerRemove.interactEventHandler(this, evt));
 	}
 
 	private void printComponents(Collection<Component> components) {
