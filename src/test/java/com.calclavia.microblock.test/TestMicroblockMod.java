@@ -31,21 +31,21 @@ public class TestMicroblockMod implements Loadable {
 
 	@Override
 	public void preInit() {
-		Game.instance().logger().info("Preinit on TestMicroblockMod");
-		singleMicroblock = Game.instance().blockManager().register(args -> {
+		Game.logger().info("Preinit on TestMicroblockMod");
+		singleMicroblock = Game.blockManager().register(args -> {
 			FakeBlock fakeBlock = new FakeBlock(singleMicroblockID);
 			fakeBlock.add(new Microblock(fakeBlock)).setOnPlace(blockPlaceEvent -> Optional.of(new Vector3i(0, 0, 0)));
 			return fakeBlock;
 		});
 
-		singleMultiblock = Game.instance().blockManager().register(args -> {
+		singleMultiblock = Game.blockManager().register(args -> {
 			FakeBlock fakeBlock = new FakeBlock(singleMultiblockID);
 			fakeBlock.add(new Multiblock(fakeBlock));
 			fakeBlock.add(new Collider()).setBoundingBox(new Cuboid(Vector3i.zero, new Vector3i(1, 2, 1)));
 			return fakeBlock;
 		});
 
-		multiMicroblock1 = Game.instance().blockManager().register(args -> {
+		multiMicroblock1 = Game.blockManager().register(args -> {
 			FakeBlock fakeBlock = new FakeBlock(multiMicroblockID);
 			fakeBlock.add(new Multiblock(fakeBlock));
 			fakeBlock.add(new Microblock(fakeBlock)).setOnPlace(blockPlaceEvent -> Optional.of(Vector3i.zero));
@@ -53,6 +53,6 @@ public class TestMicroblockMod implements Loadable {
 			return fakeBlock;
 		});
 
-		Game.instance().logger().info("Registered blocks");
+		Game.logger().info("Registered blocks");
 	}
 }

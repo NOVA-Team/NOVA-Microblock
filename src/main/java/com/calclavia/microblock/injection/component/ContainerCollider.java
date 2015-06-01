@@ -28,7 +28,7 @@ public class ContainerCollider extends Collider {
 			setBoundingBox(() -> {
 				//Do ray trace to see which microblock is being looked at.
 				if (NetworkTarget.Side.get().isClient()) {
-					Entity player = Game.instance().clientManager().getPlayer();
+					Entity player = Game.clientManager().getPlayer();
 
 					Optional<RayTracer.RayTraceBlockResult> result = new RayTracer(player)
 						.setDistance(7)

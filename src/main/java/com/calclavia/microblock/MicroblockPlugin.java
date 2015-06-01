@@ -62,10 +62,10 @@ public class MicroblockPlugin implements Loadable {
 		componentInjection.register(args -> new CopyInjector<>(Category.class));
 
 		//Break microblock hold
-		Game.instance().eventManager().playerInteract.add(ContainerRemove::interactEventHandler);
+		Game.eventManager().playerInteract.add(ContainerRemove::interactEventHandler);
 
 		//Replace block registration by sneakily providing our own way to put container blocks instead of the actual block.
-		Game.instance().blockManager().blockRegisteredListeners.add(this::blockRegisterEvent, EventBus.PRIORITY_HIGH);
+		Game.blockManager().blockRegisteredListeners.add(this::blockRegisterEvent, EventBus.PRIORITY_HIGH);
 	}
 
 	private void blockRegisterEvent(BlockManager.BlockRegisteredEvent evt) {
