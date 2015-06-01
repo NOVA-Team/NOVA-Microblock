@@ -56,8 +56,7 @@ public class ContainerRemove extends ContainerOperation {
 
 					if (result.isPresent()) {
 						if (new ContainerRemove(evt.world, evt.position, result.get().microblock.position).operate()) {
-							evt.useBlock = Event.Result.DENY;
-							evt.useItem = Event.Result.DENY;
+							evt.cancel();
 						}
 					}
 				}
