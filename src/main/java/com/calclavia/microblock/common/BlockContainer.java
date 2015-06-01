@@ -51,7 +51,7 @@ public class BlockContainer extends Block implements Stateful, Storable, PacketH
 	@Override
 	public void onRegister() {
 		//Register a custom itemblock
-		Game.instance.itemManager.register((args) -> new ItemBlockContainer(factory()));
+		Game.instance().itemManager().register((args) -> new ItemBlockContainer(factory()));
 	}
 
 	@Override

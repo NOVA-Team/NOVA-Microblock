@@ -210,7 +210,7 @@ public class MicroblockOperation {
 
 		if (opCheckBlock.isPresent()) {
 			Block checkBlock = opCheckBlock.get();
-			if (checkBlock.sameType(Game.instance.blockManager.getAirBlockFactory())) {
+			if (checkBlock.sameType(Game.instance().blockManager().getAirBlockFactory())) {
 				//It's air, so let's create a container
 				world.setBlock(pos, injectFactory);
 				handledPositions.add(pos);
