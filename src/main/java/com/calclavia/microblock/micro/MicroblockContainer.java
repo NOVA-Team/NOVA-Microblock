@@ -126,6 +126,10 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 			MicroblockPlugin.instance.componentInjection.injectToContained(microblock.block, block);
 			MicroblockPlugin.instance.componentInjection.injectToContainer(microblock.block, block);
 
+			if (Game.network().isServer()) {
+				Game.network().sync((BlockContainer) block);
+			}
+
 			return true;
 		}
 
@@ -135,7 +139,12 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 	public boolean remove(Vector3i localPos) {
 		if (has(localPos)) {
 			get(localPos).get().block.unloadEvent.publish(new Stateful.UnloadEvent());
-			Microblock remove = blockMap.remove(localPos);
+			blockMap.remove(localPos);
+
+			if (microblocks().size() > 0 && Game.network().isServer()) {
+				Game.network().sync((BlockContainer) block);
+			}
+
 			//Un-inject all components and elements.
 			return true;
 		}

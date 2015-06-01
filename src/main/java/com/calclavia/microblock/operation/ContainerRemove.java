@@ -5,8 +5,8 @@ import com.calclavia.microblock.micro.Microblock;
 import com.calclavia.microblock.micro.MicroblockContainer;
 import nova.core.block.Block;
 import nova.core.entity.Entity;
-import nova.core.event.Event;
 import nova.core.event.GlobalEvents;
+import nova.core.game.Game;
 import nova.core.util.Direction;
 import nova.core.util.RayTracer;
 import nova.core.util.transform.shape.Cuboid;
@@ -30,33 +30,34 @@ public class ContainerRemove extends ContainerOperation {
 	}
 
 	public static void interactEventHandler(GlobalEvents.PlayerInteractEvent evt) {
-		if (evt.action == GlobalEvents.PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
-			Entity player = evt.player;
-			Optional<Block> opBlock = evt.world.getBlock(evt.position);
+		if (Game.network().isServer()) {
+			if (evt.action == GlobalEvents.PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
+				Entity player = evt.player;
+				Optional<Block> opBlock = evt.world.getBlock(evt.position);
 
-			if (opBlock.isPresent()) {
-				Block block = opBlock.get();
+				if (opBlock.isPresent()) {
+					Block block = opBlock.get();
 
-				if (block.has(MicroblockContainer.class) && block.has(ContainerCollider.class)) {
-					MicroblockContainer microblockContainer = block.get(MicroblockContainer.class);
+					if (block.has(MicroblockContainer.class) && block.has(ContainerCollider.class)) {
+						MicroblockContainer microblockContainer = block.get(MicroblockContainer.class);
 
-					//Ray trace through each microblock
-					Stream<RayTraceMicroblockResult> traces = Stream.empty();
+						//Ray trace through each microblock
+						Stream<RayTraceMicroblockResult> traces = Stream.empty();
 
-					for (Microblock microblock : microblockContainer.microblocks()) {
-						RayTracer rayTracer = new RayTracer(player).setDistance(7);
+						for (Microblock microblock : microblockContainer.microblocks()) {
+							RayTracer rayTracer = new RayTracer(player).setDistance(7);
 
-						traces = Stream.concat(traces,
-							rayTracer
-								.rayTraceCollider(microblock.block, (pos, cuboid) -> new RayTraceMicroblockResult(pos, rayTracer.ray.origin.distance(pos), cuboid.sideOf(pos), cuboid, microblock))
-						);
-					}
+							traces = Stream.concat(traces,
+								rayTracer.rayTraceCollider(microblock.block, (pos, cuboid) -> new RayTraceMicroblockResult(pos, rayTracer.ray.origin.distance(pos), cuboid.sideOf(pos), cuboid, microblock))
+							);
+						}
 
-					Optional<RayTraceMicroblockResult> result = traces.findFirst();
+						Optional<RayTraceMicroblockResult> result = traces.sorted().findFirst();
 
-					if (result.isPresent()) {
-						if (new ContainerRemove(evt.world, evt.position, result.get().microblock.position).operate()) {
-							evt.cancel();
+						if (result.isPresent()) {
+							if (new ContainerRemove(evt.world, evt.position, result.get().microblock.position).operate()) {
+								evt.cancel();
+							}
 						}
 					}
 				}
@@ -71,6 +72,18 @@ public class ContainerRemove extends ContainerOperation {
 		if (opBlock.isPresent()) {
 			Block block = opBlock.get();
 
+			if (block.has(MicroblockContainer.class)) {
+				MicroblockContainer microblockContainer = block.get(MicroblockContainer.class);
+
+				if (microblockContainer.remove(localPos)) {
+					if (microblockContainer.microblocks().size() == 0) {
+						world.removeBlock(globalPos);
+					}
+					return true;
+				}
+
+			}
+			//TODO: Deal with multiblocks
 		}
 
 		return false;
