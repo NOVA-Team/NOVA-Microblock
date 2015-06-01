@@ -2,6 +2,7 @@ package com.calclavia.microblock.micro;
 
 import com.calclavia.microblock.common.BlockComponent;
 import nova.core.block.Block;
+import nova.core.event.EventBus;
 import nova.core.util.transform.vector.Vector3i;
 
 import java.util.HashSet;
@@ -14,6 +15,8 @@ import java.util.function.Function;
  * @author Calclavia
  */
 public class Microblock extends BlockComponent {
+
+	public final EventBus<Block.NeighborChangeEvent> microblockChangeEvent = new EventBus<>();
 
 	/**
 	 * The containers holding the block.

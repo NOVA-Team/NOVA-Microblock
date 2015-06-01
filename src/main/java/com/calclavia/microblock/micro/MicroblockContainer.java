@@ -4,6 +4,7 @@ import com.calclavia.microblock.MicroblockPlugin;
 import com.calclavia.microblock.common.BlockComponent;
 import com.calclavia.microblock.common.BlockContainer;
 import nova.core.block.Block;
+import nova.core.block.Stateful;
 import nova.core.component.transform.BlockTransform;
 import nova.core.game.Game;
 import nova.core.network.NetworkTarget;
@@ -64,6 +65,9 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 		return blockMap.values();
 	}
 
+	/**
+	 * Puts a microblock into this container.
+	 */
 	public boolean put(Vector3i localPos, Microblock microblock) {
 		assert new Cuboid(0, 0, 0, subdivision, subdivision, subdivision).intersects(localPos);
 
@@ -72,9 +76,28 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 			microblock.position = localPos;
 			blockMap.put(localPos, microblock);
 
+			//Invoke load event
+			microblock.block.loadEvent.publish(new Stateful.LoadEvent());
+
+			//Invoke neighbor change event
+			microblocks().stream()
+				.filter(m -> m != microblock)
+				.forEach(m -> m.microblockChangeEvent.publish(new Block.NeighborChangeEvent(Optional.of(localPos))));
+
 			if (NetworkTarget.Side.get().isServer()) {
 				Game.instance().networkManager().sync((BlockContainer) block);
 			}
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean remove(Vector3i localPos) {
+		if (has(localPos)) {
+			get(localPos).get().block.unloadEvent.publish(new Stateful.UnloadEvent());
+			Microblock remove = blockMap.remove(localPos);
+			//Un-inject all components and elements.
 			return true;
 		}
 
