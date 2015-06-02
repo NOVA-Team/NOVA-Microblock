@@ -12,7 +12,7 @@ import java.util.function.Function;
 public class ForwardInjector<COMPONENT extends Component> extends DefaultInjector<COMPONENT> {
 
 	/**
-	 * Container -> Component
+	 * Container goes to Component
 	 */
 	public final Function<Block, COMPONENT> constructor;
 
