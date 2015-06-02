@@ -10,8 +10,6 @@ import nova.core.component.renderer.ItemRenderer;
 public class ContainerItemRenderer extends ItemRenderer {
 
 	public ContainerItemRenderer(Block provider) {
-		super(provider);
-
 		if (provider.has(MicroblockContainer.class)) {
 			setOnRender(model -> provider
 					.get(MicroblockContainer.class)
@@ -19,5 +17,9 @@ public class ContainerItemRenderer extends ItemRenderer {
 					.forEach(renderer -> renderer.onRender.accept(model))
 			);
 		}
+	}
+
+	public ContainerItemRenderer(Block provider, Block contained) {
+		setOnRender(contained.get(ItemRenderer.class).onRender::accept);
 	}
 }

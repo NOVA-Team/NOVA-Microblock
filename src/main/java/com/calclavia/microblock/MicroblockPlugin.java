@@ -11,7 +11,6 @@ import com.calclavia.microblock.injection.prefab.CopyInjector;
 import com.calclavia.microblock.injection.prefab.ForwardInjector;
 import com.calclavia.microblock.micro.Microblock;
 import com.calclavia.microblock.multi.Multiblock;
-import com.calclavia.microblock.operation.ContainerRemove;
 import nova.core.block.Block;
 import nova.core.block.BlockFactory;
 import nova.core.block.BlockManager;
@@ -80,6 +79,11 @@ public class MicroblockPlugin implements Loadable {
 			this.containedFactory = containedFactory;
 			//Check the contained factory's dummy, and injectToContainer components.
 			dummy = new BlockContainer("blockContainer-" + containedFactory.getID());
+
+			//Inject item renderer
+			if (containedFactory.getDummy().has(ItemRenderer.class)) {
+				dummy.add(new ContainerItemRenderer(dummy, containedFactory.getDummy()));
+			}
 			MicroblockPlugin.instance.componentInjection.injectToContainer(containedFactory.getDummy(), dummy);
 		}
 
