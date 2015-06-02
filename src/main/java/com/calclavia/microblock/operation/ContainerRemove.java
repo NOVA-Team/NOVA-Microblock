@@ -52,7 +52,7 @@ public class ContainerRemove extends ContainerOperation {
 						evt.result = false;
 					}
 					//If single player
-					//HACKS TEMPORARY
+					//TODO: HACKS TEMPORARY
 					Game.clientManager().getPlayer().world().setBlock(block.position(), block.factory());
 					//System.out.println("client: " + Game.clientManager().getPlayer().world().getBlock(block.position()).get().getID());
 				}

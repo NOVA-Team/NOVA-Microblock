@@ -6,6 +6,7 @@ import com.calclavia.microblock.common.BlockContainer;
 import nova.core.block.Block;
 import nova.core.block.Stateful;
 import nova.core.component.Component;
+import nova.core.component.Updater;
 import nova.core.component.transform.BlockTransform;
 import nova.core.game.Game;
 import nova.core.network.NetworkTarget;
@@ -29,7 +30,7 @@ import java.util.stream.Stream;
  * A component added to microblocks
  * @author Calclavia
  */
-public class MicroblockContainer extends BlockComponent implements PacketHandler, Storable {
+public class MicroblockContainer extends BlockComponent implements PacketHandler, Storable, Updater {
 
 	/**
 	 * The amount of subdivisions of the microblock.
@@ -152,11 +153,6 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 		return false;
 	}
 
-	@Deprecated
-	public Optional<Microblock> get(int side) {
-		return get(Direction.fromOrdinal(side));
-	}
-
 	/**
 	 * Gets a microblock based on the slot.
 	 * @param side The side of the microblock
@@ -195,6 +191,14 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 	 */
 	public Map<Vector3i, Microblock> map() {
 		return blockMap;
+	}
+
+	@Override
+	public void update(double deltaTime) {
+		stream()
+			.filter(m -> m instanceof Updater)
+			.map(m -> (Updater) m)
+			.forEach(m -> m.update(deltaTime));
 	}
 
 	//TODO: Create a custom ID for each microblock, send based on coordinates.

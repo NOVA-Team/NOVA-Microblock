@@ -5,6 +5,7 @@ import com.calclavia.microblock.operation.ContainerRemove;
 import nova.core.block.Block;
 import nova.core.block.Stateful;
 import nova.core.component.Component;
+import nova.core.component.Updater;
 import nova.core.game.Game;
 import nova.core.network.Packet;
 import nova.core.network.PacketHandler;
@@ -17,7 +18,7 @@ import java.util.Collection;
  * A block container can forward events, components and methods to their respective microblock or multiblocks
  * @author Calclavia
  */
-public class BlockContainer extends Block implements Stateful, Storable, PacketHandler {
+public class BlockContainer extends Block implements Updater, Stateful, Storable, PacketHandler {
 
 	public final String id;
 
