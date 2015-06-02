@@ -28,33 +28,33 @@ public class ContainerRemove extends ContainerOperation {
 		this.localPos = localPos;
 	}
 
-	//TODO: Use left click event on block to prevent removal instead.
 	public static void interactEventHandler(Block block, Block.BlockRemoveEvent evt) {
-		if (Game.network().isServer()) {
-			if (evt.entity.isPresent()) {
-				Entity player = evt.entity.get();
+		if (evt.entity.isPresent()) {
+			Entity player = evt.entity.get();
 
-				if (block.has(MicroblockContainer.class) && block.has(ContainerCollider.class)) {
-					MicroblockContainer microblockContainer = block.get(MicroblockContainer.class);
+			if (block.has(MicroblockContainer.class) && block.has(ContainerCollider.class)) {
+				MicroblockContainer microblockContainer = block.get(MicroblockContainer.class);
 
-					//Ray trace through each microblock
-					Stream<RayTraceMicroblockResult> traces = Stream.empty();
+				//Ray trace through each microblock
+				Stream<RayTraceMicroblockResult> traces = Stream.empty();
 
-					for (Microblock microblock : microblockContainer.microblocks()) {
-						RayTracer rayTracer = new RayTracer(player).setDistance(7);
+				for (Microblock microblock : microblockContainer.microblocks()) {
+					RayTracer rayTracer = new RayTracer(player).setDistance(7);
 
-						traces = Stream.concat(traces,
-							rayTracer.rayTraceCollider(microblock.block, (pos, cuboid) -> new RayTraceMicroblockResult(pos, rayTracer.ray.origin.distance(pos), cuboid.sideOf(pos), cuboid, microblock))
-						);
+					traces = Stream.concat(traces,
+						rayTracer.rayTraceCollider(microblock.block, (pos, cuboid) -> new RayTraceMicroblockResult(pos, rayTracer.ray.origin.distance(pos), cuboid.sideOf(pos), cuboid, microblock))
+					);
+				}
+
+				Optional<RayTraceMicroblockResult> result = traces.sorted().findFirst();
+				if (result.isPresent()) {
+					if (new ContainerRemove(block.world(), block.position(), result.get().microblock.position).operate()) {
+						evt.result = false;
 					}
-
-					Optional<RayTraceMicroblockResult> result = traces.sorted().findFirst();
-
-					if (result.isPresent()) {
-						if (new ContainerRemove(block.world(), block.position(), result.get().microblock.position).operate()) {
-							evt.result = false;
-						}
-					}
+					//If single player
+					//HACKS TEMPORARY
+					Game.clientManager().getPlayer().world().setBlock(block.position(), block.factory());
+					//System.out.println("client: " + Game.clientManager().getPlayer().world().getBlock(block.position()).get().getID());
 				}
 			}
 		}
@@ -72,7 +72,7 @@ public class ContainerRemove extends ContainerOperation {
 
 				if (microblockContainer.remove(localPos)) {
 					if (microblockContainer.microblocks().size() == 0) {
-						world.removeBlock(globalPos);
+						return false;
 					}
 					return true;
 				}
