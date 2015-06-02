@@ -232,6 +232,16 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 					((PacketHandler) microblock).read(packet);
 				}
 			}
+		} else if (packet.getID() == 1) {
+			int innerID = packet.readInt();
+			Vector3i localPos = new Vector3i(packet.readInt(), packet.readInt(), packet.readInt());
+			packet.setID(innerID);
+			((PacketHandler) get(localPos).get().block).read(packet);
+		} else {
+			stream()
+				.filter(m -> m instanceof PacketHandler)
+				.map(m -> (PacketHandler) m)
+				.forEach(m -> m.read(packet));
 		}
 	}
 
@@ -250,6 +260,11 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 					((PacketHandler) v.block).write(packet);
 				}
 			});
+		} else {
+			stream()
+				.filter(m -> m instanceof PacketHandler)
+				.map(m -> (PacketHandler) m)
+				.forEach(m -> m.write(packet));
 		}
 	}
 
