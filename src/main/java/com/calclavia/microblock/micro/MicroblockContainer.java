@@ -9,12 +9,12 @@ import nova.core.component.Component;
 import nova.core.component.Updater;
 import nova.core.component.transform.BlockTransform;
 import nova.core.game.Game;
-import nova.core.network.NetworkTarget;
 import nova.core.network.Packet;
 import nova.core.network.PacketHandler;
 import nova.core.retention.Data;
 import nova.core.retention.Storable;
 import nova.core.util.Direction;
+import nova.core.util.exception.NovaException;
 import nova.core.util.math.MathUtil;
 import nova.core.util.transform.shape.Cuboid;
 import nova.core.util.transform.vector.Vector3i;
@@ -51,7 +51,7 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 	}
 
 	public static Vector3i centerPosition() {
-		return Vector3i.one.multiply(subdivision / 2);
+		return Vector3i.one.multiply((subdivision - 1) / 2);
 	}
 
 	public static Vector3i sidePosition(Direction direction) {
@@ -59,7 +59,7 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 			.add(Vector3i.one)
 			.toDouble()
 			.divide(2d)
-			.multiply(subdivision)
+			.multiply(subdivision - 1)
 			.toInt();
 	}
 
@@ -99,10 +99,6 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 			microblocks().stream()
 				.filter(m -> m != microblock)
 				.forEach(m -> m.microblockChangeEvent.publish(new Block.NeighborChangeEvent(Optional.of(localPos))));
-
-			if (NetworkTarget.Side.get().isServer()) {
-				Game.network().sync((BlockContainer) block);
-			}
 
 			return true;
 		}
@@ -236,7 +232,13 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 			int innerID = packet.readInt();
 			Vector3i localPos = new Vector3i(packet.readInt(), packet.readInt(), packet.readInt());
 			packet.setID(innerID);
-			((PacketHandler) get(localPos).get().block).read(packet);
+			Optional<Microblock> microblock = get(localPos);
+
+			if (microblock.isPresent()) {
+				((PacketHandler) microblock.get().block).read(packet);
+			} else {
+				throw new NovaException("Attempt to send packet to microblock that does not exist: " + localPos);
+			}
 		} else {
 			stream()
 				.filter(m -> m instanceof PacketHandler)
