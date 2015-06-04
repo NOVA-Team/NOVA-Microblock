@@ -47,6 +47,8 @@ public class MicroblockPlugin implements Loadable {
 
 	@Override
 	public void preInit() {
+		Game.network().register(new MicroblockPacket());
+
 		componentInjection.register(args -> new ForwardInjector<>(Collider.class, ContainerCollider::new));
 		componentInjection.register(args -> new ForwardInjector<>(DynamicRenderer.class, ContainerDynamicRenderer::new));
 		componentInjection.register(args -> new ForwardInjector<>(ItemRenderer.class, ContainerItemRenderer::new));

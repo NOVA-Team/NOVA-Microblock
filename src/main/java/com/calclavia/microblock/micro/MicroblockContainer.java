@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 
 /**
  * A component added to microblocks
+ *
  * @author Calclavia
  */
 public class MicroblockContainer extends BlockComponent implements PacketHandler, Storable, Updater {
@@ -72,6 +73,7 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 
 	/**
 	 * Gets a collection of all components of the same type in all microblocks.
+	 *
 	 * @param componentClass The component class
 	 * @param <C> The component type
 	 * @return Gets a stream of components in the microblocks
@@ -151,6 +153,7 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 
 	/**
 	 * Gets a microblock based on the slot.
+	 *
 	 * @param side The side of the microblock
 	 * @return The microblock that is occupying this specific side.
 	 */
@@ -165,6 +168,7 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 
 	/**
 	 * Gets the microblock at a specific internal position.
+	 *
 	 * @param localPos Te local position within the microblock space
 	 * @return The optional microblock.
 	 */
@@ -174,6 +178,7 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 
 	/**
 	 * Gets a single microblock that converts a specific region within the microblock space.
+	 *
 	 * @param region A region in the microblock space
 	 * @return A single microblock if that microblock occupies the entire region.
 	 */
@@ -197,8 +202,6 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 			.forEach(m -> m.update(deltaTime));
 	}
 
-	//TODO: Create a custom ID for each microblock, send based on coordinates.
-	//TODO: Consider component syncer?
 	@Override
 	public void read(Packet packet) {
 		//Description Packet
@@ -228,22 +231,8 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 					((PacketHandler) microblock).read(packet);
 				}
 			}
-		} else if (packet.getID() == 1) {
-			int innerID = packet.readInt();
-			Vector3i localPos = new Vector3i(packet.readInt(), packet.readInt(), packet.readInt());
-			packet.setID(innerID);
-			Optional<Microblock> microblock = get(localPos);
-
-			if (microblock.isPresent()) {
-				((PacketHandler) microblock.get().block).read(packet);
-			} else {
-				throw new NovaException("Attempt to send packet to microblock that does not exist: " + localPos);
-			}
 		} else {
-			stream()
-				.filter(m -> m instanceof PacketHandler)
-				.map(m -> (PacketHandler) m)
-				.forEach(m -> m.read(packet));
+			throw new NovaException("Microblock container reading an invalid packet ID: " + packet.getID() + ". This error may be due to an attempt to send microblock data without passing the microblock component as the packet sender.");
 		}
 	}
 
@@ -263,10 +252,7 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 				}
 			});
 		} else {
-			stream()
-				.filter(m -> m instanceof PacketHandler)
-				.map(m -> (PacketHandler) m)
-				.forEach(m -> m.write(packet));
+			throw new NovaException("Microblock container writing an invalid packet ID: " + packet.getID() + ". This error may be due to an attempt to send microblock data without passing the microblock component as the packet sender.\"");
 		}
 	}
 

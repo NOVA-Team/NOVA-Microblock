@@ -1,12 +1,8 @@
 package com.calclavia.microblock.micro;
 
 import com.calclavia.microblock.common.BlockComponent;
-import com.calclavia.microblock.common.BlockContainer;
 import nova.core.block.Block;
 import nova.core.event.EventBus;
-import nova.core.game.Game;
-import nova.core.network.Packet;
-import nova.core.network.PacketHandler;
 import nova.core.util.transform.vector.Vector3i;
 
 import java.util.HashSet;
@@ -16,6 +12,11 @@ import java.util.function.Function;
 
 /**
  * A component attached to microblocks. When applied to any class that extends Block, it will allow the block to behave as a microblock.
+ *
+ * To send packets through microblocks, you must call:
+ * Game.network().sync(id, microblock)
+ * DO NOT, send the block instance, as that will create an error.
+ *
  * @author Calclavia
  */
 public class Microblock extends BlockComponent {
@@ -48,23 +49,5 @@ public class Microblock extends BlockComponent {
 	public Microblock setOnPlace(Function<Block.BlockPlaceEvent, Optional<Vector3i>> onPlace) {
 		this.onPlace = onPlace;
 		return this;
-	}
-
-	/**
-	 * Sends a packet with a specific ID to this microblock
-	 * @param id
-	 */
-	public void sync(int id) {
-		//TODO: Use custom packet handler
-		Packet packet = Game.network().newPacket();
-		BlockContainer container = (BlockContainer) containers.stream().findFirst().get().block;
-		packet.writeInt(1);
-		packet.writeInt(position.x);
-		packet.writeInt(position.y);
-		packet.writeInt(position.z);
-		packet.setID(id);
-		((PacketHandler) block).write(packet);
-		packet.setID(1);
-		Game.network().sendPacket(container, packet);
 	}
 }
