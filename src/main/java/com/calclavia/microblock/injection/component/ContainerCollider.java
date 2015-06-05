@@ -39,7 +39,7 @@ public class ContainerCollider extends Collider {
 				}
 
 				//TODO: Is this the right thing to return?
-				return boundingBox.get();
+				return Cuboid.zero;
 			});
 
 			setOcclusionBoxes(entity ->
