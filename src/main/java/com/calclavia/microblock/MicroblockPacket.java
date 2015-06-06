@@ -5,8 +5,8 @@ import com.calclavia.microblock.micro.Microblock;
 import com.calclavia.microblock.micro.MicroblockContainer;
 import nova.core.block.Block;
 import nova.core.network.Packet;
-import nova.core.network.PacketHandler;
-import nova.core.network.handler.PacketType;
+import nova.core.network.Syncable;
+import nova.core.network.handler.PacketHandler;
 import nova.core.util.exception.NovaException;
 import nova.core.util.transform.vector.Vector3i;
 import nova.core.world.World;
@@ -16,7 +16,7 @@ import java.util.Optional;
 /**
  * @author Calclavia
  */
-public class MicroblockPacket implements PacketType<Microblock> {
+public class MicroblockPacket implements PacketHandler<Microblock> {
 
 	@Override
 	public void read(Packet packet) {
@@ -37,8 +37,8 @@ public class MicroblockPacket implements PacketType<Microblock> {
 				if (opMicroblock.isPresent()) {
 					Microblock microblock = opMicroblock.get();
 
-					if (microblock.block instanceof PacketHandler) {
-						((PacketHandler) microblock.block).read(packet);
+					if (microblock.block instanceof Syncable) {
+						((Syncable) microblock.block).read(packet);
 						return;
 					}
 				} else {
@@ -66,11 +66,11 @@ public class MicroblockPacket implements PacketType<Microblock> {
 		packet.writeInt(localPos.y);
 		packet.writeInt(localPos.z);
 		//Write the microblock data
-		((PacketHandler) microblock.block).write(packet);
+		((Syncable) microblock.block).write(packet);
 	}
 
 	@Override
 	public boolean isHandlerFor(Object handler) {
-		return handler instanceof Microblock && ((Microblock) handler).block instanceof PacketHandler;
+		return handler instanceof Microblock && ((Microblock) handler).block instanceof Syncable;
 	}
 }

@@ -8,7 +8,7 @@ import nova.core.component.Component;
 import nova.core.component.Updater;
 import nova.core.game.Game;
 import nova.core.network.Packet;
-import nova.core.network.PacketHandler;
+import nova.core.network.Syncable;
 import nova.core.retention.Data;
 import nova.core.retention.Storable;
 
@@ -18,17 +18,18 @@ import java.util.Collection;
  * A block container can forward events, components and methods to their respective microblock or multiblocks
  * @author Calclavia
  */
-public class BlockContainer extends Block implements Updater, Stateful, Storable, PacketHandler {
+public class BlockContainer extends Block implements Updater, Stateful, Storable, Syncable {
 
 	public final String id;
 
 	public BlockContainer(String id) {
 		this.id = id;
 
+		/*
 		rightClickEvent.add(event -> {
 			System.out.println("--- " + this + " ---");
 			printComponents(components());
-		});
+		});*/
 
 		removeEvent.add(evt -> ContainerRemove.interactEventHandler(this, evt));
 	}
@@ -39,6 +40,7 @@ public class BlockContainer extends Block implements Updater, Stateful, Storable
 
 	private void printComponents(Collection<Component> components, String prefix) {
 		components.forEach(component -> {
+
 			System.out.println(prefix + component.getClass());
 
 			if (component instanceof MicroblockContainer) {
@@ -48,7 +50,6 @@ public class BlockContainer extends Block implements Updater, Stateful, Storable
 						printComponents(microblock.block.components(), prefix + "::");
 					});
 			}
-
 		});
 	}
 

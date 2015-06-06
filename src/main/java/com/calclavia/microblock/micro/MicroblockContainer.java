@@ -10,7 +10,7 @@ import nova.core.component.Updater;
 import nova.core.component.transform.BlockTransform;
 import nova.core.game.Game;
 import nova.core.network.Packet;
-import nova.core.network.PacketHandler;
+import nova.core.network.Syncable;
 import nova.core.retention.Data;
 import nova.core.retention.Storable;
 import nova.core.util.Direction;
@@ -31,7 +31,7 @@ import java.util.stream.Stream;
  *
  * @author Calclavia
  */
-public class MicroblockContainer extends BlockComponent implements PacketHandler, Storable, Updater {
+public class MicroblockContainer extends BlockComponent implements Syncable, Storable, Updater {
 
 	/**
 	 * The amount of subdivisions of the microblock.
@@ -233,8 +233,8 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 
 				put(microPos, microblock.get(Microblock.class));
 
-				if (microblock instanceof PacketHandler) {
-					((PacketHandler) microblock).read(packet);
+				if (microblock instanceof Syncable) {
+					((Syncable) microblock).read(packet);
 				}
 			}
 		} else {
@@ -253,8 +253,8 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 				packet.write(posToID(k));
 				packet.writeString(v.block.getID());
 
-				if (v.block instanceof PacketHandler) {
-					((PacketHandler) v.block).write(packet);
+				if (v.block instanceof Syncable) {
+					((Syncable) v.block).write(packet);
 				}
 			});
 		} else {
