@@ -1,11 +1,11 @@
 package com.calclavia.microblock.operation;
 
+import com.calclavia.microblock.MicroblockPlugin;
 import com.calclavia.microblock.injection.component.ContainerCollider;
 import com.calclavia.microblock.micro.Microblock;
 import com.calclavia.microblock.micro.MicroblockContainer;
 import nova.core.block.Block;
 import nova.core.entity.Entity;
-import nova.core.game.Game;
 import nova.core.util.Direction;
 import nova.core.util.RayTracer;
 import nova.core.util.transform.shape.Cuboid;
@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 
 /**
  * Removes a container
+ *
  * @author Calclavia
  */
 public class ContainerRemove extends ContainerOperation {
@@ -53,8 +54,8 @@ public class ContainerRemove extends ContainerOperation {
 					}
 					//If single player
 					//TODO: HACKS TEMPORARY
-					Game.clientManager().getPlayer().world().setBlock(block.position(), block.factory());
-					//System.out.println("client: " + Game.clientManager().getPlayer().world().getBlock(block.position()).get().getID());
+					MicroblockPlugin.instance.client.getPlayer().world().setBlock(block.position(), block.factory());
+					//System.out.println("client: " + MicroblockPlugin.instance.clientManager().getPlayer().world().getBlock(block.position()).get().getID());
 				}
 			}
 		}

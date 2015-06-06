@@ -14,7 +14,7 @@ import java.util.function.Function;
  * A component attached to microblocks. When applied to any class that extends Block, it will allow the block to behave as a microblock.
  *
  * To send packets through microblocks, you must call:
- * Game.network().sync(id, microblock)
+ * MicroblockPlugin.instance.network().sync(id, microblock)
  * DO NOT, send the block instance, as that will create an error.
  *
  * @author Calclavia

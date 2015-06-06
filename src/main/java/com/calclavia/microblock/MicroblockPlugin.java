@@ -21,33 +21,46 @@ import nova.core.component.renderer.ItemRenderer;
 import nova.core.component.renderer.StaticRenderer;
 import nova.core.component.transform.BlockTransform;
 import nova.core.event.EventBus;
-import nova.core.game.Game;
+import nova.core.game.ClientManager;
+import nova.core.item.ItemManager;
 import nova.core.loader.Loadable;
 import nova.core.loader.NovaMod;
+import nova.core.network.NetworkManager;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Make sure your mod loads AFTER this mod, if your mod uses microblocks or multiblock.
+ *
  * @author Calclavia
  */
 @NovaMod(id = "microblock", name = "Microblock", version = "0.0.1", novaVersion = "0.0.1", modules = { ComponentInjectionModule.class }, isPlugin = true)
 public class MicroblockPlugin implements Loadable {
 
 	public static MicroblockPlugin instance;
-	public static Map<String, MicroblockInjectFactory> containedIDToFactory = new HashMap<>();
-	public static Map<BlockFactory, MicroblockInjectFactory> containedFactoryToFactory = new HashMap<>();
-	public final ComponentInjection componentInjection;
 
-	public MicroblockPlugin(ComponentInjection componentInjection) {
+	public final ComponentInjection componentInjection;
+	public final ClientManager client;
+	public final NetworkManager network;
+	public final ItemManager items;
+	public final BlockManager blocks;
+
+	public final Map<String, MicroblockInjectFactory> containedIDToFactory = new HashMap<>();
+	public final Map<BlockFactory, MicroblockInjectFactory> containedFactoryToFactory = new HashMap<>();
+
+	public MicroblockPlugin(ComponentInjection componentInjection, ClientManager client, NetworkManager network, ItemManager items, BlockManager blocks) {
 		this.componentInjection = componentInjection;
+		this.client = client;
+		this.network = network;
+		this.items = items;
+		this.blocks = blocks;
 		instance = this;
 	}
 
 	@Override
 	public void preInit() {
-		Game.network().register(new MicroblockPacket());
+		MicroblockPlugin.instance.network.register(new MicroblockPacket());
 
 		componentInjection.register(args -> new ForwardInjector<>(Collider.class, ContainerCollider::new));
 		componentInjection.register(args -> new ForwardInjector<>(DynamicRenderer.class, ContainerDynamicRenderer::new));
@@ -57,7 +70,7 @@ public class MicroblockPlugin implements Loadable {
 		componentInjection.register(args -> new CopyInjector<>(Category.class));
 
 		//Replace block registration by sneakily providing our own way to put container blocks instead of the actual block.
-		Game.blocks().blockRegisteredListeners.add(this::blockRegisterEvent, EventBus.PRIORITY_HIGH);
+		MicroblockPlugin.instance.blocks.blockRegisteredListeners.add(this::blockRegisterEvent, EventBus.PRIORITY_HIGH);
 	}
 
 	private void blockRegisterEvent(BlockManager.BlockRegisteredEvent evt) {

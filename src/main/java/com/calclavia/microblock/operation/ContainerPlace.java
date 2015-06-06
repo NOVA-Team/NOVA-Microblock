@@ -7,7 +7,6 @@ import com.calclavia.microblock.micro.MicroblockContainer;
 import com.calclavia.microblock.multi.Multiblock;
 import com.calclavia.microblock.multi.MultiblockContainer;
 import nova.core.block.Block;
-import nova.core.game.Game;
 import nova.core.network.NetworkTarget;
 import nova.core.util.transform.shape.Cuboid;
 import nova.core.util.transform.vector.Vector3d;
@@ -22,6 +21,7 @@ import java.util.stream.Collectors;
 
 /**
  * Handles mciroblock set operations.
+ *
  * @author Calclavia
  */
 public class ContainerPlace extends ContainerOperation {
@@ -33,6 +33,7 @@ public class ContainerPlace extends ContainerOperation {
 
 	/**
 	 * Create a microblock operation handler
+	 *
 	 * @param world The world
 	 * @param injectFactory The factory to injectToContainer
 	 * @param globalPos The world position to handle wth block
@@ -168,6 +169,7 @@ public class ContainerPlace extends ContainerOperation {
 
 	/**
 	 * Populates a block space
+	 *
 	 * @param blockSpace The set of block positions where we want to populate container blocks
 	 * @param func The callback function called after a container block is set.
 	 * @return A set of containers actually placed into the world.
@@ -191,6 +193,7 @@ public class ContainerPlace extends ContainerOperation {
 
 	/**
 	 * Checks a position in the world and either gets or sets the position into {@link BlockContainer}
+	 *
 	 * @param pos The position to set the container
 	 * @return The container block
 	 */
@@ -200,7 +203,7 @@ public class ContainerPlace extends ContainerOperation {
 
 		if (opCheckBlock.isPresent()) {
 			Block checkBlock = opCheckBlock.get();
-			if (checkBlock.sameType(Game.blocks().getAirBlockFactory())) {
+			if (checkBlock.sameType(MicroblockPlugin.instance.blocks.getAirBlockFactory())) {
 				//It's air, so let's create a container
 				world.setBlock(pos, injectFactory);
 				handledPositions.add(pos);

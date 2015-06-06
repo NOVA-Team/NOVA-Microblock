@@ -8,7 +8,6 @@ import nova.core.block.Stateful;
 import nova.core.component.Component;
 import nova.core.component.Updater;
 import nova.core.component.transform.BlockTransform;
-import nova.core.game.Game;
 import nova.core.network.Packet;
 import nova.core.network.Syncable;
 import nova.core.retention.Data;
@@ -127,8 +126,8 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 			MicroblockPlugin.instance.componentInjection.injectToContained(microblock.block, block);
 			MicroblockPlugin.instance.componentInjection.injectToContainer(microblock.block, block);
 
-			if (Game.network().isServer()) {
-				Game.network().sync((BlockContainer) block);
+			if (MicroblockPlugin.instance.network.isServer()) {
+				MicroblockPlugin.instance.network.sync((BlockContainer) block);
 			}
 
 			return true;
@@ -142,8 +141,8 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 			get(localPos).get().block.unloadEvent.publish(new Stateful.UnloadEvent());
 			blockMap.remove(localPos);
 
-			if (microblocks().size() > 0 && Game.network().isServer()) {
-				Game.network().sync(block);
+			if (microblocks().size() > 0 && MicroblockPlugin.instance.network.isServer()) {
+				MicroblockPlugin.instance.network.sync(block);
 			}
 
 			//Invoke neighbor change event
@@ -228,7 +227,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 				String microID = packet.readString();
 
 				//Find microblock registered with such ID
-				MicroblockPlugin.MicroblockInjectFactory injectionFactory = MicroblockPlugin.containedIDToFactory.get(microID);
+				MicroblockPlugin.MicroblockInjectFactory injectionFactory = MicroblockPlugin.instance.containedIDToFactory.get(microID);
 				Block microblock = injectionFactory.containedFactory.makeBlock();
 
 				put(microPos, microblock.get(Microblock.class));

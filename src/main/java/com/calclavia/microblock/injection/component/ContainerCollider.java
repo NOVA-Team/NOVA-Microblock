@@ -1,10 +1,10 @@
 package com.calclavia.microblock.injection.component;
 
+import com.calclavia.microblock.MicroblockPlugin;
 import com.calclavia.microblock.micro.MicroblockContainer;
 import nova.core.block.Block;
 import nova.core.component.misc.Collider;
 import nova.core.entity.Entity;
-import nova.core.game.Game;
 import nova.core.network.NetworkTarget;
 import nova.core.util.RayTracer;
 import nova.core.util.transform.shape.Cuboid;
@@ -28,7 +28,7 @@ public class ContainerCollider extends Collider {
 			setBoundingBox(() -> {
 				//Do ray trace to see which microblock is being looked at.
 				if (NetworkTarget.Side.get().isClient()) {
-					Entity player = Game.clientManager().getPlayer();
+					Entity player = MicroblockPlugin.instance.client.getPlayer();
 
 					Optional<RayTracer.RayTraceBlockResult> result = new RayTracer(player)
 						.setDistance(7)
