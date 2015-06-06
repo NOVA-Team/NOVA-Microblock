@@ -41,7 +41,11 @@ public class MicroblockPacket implements PacketType<Microblock> {
 						((PacketHandler) microblock.block).read(packet);
 						return;
 					}
+				} else {
+					throw new NovaException("Cannot find microblock at " + globalPos + " with local position " + localPos);
 				}
+			} else {
+				throw new NovaException("Cannot find microblock container at " + globalPos + " with local position " + localPos);
 			}
 		}
 

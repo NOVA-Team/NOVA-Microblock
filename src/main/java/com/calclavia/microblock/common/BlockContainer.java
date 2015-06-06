@@ -66,7 +66,7 @@ public class BlockContainer extends Block implements Updater, Stateful, Storable
 			}
 		}
 
-		PacketHandler.super.read(packet);
+		getOp(MicroblockContainer.class).ifPresent(c -> c.read(packet));
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class BlockContainer extends Block implements Updater, Stateful, Storable
 			packet.writeBoolean(has(MicroblockContainer.class));
 		}
 
-		PacketHandler.super.write(packet);
+		getOp(MicroblockContainer.class).ifPresent(c -> c.write(packet));
 	}
 
 	@Override
@@ -85,7 +85,12 @@ public class BlockContainer extends Block implements Updater, Stateful, Storable
 			getOrAdd(new MicroblockContainer(this));
 		}
 
-		Storable.super.load(data);
+		getOp(MicroblockContainer.class).ifPresent(c -> c.load(data));
+	}
+
+	@Override
+	public void save(Data data) {
+		getOp(MicroblockContainer.class).ifPresent(c -> c.save(data));
 	}
 
 	@Override

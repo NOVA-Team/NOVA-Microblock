@@ -102,6 +102,8 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 				.filter(m -> m != microblock)
 				.forEach(m -> m.microblockChangeEvent.publish(new Block.NeighborChangeEvent(Optional.of(localPos))));
 
+			block.world().markChange(block.position());
+
 			return true;
 		}
 
@@ -141,10 +143,14 @@ public class MicroblockContainer extends BlockComponent implements PacketHandler
 			blockMap.remove(localPos);
 
 			if (microblocks().size() > 0 && Game.network().isServer()) {
-				Game.network().sync((BlockContainer) block);
+				Game.network().sync(block);
 			}
 
-			//Un-inject all components and elements.
+			//Invoke neighbor change event
+			microblocks().stream()
+				.forEach(m -> m.microblockChangeEvent.publish(new Block.NeighborChangeEvent(Optional.of(localPos))));
+
+			block.world().markChange(block.position());
 			return true;
 		}
 
