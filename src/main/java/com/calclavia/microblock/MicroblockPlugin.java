@@ -26,6 +26,7 @@ import nova.core.item.ItemManager;
 import nova.core.loader.Loadable;
 import nova.core.loader.NovaMod;
 import nova.core.network.NetworkManager;
+import org.slf4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,16 +46,18 @@ public class MicroblockPlugin implements Loadable {
 	public final NetworkManager network;
 	public final ItemManager items;
 	public final BlockManager blocks;
+	public final Logger logger;
 
 	public final Map<String, MicroblockInjectFactory> containedIDToFactory = new HashMap<>();
 	public final Map<BlockFactory, MicroblockInjectFactory> containedFactoryToFactory = new HashMap<>();
 
-	public MicroblockPlugin(ComponentInjection componentInjection, ClientManager client, NetworkManager network, ItemManager items, BlockManager blocks) {
+	public MicroblockPlugin(ComponentInjection componentInjection, ClientManager client, NetworkManager network, ItemManager items, BlockManager blocks, Logger logger) {
 		this.componentInjection = componentInjection;
 		this.client = client;
 		this.network = network;
 		this.items = items;
 		this.blocks = blocks;
+		this.logger = logger;
 		instance = this;
 	}
 

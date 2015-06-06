@@ -1,10 +1,10 @@
 package com.calclavia.microblock.test;
 
+import com.calclavia.microblock.MicroblockPlugin;
 import com.calclavia.microblock.micro.Microblock;
 import com.calclavia.microblock.multi.Multiblock;
 import nova.core.block.BlockFactory;
 import nova.core.component.misc.Collider;
-import nova.core.game.Game;
 import nova.core.loader.Loadable;
 import nova.core.loader.NovaMod;
 import nova.core.util.transform.shape.Cuboid;
@@ -31,21 +31,21 @@ public class TestMicroblockMod implements Loadable {
 
 	@Override
 	public void preInit() {
-		Game.logger().info("Preinit on TestMicroblockMod");
-		singleMicroblock = Game.blocks().register(args -> {
+		MicroblockPlugin.instance.logger.info("Preinit on TestMicroblockMod");
+		singleMicroblock = MicroblockPlugin.instance.blocks.register(args -> {
 			FakeBlock fakeBlock = new FakeBlock(singleMicroblockID);
 			fakeBlock.add(new Microblock(fakeBlock)).setOnPlace(blockPlaceEvent -> Optional.of(new Vector3i(0, 0, 0)));
 			return fakeBlock;
 		});
 
-		singleMultiblock = Game.blocks().register(args -> {
+		singleMultiblock = MicroblockPlugin.instance.blocks.register(args -> {
 			FakeBlock fakeBlock = new FakeBlock(singleMultiblockID);
 			fakeBlock.add(new Multiblock(fakeBlock));
 			fakeBlock.add(new Collider()).setBoundingBox(new Cuboid(Vector3i.zero, new Vector3i(1, 2, 1)));
 			return fakeBlock;
 		});
 
-		multiMicroblock1 = Game.blocks().register(args -> {
+		multiMicroblock1 = MicroblockPlugin.instance.blocks.register(args -> {
 			FakeBlock fakeBlock = new FakeBlock(multiMicroblockID);
 			fakeBlock.add(new Multiblock(fakeBlock));
 			fakeBlock.add(new Microblock(fakeBlock)).setOnPlace(blockPlaceEvent -> Optional.of(Vector3i.zero));
@@ -53,6 +53,6 @@ public class TestMicroblockMod implements Loadable {
 			return fakeBlock;
 		});
 
-		Game.logger().info("Registered blocks");
+		MicroblockPlugin.instance.logger.info("Registered blocks");
 	}
 }
