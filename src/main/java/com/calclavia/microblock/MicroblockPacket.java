@@ -4,10 +4,10 @@ import com.calclavia.microblock.common.BlockContainer;
 import com.calclavia.microblock.micro.Microblock;
 import com.calclavia.microblock.micro.MicroblockContainer;
 import nova.core.block.Block;
+import nova.core.network.NetworkException;
 import nova.core.network.Packet;
 import nova.core.network.Syncable;
 import nova.core.network.handler.PacketHandler;
-import nova.core.util.exception.NovaException;
 import nova.core.util.transform.vector.Vector3i;
 import nova.core.world.World;
 
@@ -42,14 +42,14 @@ public class MicroblockPacket implements PacketHandler<Microblock> {
 						return;
 					}
 				} else {
-					throw new NovaException("Cannot find microblock at " + globalPos + " with local position " + localPos);
+					throw new NetworkException("Cannot find microblock at " + globalPos + " with local position " + localPos);
 				}
 			} else {
-				throw new NovaException("Cannot find microblock container at " + globalPos + " with local position " + localPos);
+				throw new NetworkException("Cannot find microblock container at " + globalPos + " with local position " + localPos);
 			}
 		}
 
-		throw new NovaException("Microblock packet failed to be read at " + globalPos + " with local position " + localPos);
+		throw new NetworkException("Microblock packet failed to be read at " + globalPos + " with local position " + localPos);
 	}
 
 	@Override

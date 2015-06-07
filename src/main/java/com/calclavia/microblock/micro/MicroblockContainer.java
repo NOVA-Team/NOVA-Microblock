@@ -8,12 +8,12 @@ import nova.core.block.Stateful;
 import nova.core.component.Component;
 import nova.core.component.Updater;
 import nova.core.component.transform.BlockTransform;
+import nova.core.network.NetworkException;
 import nova.core.network.Packet;
 import nova.core.network.Syncable;
 import nova.core.retention.Data;
 import nova.core.retention.Storable;
 import nova.core.util.Direction;
-import nova.core.util.exception.NovaException;
 import nova.core.util.math.MathUtil;
 import nova.core.util.transform.shape.Cuboid;
 import nova.core.util.transform.vector.Vector3i;
@@ -237,7 +237,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 				}
 			}
 		} else {
-			throw new NovaException("Microblock container reading an invalid packet ID: " + packet.getID() + ". This error may be due to an attempt to send microblock data without passing the microblock component as the packet sender.");
+			throw new NetworkException("Microblock container reading an invalid packet ID: " + packet.getID() + ". This error may be due to an attempt to send microblock data without passing the microblock component as the packet sender.");
 		}
 	}
 
@@ -257,7 +257,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 				}
 			});
 		} else {
-			throw new NovaException("Microblock container writing an invalid packet ID: " + packet.getID() + ". This error may be due to an attempt to send microblock data without passing the microblock component as the packet sender.\"");
+			throw new NetworkException("Microblock container writing an invalid packet ID: " + packet.getID() + ". This error may be due to an attempt to send microblock data without passing the microblock component as the packet sender.\"");
 		}
 	}
 

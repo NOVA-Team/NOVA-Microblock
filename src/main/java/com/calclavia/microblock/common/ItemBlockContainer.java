@@ -9,11 +9,11 @@ import com.calclavia.microblock.operation.ContainerPlace;
 import nova.core.block.Block;
 import nova.core.block.BlockFactory;
 import nova.core.entity.Entity;
+import nova.core.inventory.InventoryException;
 import nova.core.item.ItemBlock;
 import nova.core.network.NetworkTarget;
 import nova.core.util.Direction;
 import nova.core.util.RayTracer;
-import nova.core.util.exception.NovaException;
 import nova.core.util.transform.vector.Vector3d;
 import nova.core.util.transform.vector.Vector3i;
 import nova.core.world.World;
@@ -22,6 +22,7 @@ import java.util.Optional;
 
 /**
  * ItemBlocks for microblocks and multiblocks
+ *
  * @author Calclavia
  */
 public class ItemBlockContainer extends ItemBlock {
@@ -75,7 +76,7 @@ public class ItemBlockContainer extends ItemBlock {
 				} else if (dummy.has(Multiblock.class)) {
 					return new ContainerPlace(world, injectFactory, placePos).operate();
 				} else {
-					throw new NovaException("Invalid blockFactory contained in ItemBlockContainer: " + containedFactory);
+					throw new InventoryException("Invalid blockFactory contained in ItemBlockContainer: " + containedFactory);
 				}
 			}
 		}
