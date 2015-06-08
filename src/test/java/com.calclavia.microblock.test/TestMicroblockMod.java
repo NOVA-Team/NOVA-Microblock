@@ -8,8 +8,7 @@ import nova.core.component.misc.Collider;
 import nova.core.loader.Loadable;
 import nova.core.loader.NovaMod;
 import nova.core.util.transform.shape.Cuboid;
-import nova.core.util.transform.vector.Vector3d;
-import nova.core.util.transform.vector.Vector3i;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import nova.testutils.FakeBlock;
 
 import java.util.Optional;
@@ -34,22 +33,22 @@ public class TestMicroblockMod implements Loadable {
 		MicroblockPlugin.instance.logger.info("Preinit on TestMicroblockMod");
 		singleMicroblock = MicroblockPlugin.instance.blocks.register(args -> {
 			FakeBlock fakeBlock = new FakeBlock(singleMicroblockID);
-			fakeBlock.add(new Microblock(fakeBlock)).setOnPlace(blockPlaceEvent -> Optional.of(new Vector3i(0, 0, 0)));
+			fakeBlock.add(new Microblock(fakeBlock)).setOnPlace(blockPlaceEvent -> Optional.of(new Vector3D(0, 0, 0)));
 			return fakeBlock;
 		});
 
 		singleMultiblock = MicroblockPlugin.instance.blocks.register(args -> {
 			FakeBlock fakeBlock = new FakeBlock(singleMultiblockID);
 			fakeBlock.add(new Multiblock(fakeBlock));
-			fakeBlock.add(new Collider()).setBoundingBox(new Cuboid(Vector3i.zero, new Vector3i(1, 2, 1)));
+			fakeBlock.add(new Collider()).setBoundingBox(new Cuboid(Vector3D.ZERO, new Vector3D(1, 2, 1)));
 			return fakeBlock;
 		});
 
 		multiMicroblock1 = MicroblockPlugin.instance.blocks.register(args -> {
 			FakeBlock fakeBlock = new FakeBlock(multiMicroblockID);
 			fakeBlock.add(new Multiblock(fakeBlock));
-			fakeBlock.add(new Microblock(fakeBlock)).setOnPlace(blockPlaceEvent -> Optional.of(Vector3i.zero));
-			fakeBlock.add(new Collider()).setBoundingBox(new Cuboid(Vector3d.zero, new Vector3d(1, 1.5, 1)));
+			fakeBlock.add(new Microblock(fakeBlock)).setOnPlace(blockPlaceEvent -> Optional.of(Vector3D.ZERO));
+			fakeBlock.add(new Collider()).setBoundingBox(new Cuboid(Vector3D.ZERO, new Vector3D(1, 1.5, 1)));
 			return fakeBlock;
 		});
 

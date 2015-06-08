@@ -15,8 +15,9 @@ import nova.core.retention.Data;
 import nova.core.retention.Storable;
 import nova.core.util.Direction;
 import nova.core.util.math.MathUtil;
+import nova.core.util.math.VectorUtil;
 import nova.core.util.transform.shape.Cuboid;
-import nova.core.util.transform.vector.Vector3i;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -44,23 +45,21 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 	 * A sparse block map from (0,0) to (subdivision, subdivision) coordinates
 	 * of all the microblocks.
 	 */
-	private final Map<Vector3i, Microblock> blockMap = new HashMap<>();
+	private final Map<Vector3D, Microblock> blockMap = new HashMap<>();
 
 	public MicroblockContainer(Block block) {
 		super(block);
 	}
 
-	public static Vector3i centerPosition() {
-		return Vector3i.one.multiply((subdivision - 1) / 2);
+	public static Vector3D centerPosition() {
+		return VectorUtil.ONE.scalarMultiply((subdivision - 1) / 2);
 	}
 
-	public static Vector3i sidePosition(Direction direction) {
+	public static Vector3D sidePosition(Direction direction) {
 		return direction.toVector()
-			.add(Vector3i.one)
-			.toDouble()
-			.divide(2d)
-			.multiply(subdivision - 1)
-			.toInt();
+			.add(VectorUtil.ONE)
+			.scalarMultiply(0.5)
+			.scalarMultiply(subdivision - 1);
 	}
 
 	/**
@@ -91,7 +90,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 	/**
 	 * Puts a new microblock into this container.
 	 */
-	public boolean putNew(Vector3i localPos, Microblock microblock) {
+	public boolean putNew(Vector3D localPos, Microblock microblock) {
 		if (put(localPos, microblock)) {
 			//Invoke load event
 			microblock.block.loadEvent.publish(new Stateful.LoadEvent());
@@ -113,7 +112,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 	 * Puts a microblock directly into this container.
 	 * No events will be invoked.
 	 */
-	public boolean put(Vector3i localPos, Microblock microblock) {
+	public boolean put(Vector3D localPos, Microblock microblock) {
 		assert new Cuboid(0, 0, 0, subdivision, subdivision, subdivision).intersects(localPos);
 
 		if (!has(localPos)) {
@@ -136,7 +135,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 		return false;
 	}
 
-	public boolean remove(Vector3i localPos) {
+	public boolean remove(Vector3D localPos) {
 		if (has(localPos)) {
 			get(localPos).get().block.unloadEvent.publish(new Stateful.UnloadEvent());
 			blockMap.remove(localPos);
@@ -167,7 +166,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 		return get(sidePosition(side));
 	}
 
-	public boolean has(Vector3i localPos) {
+	public boolean has(Vector3D localPos) {
 		return blockMap.containsKey(localPos);
 	}
 
@@ -177,7 +176,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 	 * @param localPos Te local position within the microblock space
 	 * @return The optional microblock.
 	 */
-	public Optional<Microblock> get(Vector3i localPos) {
+	public Optional<Microblock> get(Vector3D localPos) {
 		return Optional.ofNullable(blockMap.get(localPos));
 	}
 
@@ -195,7 +194,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 	/**
 	 * @return A man of local positions to their microblocks.
 	 */
-	public Map<Vector3i, Microblock> map() {
+	public Map<Vector3D, Microblock> map() {
 		return blockMap;
 	}
 
@@ -223,7 +222,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 			int size = packet.readInt();
 
 			for (int i = 0; i < size; i++) {
-				Vector3i microPos = idToPos(packet.readInt());
+				Vector3D microPos = idToPos(packet.readInt());
 				String microID = packet.readString();
 
 				//Find microblock registered with such ID
@@ -286,18 +285,18 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 		data.put(saveID, microblockData);
 	}
 
-	public int posToID(Vector3i pos) {
+	public int posToID(Vector3D pos) {
 		int shift = MathUtil.log(subdivision, 2);
-		return (pos.x << (shift * 2)) | (pos.y << (shift)) | pos.z;
+		return ((int) pos.getX() << (shift * 2)) | ((int) pos.getY() << (shift)) | (int) pos.getZ();
 	}
 
-	public Vector3i idToPos(int id) {
+	public Vector3D idToPos(int id) {
 		int shift = MathUtil.log(subdivision, 2);
 		int propogateReference = 1 << (shift - 1);
 		int ones = propogateReference | (propogateReference - 1);
 		int z = id & ones;
 		int y = (id & (ones << shift)) >> shift;
 		int x = id >> (shift * 2);
-		return new Vector3i(x, y, z);
+		return new Vector3D(x, y, z);
 	}
 }
