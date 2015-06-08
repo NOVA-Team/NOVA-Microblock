@@ -9,7 +9,7 @@ import com.calclavia.microblock.operation.ContainerPlace;
 import nova.core.block.Block;
 import nova.core.util.math.Vector3DUtil;
 import nova.core.util.shape.Cuboid;
-import nova.internal.launch.NovaLauncher;
+import nova.internal.core.launch.NovaLauncher;
 import nova.testutils.FakeWorld;
 import nova.wrappertests.NovaLauncherTestFactory;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
