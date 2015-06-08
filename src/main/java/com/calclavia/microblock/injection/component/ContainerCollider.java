@@ -7,7 +7,7 @@ import nova.core.component.misc.Collider;
 import nova.core.entity.Entity;
 import nova.core.network.NetworkTarget;
 import nova.core.util.RayTracer;
-import nova.core.util.transform.shape.Cuboid;
+import nova.core.util.shape.Cuboid;
 
 import java.util.Collections;
 import java.util.Optional;

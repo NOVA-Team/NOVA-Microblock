@@ -8,10 +8,10 @@ import com.calclavia.microblock.multi.Multiblock;
 import com.calclavia.microblock.multi.MultiblockContainer;
 import nova.core.block.Block;
 import nova.core.network.NetworkTarget;
-import nova.core.util.math.VectorUtil;
-import nova.core.util.transform.shape.Cuboid;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import nova.core.util.math.Vector3DUtil;
+import nova.core.util.shape.Cuboid;
 import nova.core.world.World;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -102,7 +102,7 @@ public class ContainerPlace extends ContainerOperation {
 
 							Set<Vector3D> localPositions = occupiedSpace.stream()
 								.map(vec -> vec.subtract(relativeBlockVec)) //Maps positions relative to its own block space
-								.filter(vec -> new Cuboid(Vector3D.ZERO, VectorUtil.ONE).intersects(vec)) //Filters blocks relevant to the relativeBlockVec
+								.filter(vec -> new Cuboid(Vector3D.ZERO, Vector3DUtil.ONE).intersects(vec)) //Filters blocks relevant to the relativeBlockVec
 								.map(vec -> vec.scalarMultiply(microblockContainer.subdivision)) //Multiply all unit vectors by subdivision size, converting it to local vectors.
 								.collect(Collectors.toSet());
 

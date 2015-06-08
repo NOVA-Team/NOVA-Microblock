@@ -8,9 +8,9 @@ import nova.core.block.Block;
 import nova.core.entity.Entity;
 import nova.core.util.Direction;
 import nova.core.util.RayTracer;
-import nova.core.util.transform.shape.Cuboid;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import nova.core.util.shape.Cuboid;
 import nova.core.world.World;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.Optional;
 import java.util.stream.Stream;

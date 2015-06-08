@@ -2,17 +2,17 @@ package com.calclavia.microblock.test;
 
 import com.calclavia.microblock.MicroblockPlugin;
 import com.calclavia.microblock.common.BlockContainer;
-import com.calclavia.microblock.operation.ContainerPlace;
 import com.calclavia.microblock.micro.Microblock;
 import com.calclavia.microblock.micro.MicroblockContainer;
 import com.calclavia.microblock.multi.MultiblockContainer;
+import com.calclavia.microblock.operation.ContainerPlace;
 import nova.core.block.Block;
-import nova.core.util.math.VectorUtil;
-import nova.core.util.transform.shape.Cuboid;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import nova.core.util.math.Vector3DUtil;
+import nova.core.util.shape.Cuboid;
 import nova.internal.launch.NovaLauncher;
 import nova.testutils.FakeWorld;
 import nova.wrappertests.NovaLauncherTestFactory;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -28,7 +28,7 @@ public class MicroblockTest {
 	public void testVectorToID() {
 		MicroblockContainer microblockContainer = new MicroblockContainer(null);
 
-		new Cuboid(Vector3D.ZERO, VectorUtil.ONE.scalarMultiply(microblockContainer.subdivision)).forEach(pos -> {
+		new Cuboid(Vector3D.ZERO, Vector3DUtil.ONE.scalarMultiply(microblockContainer.subdivision)).forEach(pos -> {
 			int id = microblockContainer.posToID(pos);
 			assertThat(microblockContainer.idToPos(id)).isEqualTo(pos);
 		});
@@ -130,13 +130,13 @@ public class MicroblockTest {
 		assertThat(microblockContainerA.map().size()).isEqualTo(sub * sub * sub);
 
 		Microblock sampleA = microblockContainerA.get(new Vector3D(0, 0, 0)).get();
-		new Cuboid(Vector3D.ZERO, VectorUtil.ONE.scalarMultiply(sub)).forEach(pos -> assertThat(microblockContainerA.get(pos)).contains(sampleA));
+		new Cuboid(Vector3D.ZERO, Vector3DUtil.ONE.scalarMultiply(sub)).forEach(pos -> assertThat(microblockContainerA.get(pos)).contains(sampleA));
 
 		//Check top part
 		MicroblockContainer microblockContainerB = blockB.get(MicroblockContainer.class);
 		Microblock sampleB = microblockContainerB.get(new Vector3D(0, 0, 0)).get();
 		assertThat(microblockContainerB.map().size()).isEqualTo(sub * sub / 2 * sub);
 		new Cuboid(Vector3D.ZERO, new Vector3D(sub, sub / 2, sub)).forEach(pos -> assertThat(microblockContainerB.get(pos)).contains(sampleB));
-		new Cuboid(new Vector3D(sub, sub / 2, sub), VectorUtil.ONE.scalarMultiply(sub)).forEach(pos -> assertThat(microblockContainerB.get(pos)).isEmpty());
+		new Cuboid(new Vector3D(sub, sub / 2, sub), Vector3DUtil.ONE.scalarMultiply(sub)).forEach(pos -> assertThat(microblockContainerB.get(pos)).isEmpty());
 	}
 }

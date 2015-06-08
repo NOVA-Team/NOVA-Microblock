@@ -7,9 +7,9 @@ import nova.core.block.BlockFactory;
 import nova.core.component.misc.Collider;
 import nova.core.loader.Loadable;
 import nova.core.loader.NovaMod;
-import nova.core.util.transform.shape.Cuboid;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import nova.core.util.shape.Cuboid;
 import nova.testutils.FakeBlock;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.Optional;
 

@@ -5,7 +5,7 @@ import nova.core.block.Block;
 import nova.core.component.Require;
 import nova.core.component.misc.Collider;
 import nova.core.util.math.MathUtil;
-import nova.core.util.transform.shape.Cuboid;
+import nova.core.util.shape.Cuboid;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.HashSet;

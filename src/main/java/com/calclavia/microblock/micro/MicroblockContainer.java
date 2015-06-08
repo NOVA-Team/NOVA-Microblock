@@ -15,8 +15,8 @@ import nova.core.retention.Data;
 import nova.core.retention.Storable;
 import nova.core.util.Direction;
 import nova.core.util.math.MathUtil;
-import nova.core.util.math.VectorUtil;
-import nova.core.util.transform.shape.Cuboid;
+import nova.core.util.math.Vector3DUtil;
+import nova.core.util.shape.Cuboid;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.Collection;
@@ -52,12 +52,12 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 	}
 
 	public static Vector3D centerPosition() {
-		return VectorUtil.ONE.scalarMultiply((subdivision - 1) / 2);
+		return Vector3DUtil.ONE.scalarMultiply((subdivision - 1) / 2);
 	}
 
 	public static Vector3D sidePosition(Direction direction) {
 		return direction.toVector()
-			.add(VectorUtil.ONE)
+			.add(Vector3DUtil.ONE)
 			.scalarMultiply(0.5)
 			.scalarMultiply(subdivision - 1);
 	}
