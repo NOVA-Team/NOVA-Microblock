@@ -35,11 +35,11 @@ public class ContainerCollider extends Collider {
 						.rayTraceBlocks(Collections.singleton(blockContainer))
 						.findFirst();
 
-					return result.map(res -> res.hitCuboid.subtract(container.transform().position())).orElseGet(() -> Cuboid.zero);
+					return result.map(res -> res.hitCuboid.subtract(container.transform().position())).orElseGet(() -> Cuboid.ZERO);
 				}
 
 				//TODO: Is this the right thing to return?
-				return Cuboid.zero;
+				return Cuboid.ONE;
 			});
 
 			setOcclusionBoxes(entity ->

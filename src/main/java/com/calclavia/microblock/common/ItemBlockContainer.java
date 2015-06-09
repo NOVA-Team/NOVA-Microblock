@@ -14,8 +14,9 @@ import nova.core.item.ItemBlock;
 import nova.core.network.NetworkTarget;
 import nova.core.util.Direction;
 import nova.core.util.RayTracer;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import nova.core.util.math.Vector3DUtil;
 import nova.core.world.World;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.Optional;
 
@@ -43,7 +44,7 @@ public class ItemBlockContainer extends ItemBlock {
 							block ->
 							{
 								if (block.has(MicroblockContainer.class) || block.has(MultiblockContainer.class)) {
-									placeContainer(evt.entity, evt.entity.world(), result.block.position(), result.side, result.hit.subtract(result.block.position()));
+									placeContainer(evt.entity, evt.entity.world(), result.block.position(), result.side, Vector3DUtil.floor(result.hit.subtract(result.block.position())));
 								}
 							}
 						);
