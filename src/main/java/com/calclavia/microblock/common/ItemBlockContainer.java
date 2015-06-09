@@ -14,9 +14,9 @@ import nova.core.item.ItemBlock;
 import nova.core.network.NetworkTarget;
 import nova.core.util.Direction;
 import nova.core.util.RayTracer;
-import nova.core.util.transform.vector.Vector3d;
-import nova.core.util.transform.vector.Vector3i;
+import nova.core.util.math.Vector3DUtil;
 import nova.core.world.World;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.Optional;
 
@@ -38,13 +38,13 @@ public class ItemBlockContainer extends ItemBlock {
 					Optional<RayTracer.RayTraceBlockResult> hit = rayTracer.rayTraceBlocks(evt.entity.world()).findFirst();
 					if (hit.isPresent()) {
 						RayTracer.RayTraceBlockResult result = hit.get();
-						Vector3i placePos = result.block.position().add(result.side.toVector());
+						Vector3D placePos = result.block.position().add(result.side.toVector());
 						Optional<Block> opBlock = evt.entity.world().getBlock(placePos);
 						opBlock.ifPresent(
 							block ->
 							{
 								if (block.has(MicroblockContainer.class) || block.has(MultiblockContainer.class)) {
-									placeContainer(evt.entity, evt.entity.world(), result.block.position(), result.side, result.hit.subtract(result.block.position().toDouble()));
+									placeContainer(evt.entity, evt.entity.world(), result.block.position(), result.side, Vector3DUtil.floor(result.hit.subtract(result.block.position())));
 								}
 							}
 						);
@@ -56,9 +56,9 @@ public class ItemBlockContainer extends ItemBlock {
 		useEvent.add(evt -> evt.action = placeContainer(evt.entity, evt.entity.world(), evt.position, evt.side, evt.hit));
 	}
 
-	public boolean placeContainer(Entity entity, World world, Vector3i position, Direction side, Vector3d hit) {
+	public boolean placeContainer(Entity entity, World world, Vector3D position, Direction side, Vector3D hit) {
 		if (NetworkTarget.Side.get().isServer()) {
-			Vector3i placePos = position.add(side.toVector());
+			Vector3D placePos = position.add(side.toVector());
 
 			Optional<Block> checkBlock = world.getBlock(placePos);
 			if (checkBlock.isPresent()) {

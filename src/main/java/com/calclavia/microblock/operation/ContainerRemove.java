@@ -8,10 +8,9 @@ import nova.core.block.Block;
 import nova.core.entity.Entity;
 import nova.core.util.Direction;
 import nova.core.util.RayTracer;
-import nova.core.util.transform.shape.Cuboid;
-import nova.core.util.transform.vector.Vector3d;
-import nova.core.util.transform.vector.Vector3i;
+import nova.core.util.shape.Cuboid;
 import nova.core.world.World;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -22,9 +21,9 @@ import java.util.stream.Stream;
  * @author Calclavia
  */
 public class ContainerRemove extends ContainerOperation {
-	private final Vector3i localPos;
+	private final Vector3D localPos;
 
-	public ContainerRemove(World world, Vector3i globalPos, Vector3i localPos) {
+	public ContainerRemove(World world, Vector3D globalPos, Vector3D localPos) {
 		super(world, globalPos);
 		this.localPos = localPos;
 	}
@@ -88,7 +87,7 @@ public class ContainerRemove extends ContainerOperation {
 	public static class RayTraceMicroblockResult extends RayTracer.RayTraceResult {
 		public final Microblock microblock;
 
-		public RayTraceMicroblockResult(Vector3d hit, double distance, Direction side, Cuboid hitCuboid, Microblock microblock) {
+		public RayTraceMicroblockResult(Vector3D hit, double distance, Direction side, Cuboid hitCuboid, Microblock microblock) {
 			super(hit, distance, side, hitCuboid);
 			this.microblock = microblock;
 		}

@@ -1,6 +1,6 @@
 package com.calclavia.microblock.operation;
 
-import nova.core.util.transform.vector.Vector3i;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import nova.core.world.World;
 
 /**
@@ -8,12 +8,12 @@ import nova.core.world.World;
  */
 public abstract class ContainerOperation {
 	protected final World world;
-	protected final Vector3i globalPos;
+	protected final Vector3D globalPos;
 
 	//Did the operation fail?
 	public boolean fail = false;
 
-	public ContainerOperation(World world, Vector3i globalPos) {
+	public ContainerOperation(World world, Vector3D globalPos) {
 		this.world = world;
 		this.globalPos = globalPos;
 	}

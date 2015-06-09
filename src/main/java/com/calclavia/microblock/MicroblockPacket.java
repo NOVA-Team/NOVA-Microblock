@@ -8,8 +8,8 @@ import nova.core.network.NetworkException;
 import nova.core.network.Packet;
 import nova.core.network.Syncable;
 import nova.core.network.handler.PacketHandler;
-import nova.core.util.transform.vector.Vector3i;
 import nova.core.world.World;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.Optional;
 
@@ -20,8 +20,8 @@ public class MicroblockPacket implements PacketHandler<Microblock> {
 
 	@Override
 	public void read(Packet packet) {
-		Vector3i globalPos = new Vector3i(packet.readInt(), packet.readInt(), packet.readInt());
-		Vector3i localPos = new Vector3i(packet.readInt(), packet.readInt(), packet.readInt());
+		Vector3D globalPos = new Vector3D(packet.readInt(), packet.readInt(), packet.readInt());
+		Vector3D localPos = new Vector3D(packet.readInt(), packet.readInt(), packet.readInt());
 
 		World world = packet.player().entity().world();
 		Optional<Block> opBlock = world.getBlock(globalPos);
@@ -55,16 +55,16 @@ public class MicroblockPacket implements PacketHandler<Microblock> {
 	@Override
 	public void write(Microblock microblock, Packet packet) {
 		BlockContainer container = (BlockContainer) microblock.containers.stream().findFirst().get().block;
-		Vector3i position = container.position();
+		Vector3D position = container.position();
 		//Global Pos
-		packet.writeInt(position.x);
-		packet.writeInt(position.y);
-		packet.writeInt(position.z);
+		packet.writeInt((int) position.getX());
+		packet.writeInt((int) position.getY());
+		packet.writeInt((int) position.getZ());
 		//Local pos
-		Vector3i localPos = microblock.position;
-		packet.writeInt(localPos.x);
-		packet.writeInt(localPos.y);
-		packet.writeInt(localPos.z);
+		Vector3D localPos = microblock.position;
+		packet.writeInt((int) localPos.getX());
+		packet.writeInt((int) localPos.getY());
+		packet.writeInt((int) localPos.getZ());
 		//Write the microblock data
 		((Syncable) microblock.block).write(packet);
 	}

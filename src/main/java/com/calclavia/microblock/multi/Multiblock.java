@@ -5,8 +5,8 @@ import nova.core.block.Block;
 import nova.core.component.Require;
 import nova.core.component.misc.Collider;
 import nova.core.util.math.MathUtil;
-import nova.core.util.transform.shape.Cuboid;
-import nova.core.util.transform.vector.Vector3d;
+import nova.core.util.shape.Cuboid;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -33,19 +33,19 @@ public class Multiblock extends BlockComponent {
 	 * @param blockLength The length of each microblock/block. Used to calculate collision subdivision.
 	 * @return A set of vectors relative to the center block's bottom corner.
 	 */
-	public Set<Vector3d> getOccupiedSpace(float blockLength) {
+	public Set<Vector3D> getOccupiedSpace(float blockLength) {
 		Set<Cuboid> collisionBoxes = block.get(Collider.class).occlusionBoxes.apply(Optional.empty());
 
-		Set<Vector3d> set = new HashSet<>();
+		Set<Vector3D> set = new HashSet<>();
 		int truncation = (int) (1 / blockLength);
 
 		collisionBoxes.forEach(
 			cuboid -> {
 				//Truncate bounds to nearest block length
-				for (double x = MathUtil.truncate(cuboid.min.x, truncation); x < cuboid.max.x; x += blockLength) {
-					for (double y = MathUtil.truncate(cuboid.min.y, truncation); y < cuboid.max.y; y += blockLength) {
-						for (double z = MathUtil.truncate(cuboid.min.z, truncation); z < cuboid.max.z; z += blockLength) {
-							set.add(new Vector3d(x, y, z));
+				for (double x = MathUtil.truncate(cuboid.min.getX(), truncation); x < cuboid.max.getX(); x += blockLength) {
+					for (double y = MathUtil.truncate(cuboid.min.getY(), truncation); y < cuboid.max.getY(); y += blockLength) {
+						for (double z = MathUtil.truncate(cuboid.min.getZ(), truncation); z < cuboid.max.getZ(); z += blockLength) {
+							set.add(new Vector3D(x, y, z));
 						}
 					}
 				}

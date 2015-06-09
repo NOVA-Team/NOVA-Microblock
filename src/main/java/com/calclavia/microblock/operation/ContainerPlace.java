@@ -8,10 +8,10 @@ import com.calclavia.microblock.multi.Multiblock;
 import com.calclavia.microblock.multi.MultiblockContainer;
 import nova.core.block.Block;
 import nova.core.network.NetworkTarget;
-import nova.core.util.transform.shape.Cuboid;
-import nova.core.util.transform.vector.Vector3d;
-import nova.core.util.transform.vector.Vector3i;
+import nova.core.util.math.Vector3DUtil;
+import nova.core.util.shape.Cuboid;
 import nova.core.world.World;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -26,10 +26,10 @@ import java.util.stream.Collectors;
  */
 public class ContainerPlace extends ContainerOperation {
 	//Positions that the operation handled.
-	public final Set<Vector3i> handledPositions = new HashSet<>();
+	public final Set<Vector3D> handledPositions = new HashSet<>();
 	private final MicroblockPlugin.MicroblockInjectFactory injectFactory;
 	private final Block newBlock;
-	private final Optional<Vector3i> localPos;
+	private final Optional<Vector3D> localPos;
 
 	/**
 	 * Create a microblock operation handler
@@ -39,14 +39,14 @@ public class ContainerPlace extends ContainerOperation {
 	 * @param globalPos The world position to handle wth block
 	 * @param evt The block place event
 	 */
-	public ContainerPlace(World world, MicroblockPlugin.MicroblockInjectFactory injectFactory, Vector3i globalPos, Block.BlockPlaceEvent evt) {
+	public ContainerPlace(World world, MicroblockPlugin.MicroblockInjectFactory injectFactory, Vector3D globalPos, Block.BlockPlaceEvent evt) {
 		super(world, globalPos);
 		this.injectFactory = injectFactory;
 		this.newBlock = injectFactory.containedFactory.makeBlock();
 		this.localPos = newBlock.get(Microblock.class).onPlace.apply(evt);
 	}
 
-	public ContainerPlace(World world, MicroblockPlugin.MicroblockInjectFactory injectFactory, Vector3i globalPos) {
+	public ContainerPlace(World world, MicroblockPlugin.MicroblockInjectFactory injectFactory, Vector3D globalPos) {
 		super(world, globalPos);
 		this.injectFactory = injectFactory;
 		this.newBlock = injectFactory.containedFactory.makeBlock();
@@ -82,12 +82,11 @@ public class ContainerPlace extends ContainerOperation {
 					Multiblock multiblock = newBlock.get(Multiblock.class);
 
 					//A set of world block space that are being occupied
-					Set<Vector3i> blockSpace = multiblock.getOccupiedSpace(1)
+					Set<Vector3D> blockSpace = multiblock.getOccupiedSpace(1)
 						.stream()
-						.map(Vector3d::toInt)
 						.collect(Collectors.toSet());
 
-					Set<Vector3d> occupiedSpace = multiblock.getOccupiedSpace(1f / microblockContainer.subdivision);
+					Set<Vector3D> occupiedSpace = multiblock.getOccupiedSpace(1f / microblockContainer.subdivision);
 
 					populateBlockSpace(blockSpace,
 						(relativeBlockVec, outerContainerBlock) -> {
@@ -101,11 +100,10 @@ public class ContainerPlace extends ContainerOperation {
 							//Add transform component
 							innerContainer.add(outerContainerBlock.transform());
 
-							Set<Vector3i> localPositions = occupiedSpace.stream()
-								.map(vec -> vec.subtract(relativeBlockVec.toDouble())) //Maps positions relative to its own block space
-								.filter(vec -> new Cuboid(Vector3i.zero, Vector3i.one).intersects(vec)) //Filters blocks relevant to the relativeBlockVec
-								.map(vec -> vec.multiply(microblockContainer.subdivision))//Multiply all unit vectors by subdivision size, converting it to local vectors.
-								.map(Vector3d::toInt)
+							Set<Vector3D> localPositions = occupiedSpace.stream()
+								.map(vec -> vec.subtract(relativeBlockVec)) //Maps positions relative to its own block space
+								.filter(vec -> new Cuboid(Vector3D.ZERO, Vector3DUtil.ONE).intersects(vec)) //Filters blocks relevant to the relativeBlockVec
+								.map(vec -> vec.scalarMultiply(microblockContainer.subdivision)) //Multiply all unit vectors by subdivision size, converting it to local vectors.
 								.collect(Collectors.toSet());
 
 							localPositions.forEach(vec -> {
@@ -134,9 +132,8 @@ public class ContainerPlace extends ContainerOperation {
 				Multiblock multiblock = newBlock.get(Multiblock.class);
 
 				//Build multiblock without microblocks
-				Set<Vector3i> blockSpace = multiblock.getOccupiedSpace(1)
+				Set<Vector3D> blockSpace = multiblock.getOccupiedSpace(1)
 					.stream()
-					.map(Vector3d::toInt)
 					.collect(Collectors.toSet());
 
 				populateBlockSpace(blockSpace,
@@ -174,7 +171,7 @@ public class ContainerPlace extends ContainerOperation {
 	 * @param func The callback function called after a container block is set.
 	 * @return A set of containers actually placed into the world.
 	 */
-	protected Set<Block> populateBlockSpace(Set<Vector3i> blockSpace, BiConsumer<Vector3i, Block> func) {
+	protected Set<Block> populateBlockSpace(Set<Vector3D> blockSpace, BiConsumer<Vector3D, Block> func) {
 		Set<Block> populated = new HashSet<>();
 
 		blockSpace.forEach(relativeBlockVec -> {
@@ -197,7 +194,7 @@ public class ContainerPlace extends ContainerOperation {
 	 * @param pos The position to set the container
 	 * @return The container block
 	 */
-	public Optional<Block> getOrSetContainer(Vector3i pos) {
+	public Optional<Block> getOrSetContainer(Vector3D pos) {
 
 		Optional<Block> opCheckBlock = world.getBlock(pos);
 
