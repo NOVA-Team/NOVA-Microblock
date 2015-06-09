@@ -1,6 +1,6 @@
 package com.calclavia.microblock.common;
 
-import nova.internal.dummy.Wrapper;
+import nova.internal.core.dummy.Wrapper;
 
 /**
  * @author Calclavia
