@@ -28,7 +28,6 @@ import java.util.stream.Stream;
 
 /**
  * A component added to microblocks
- *
  * @author Calclavia
  */
 public class MicroblockContainer extends BlockComponent implements Syncable, Storable, Updater {
@@ -56,10 +55,12 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 	}
 
 	public static Vector3D sidePosition(Direction direction) {
-		return direction.toVector()
+		return Vector3DUtil.floor(
+			direction.toVector()
 			.add(Vector3DUtil.ONE)
 			.scalarMultiply(0.5)
-			.scalarMultiply(subdivision - 1);
+				.scalarMultiply(subdivision - 1)
+		);
 	}
 
 	/**
@@ -71,7 +72,6 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 
 	/**
 	 * Gets a collection of all components of the same type in all microblocks.
-	 *
 	 * @param componentClass The component class
 	 * @param <C> The component type
 	 * @return Gets a stream of components in the microblocks
@@ -157,7 +157,6 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 
 	/**
 	 * Gets a microblock based on the slot.
-	 *
 	 * @param side The side of the microblock
 	 * @return The microblock that is occupying this specific side.
 	 */
@@ -172,7 +171,6 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 
 	/**
 	 * Gets the microblock at a specific internal position.
-	 *
 	 * @param localPos Te local position within the microblock space
 	 * @return The optional microblock.
 	 */
@@ -182,7 +180,6 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 
 	/**
 	 * Gets a single microblock that converts a specific region within the microblock space.
-	 *
 	 * @param region A region in the microblock space
 	 * @return A single microblock if that microblock occupies the entire region.
 	 */
