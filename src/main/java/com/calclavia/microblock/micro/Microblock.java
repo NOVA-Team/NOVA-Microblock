@@ -32,7 +32,7 @@ public class Microblock extends BlockComponent {
 	 *
 	 * A microblock MUST be able to return its local position based on its placement.
 	 */
-	public Function<Block.BlockPlaceEvent, Optional<Vector3D>> onPlace = evt -> Optional.empty();
+	public Function<Block.PlaceEvent, Optional<Vector3D>> onPlace = evt -> Optional.empty();
 	/**
 	 * The local position within this microblock subspace. This value is read-only.
 	 */
@@ -46,7 +46,7 @@ public class Microblock extends BlockComponent {
 		super(block);
 	}
 
-	public Microblock setOnPlace(Function<Block.BlockPlaceEvent, Optional<Vector3D>> onPlace) {
+	public Microblock setOnPlace(Function<Block.PlaceEvent, Optional<Vector3D>> onPlace) {
 		this.onPlace = onPlace;
 		return this;
 	}

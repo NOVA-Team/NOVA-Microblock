@@ -28,7 +28,7 @@ public class ContainerRemove extends ContainerOperation {
 		this.localPos = localPos;
 	}
 
-	public static void interactEventHandler(Block block, Block.BlockRemoveEvent evt) {
+	public static void interactEventHandler(Block block, Block.RemoveEvent evt) {
 		if (evt.entity.isPresent()) {
 			Entity player = evt.entity.get();
 

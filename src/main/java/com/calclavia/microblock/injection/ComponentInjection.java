@@ -39,13 +39,7 @@ public class ComponentInjection extends Manager<ComponentInjector, Factory<Compo
 
 		//TODO: Maybe events should not be injected this way.
 		//Forward events to -> from (container -> contained)
-		container.loadEvent.add(contained.loadEvent::publish);
-		container.unloadEvent.add(contained.unloadEvent::publish);
-		container.leftClickEvent.add(contained.leftClickEvent::publish);
-		container.rightClickEvent.add(contained.rightClickEvent::publish);
-		container.removeEvent.add(contained.removeEvent::publish);
-		container.placeEvent.add(contained.placeEvent::publish);
-		container.neighborChangeEvent.add(contained.neighborChangeEvent::publish);
+		container.events.add(contained.events::publish);
 	}
 
 	/**

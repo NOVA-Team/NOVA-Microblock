@@ -32,7 +32,7 @@ public class BlockContainer extends Block implements Updater, Stateful, Storable
 			printComponents(components());
 		});*/
 
-		removeEvent.add(evt -> ContainerRemove.interactEventHandler(this, evt));
+		events.add(evt -> ContainerRemove.interactEventHandler(this, evt), RemoveEvent.class);
 	}
 
 	private void printComponents(Collection<Component> components) {

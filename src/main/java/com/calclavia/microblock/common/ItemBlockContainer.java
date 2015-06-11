@@ -69,7 +69,7 @@ public class ItemBlockContainer extends ItemBlock {
 
 				if (dummy.has(Microblock.class)) {
 					//Ask the microblock about how it would like to be placed.
-					Block.BlockPlaceEvent evt = new Block.BlockPlaceEvent(entity, side, hit, this);
+					Block.PlaceEvent evt = new Block.PlaceEvent(entity, side, hit, this);
 					boolean b = new ContainerPlace(world, injectFactory, placePos, evt).operate();
 					System.out.println("Attempt to place microblock: " + b);
 					return b;

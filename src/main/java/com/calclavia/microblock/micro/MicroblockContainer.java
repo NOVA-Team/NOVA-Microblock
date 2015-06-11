@@ -93,7 +93,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 	public boolean putNew(Vector3D localPos, Microblock microblock) {
 		if (put(localPos, microblock)) {
 			//Invoke load event
-			microblock.block.loadEvent.publish(new Stateful.LoadEvent());
+			microblock.block.events.publish(new Stateful.LoadEvent());
 
 			//Invoke neighbor change event
 			microblocks().stream()
@@ -137,7 +137,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 
 	public boolean remove(Vector3D localPos) {
 		if (has(localPos)) {
-			get(localPos).get().block.unloadEvent.publish(new Stateful.UnloadEvent());
+			get(localPos).get().block.events.publish(new Stateful.UnloadEvent());
 			blockMap.remove(localPos);
 
 			if (microblocks().size() > 0 && MicroblockPlugin.instance.network.isServer()) {
@@ -264,7 +264,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 			Block savedBlock = (Block) Data.unserialize((Data) v);
 			Microblock microblock = savedBlock.get(Microblock.class);
 			put(idToPos(Integer.parseInt(k)), microblock);
-			microblock.block.loadEvent.publish(new Stateful.LoadEvent());
+			microblock.block.events.publish(new Stateful.LoadEvent());
 		});
 	}
 

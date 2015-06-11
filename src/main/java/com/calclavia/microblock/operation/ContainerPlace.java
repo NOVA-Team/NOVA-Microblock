@@ -39,7 +39,7 @@ public class ContainerPlace extends ContainerOperation {
 	 * @param globalPos The world position to handle wth block
 	 * @param evt The block place event
 	 */
-	public ContainerPlace(World world, MicroblockPlugin.MicroblockInjectFactory injectFactory, Vector3D globalPos, Block.BlockPlaceEvent evt) {
+	public ContainerPlace(World world, MicroblockPlugin.MicroblockInjectFactory injectFactory, Vector3D globalPos, Block.PlaceEvent evt) {
 		super(world, globalPos);
 		this.injectFactory = injectFactory;
 		this.newBlock = injectFactory.containedFactory.makeBlock();

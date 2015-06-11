@@ -55,7 +55,7 @@ public class MicroblockTest {
 		Vector3D testPosition = new Vector3D(5, 5, 5);
 
 		MicroblockPlugin.MicroblockInjectFactory injectionFactory = (MicroblockPlugin.MicroblockInjectFactory) TestMicroblockMod.singleMicroblock;
-		ContainerPlace microblockPlace = new ContainerPlace(fakeWorld, injectionFactory, testPosition, new Block.BlockPlaceEvent(null, null, null, null));
+		ContainerPlace microblockPlace = new ContainerPlace(fakeWorld, injectionFactory, testPosition, new Block.PlaceEvent(null, null, null, null));
 
 		assertThat(microblockPlace.operate()).isTrue();
 
@@ -108,7 +108,7 @@ public class MicroblockTest {
 		Vector3D testPosition = new Vector3D(5, 5, 5);
 
 		MicroblockPlugin.MicroblockInjectFactory injectionFactory = (MicroblockPlugin.MicroblockInjectFactory) TestMicroblockMod.multiMicroblock1;
-		ContainerPlace microblockPlace = new ContainerPlace(fakeWorld, injectionFactory, testPosition, new Block.BlockPlaceEvent(null, null, null, null));
+		ContainerPlace microblockPlace = new ContainerPlace(fakeWorld, injectionFactory, testPosition, new Block.PlaceEvent(null, null, null, null));
 
 		assertThat(microblockPlace.operate()).isTrue();
 
