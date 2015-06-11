@@ -30,7 +30,7 @@ public class ItemBlockContainer extends ItemBlock {
 	public ItemBlockContainer(BlockFactory blockFactory) {
 		super(blockFactory);
 
-		rightClickEvent.add(
+		events.add(
 			evt -> {
 				if (NetworkTarget.Side.get().isServer()) {
 					//Do ray trace to find which block it hit
@@ -50,10 +50,10 @@ public class ItemBlockContainer extends ItemBlock {
 						);
 					}
 				}
-			}
+			}, RightClickEvent.class
 		);
 
-		useEvent.add(evt -> evt.action = placeContainer(evt.entity, evt.entity.world(), evt.position, evt.side, evt.hit));
+		events.add(evt -> evt.action = placeContainer(evt.entity, evt.entity.world(), evt.position, evt.side, evt.hit), UseEvent.class);
 	}
 
 	public boolean placeContainer(Entity entity, World world, Vector3D position, Direction side, Vector3D hit) {
