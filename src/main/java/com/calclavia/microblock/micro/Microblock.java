@@ -2,7 +2,6 @@ package com.calclavia.microblock.micro;
 
 import com.calclavia.microblock.common.BlockComponent;
 import nova.core.block.Block;
-import nova.core.event.EventBus;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.HashSet;
@@ -20,8 +19,6 @@ import java.util.function.Function;
  * @author Calclavia
  */
 public class Microblock extends BlockComponent {
-
-	public final EventBus<Block.NeighborChangeEvent> microblockChangeEvent = new EventBus<>();
 
 	/**
 	 * The containers holding the block.
@@ -49,5 +46,11 @@ public class Microblock extends BlockComponent {
 	public Microblock setOnPlace(Function<Block.PlaceEvent, Optional<Vector3D>> onPlace) {
 		this.onPlace = onPlace;
 		return this;
+	}
+
+	public static class MicroblockChangeEvent extends Block.NeighborChangeEvent {
+		public MicroblockChangeEvent(Optional<Vector3D> neighborPosition) {
+			super(neighborPosition);
+		}
 	}
 }
