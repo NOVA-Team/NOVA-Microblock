@@ -64,7 +64,7 @@ public class ItemBlockContainer extends ItemBlock {
 			Vector3D placePos = position.add(side.toVector());
 
 			Optional<Block> checkBlock = world.getBlock(placePos);
-			if (checkBlock.isPresent() && checkBlock.get().canReplace()) {
+			if (checkBlock.isPresent()) {
 
 				MicroblockPlugin.MicroblockInjectFactory injectFactory = (MicroblockPlugin.MicroblockInjectFactory) this.blockFactory;
 				BlockFactory containedFactory = injectFactory.containedFactory;
