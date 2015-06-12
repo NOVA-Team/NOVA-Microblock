@@ -56,8 +56,8 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 	public static Vector3D sidePosition(Direction direction) {
 		return Vector3DUtil.floor(
 			direction.toVector()
-			.add(Vector3DUtil.ONE)
-			.scalarMultiply(0.5)
+				.add(Vector3DUtil.ONE)
+				.scalarMultiply(0.5)
 				.scalarMultiply(subdivision - 1)
 		);
 	}
@@ -125,7 +125,8 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 			MicroblockPlugin.instance.componentInjection.injectToContainer(microblock.block, block);
 
 			if (MicroblockPlugin.instance.network.isServer()) {
-				MicroblockPlugin.instance.network.sync(block);
+				//Wait one tick before sync
+				MicroblockPlugin.instance.ticker.preQueue(() -> MicroblockPlugin.instance.network.sync(block));
 			}
 
 			return true;

@@ -26,6 +26,7 @@ import nova.core.item.ItemManager;
 import nova.core.loader.Loadable;
 import nova.core.loader.NovaMod;
 import nova.core.network.NetworkManager;
+import nova.internal.core.tick.UpdateTicker;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
@@ -33,7 +34,6 @@ import java.util.Map;
 
 /**
  * Make sure your mod loads AFTER this mod, if your mod uses microblocks or multiblock.
- *
  * @author Calclavia
  */
 @NovaMod(id = "microblock", name = "Microblock", version = "0.0.1", novaVersion = "0.0.1", modules = { ComponentInjectionModule.class }, isPlugin = true)
@@ -44,6 +44,7 @@ public class MicroblockPlugin implements Loadable {
 	public final ComponentInjection componentInjection;
 	public final ClientManager client;
 	public final NetworkManager network;
+	public final UpdateTicker.SynchronizedTicker ticker;
 	public final ItemManager items;
 	public final BlockManager blocks;
 	public final Logger logger;
@@ -51,10 +52,11 @@ public class MicroblockPlugin implements Loadable {
 	public final Map<String, MicroblockInjectFactory> containedIDToFactory = new HashMap<>();
 	public final Map<BlockFactory, MicroblockInjectFactory> containedFactoryToFactory = new HashMap<>();
 
-	public MicroblockPlugin(ComponentInjection componentInjection, ClientManager client, NetworkManager network, ItemManager items, BlockManager blocks, Logger logger) {
+	public MicroblockPlugin(ComponentInjection componentInjection, ClientManager client, NetworkManager network, UpdateTicker.SynchronizedTicker ticker, ItemManager items, BlockManager blocks, Logger logger) {
 		this.componentInjection = componentInjection;
 		this.client = client;
 		this.network = network;
+		this.ticker = ticker;
 		this.items = items;
 		this.blocks = blocks;
 		this.logger = logger;
