@@ -16,7 +16,6 @@ import java.util.Collection;
 
 /**
  * A block container can forward events, components and methods to their respective microblock or multiblocks
- *
  * @author Calclavia
  */
 public class BlockContainer extends Block implements Updater, Stateful, Storable, Syncable {
@@ -32,7 +31,7 @@ public class BlockContainer extends Block implements Updater, Stateful, Storable
 			printComponents(components());
 		});*/
 
-		events.add(evt -> ContainerRemove.interactEventHandler(this, evt), RemoveEvent.class);
+		events.on(RemoveEvent.class).bind(evt -> ContainerRemove.interactEventHandler(this, evt));
 	}
 
 	private void printComponents(Collection<Component> components) {

@@ -22,7 +22,6 @@ import java.util.Optional;
 
 /**
  * ItemBlocks for microblocks and multiblocks
- *
  * @author Calclavia
  */
 public class ItemBlockContainer extends ItemBlock {
@@ -30,7 +29,7 @@ public class ItemBlockContainer extends ItemBlock {
 	public ItemBlockContainer(BlockFactory blockFactory) {
 		super(blockFactory);
 
-		events.add(
+		events.on(RightClickEvent.class).bind(
 			evt -> {
 				if (NetworkTarget.Side.get().isServer()) {
 					//Do ray trace to find which block it hit
@@ -40,6 +39,7 @@ public class ItemBlockContainer extends ItemBlock {
 						RayTracer.RayTraceBlockResult result = hit.get();
 						Vector3D placePos = result.block.position().add(result.side.toVector());
 						Optional<Block> opBlock = evt.entity.world().getBlock(placePos);
+
 						opBlock.ifPresent(
 							block ->
 							{
@@ -50,10 +50,13 @@ public class ItemBlockContainer extends ItemBlock {
 						);
 					}
 				}
-			}, RightClickEvent.class
+			}
 		);
+	}
 
-		events.add(evt -> evt.action = placeContainer(evt.entity, evt.entity.world(), evt.position, evt.side, evt.hit), UseEvent.class);
+	@Override
+	protected void onUse(UseEvent evt) {
+		evt.action = placeContainer(evt.entity, evt.entity.world(), evt.position, evt.side, evt.hit);
 	}
 
 	public boolean placeContainer(Entity entity, World world, Vector3D position, Direction side, Vector3D hit) {
@@ -61,7 +64,7 @@ public class ItemBlockContainer extends ItemBlock {
 			Vector3D placePos = position.add(side.toVector());
 
 			Optional<Block> checkBlock = world.getBlock(placePos);
-			if (checkBlock.isPresent()) {
+			if (checkBlock.isPresent() && checkBlock.get().canReplace()) {
 
 				MicroblockPlugin.MicroblockInjectFactory injectFactory = (MicroblockPlugin.MicroblockInjectFactory) this.blockFactory;
 				BlockFactory containedFactory = injectFactory.containedFactory;

@@ -2,7 +2,6 @@ package com.calclavia.microblock.micro;
 
 import com.calclavia.microblock.MicroblockPlugin;
 import com.calclavia.microblock.common.BlockComponent;
-import com.calclavia.microblock.common.BlockContainer;
 import nova.core.block.Block;
 import nova.core.block.Stateful;
 import nova.core.component.Component;
@@ -84,7 +83,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 	}
 
 	public Stream<Microblock> stream() {
-		return blockMap.values().stream();
+		return new HashSet<>(blockMap.values()).stream();
 	}
 
 	/**
@@ -126,7 +125,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 			MicroblockPlugin.instance.componentInjection.injectToContainer(microblock.block, block);
 
 			if (MicroblockPlugin.instance.network.isServer()) {
-				MicroblockPlugin.instance.network.sync((BlockContainer) block);
+				MicroblockPlugin.instance.network.sync(block);
 			}
 
 			return true;
