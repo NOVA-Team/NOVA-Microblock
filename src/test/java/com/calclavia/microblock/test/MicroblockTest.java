@@ -37,7 +37,7 @@ public class MicroblockTest {
 	@Test
 	public void testMicroblockInjection() {
 		NovaLauncher launcher = new NovaLauncherTestFactory(MicroblockPlugin.class, TestMicroblockMod.class).createLauncher();
-		//Microblock should be replaced with a container.
+		//Microblock should be replaced withPriority a container.
 		assertThat(TestMicroblockMod.singleMicroblock.makeBlock() instanceof BlockContainer).isTrue();
 
 		MicroblockPlugin.MicroblockInjectFactory injectionFactory = (MicroblockPlugin.MicroblockInjectFactory) TestMicroblockMod.singleMicroblock;

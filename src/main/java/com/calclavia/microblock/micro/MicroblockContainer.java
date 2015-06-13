@@ -222,7 +222,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 				Vector3D microPos = idToPos(packet.readInt());
 				String microID = packet.readString();
 
-				//Find microblock registered with such ID
+				//Find microblock registered withPriority such ID
 				MicroblockPlugin.MicroblockInjectFactory injectionFactory = MicroblockPlugin.instance.containedIDToFactory.get(microID);
 				Block microblock = injectionFactory.containedFactory.makeBlock();
 

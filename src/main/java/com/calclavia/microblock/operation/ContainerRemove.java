@@ -78,7 +78,7 @@ public class ContainerRemove extends ContainerOperation {
 				}
 
 			}
-			//TODO: Deal with multiblocks
+			//TODO: Deal withPriority multiblocks
 		}
 
 		return false;

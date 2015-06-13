@@ -42,14 +42,14 @@ public class MicroblockPacket implements PacketHandler<Microblock> {
 						return;
 					}
 				} else {
-					throw new NetworkException("Cannot find microblock at " + globalPos + " with local position " + localPos);
+					throw new NetworkException("Cannot find microblock at " + globalPos + " withPriority local position " + localPos);
 				}
 			} else {
-				throw new NetworkException("Cannot find microblock container at " + globalPos + " with local position " + localPos);
+				throw new NetworkException("Cannot find microblock container at " + globalPos + " withPriority local position " + localPos);
 			}
 		}
 
-		throw new NetworkException("Microblock packet failed to be read at " + globalPos + " with local position " + localPos);
+		throw new NetworkException("Microblock packet failed to be read at " + globalPos + " withPriority local position " + localPos);
 	}
 
 	@Override
