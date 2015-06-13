@@ -124,8 +124,8 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 			MicroblockPlugin.instance.componentInjection.injectToContained(microblock.block, block);
 			MicroblockPlugin.instance.componentInjection.injectToContainer(microblock.block, block);
 
-			if (MicroblockPlugin.instance.network.isServer()) {
-				//Wait one tick before sync
+			//If this is not the first microblock (first one already sent via default packet)
+			if (MicroblockPlugin.instance.network.isServer() && microblocks().size() > 1) {
 				MicroblockPlugin.instance.network.sync(block);
 			}
 
