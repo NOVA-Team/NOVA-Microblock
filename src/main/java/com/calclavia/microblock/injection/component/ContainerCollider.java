@@ -11,6 +11,7 @@ import nova.core.util.shape.Cuboid;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -21,40 +22,50 @@ public class ContainerCollider extends Collider {
 
 	public ContainerCollider(Block container) {
 		this.blockContainer = container;
-
-		if (blockContainer.has(MicroblockContainer.class)) {
-			MicroblockContainer microblockContainer = blockContainer.get(MicroblockContainer.class);
-
-			setBoundingBox(() -> {
-				//Do ray trace to see which microblock is being looked at.
-				if (NetworkTarget.Side.get().isClient()) {
-					Entity player = MicroblockPlugin.instance.client.getPlayer();
-
-					Optional<RayTracer.RayTraceBlockResult> result = new RayTracer(player)
-						.setDistance(7)
-						.rayTraceBlocks(Collections.singleton(blockContainer))
-						.findFirst();
-
-					return result.map(res -> res.hitCuboid.subtract(container.transform().position())).orElseGet(() -> Cuboid.ZERO);
-				}
-
-				//TODO: Is this the right thing to return?
-				return Cuboid.ONE;
-			});
-
-			setOcclusionBoxes(entity ->
-					microblockContainer.microblocks(Collider.class)
-						.flatMap(collider -> collider.occlusionBoxes.apply(entity).stream())
-						.collect(Collectors.toSet())
-			);
-
-			setSelectionBoxes(entity ->
-					microblockContainer.microblocks(Collider.class)
-						.flatMap(collider -> collider.selectionBoxes.apply(entity).stream())
-						.collect(Collectors.toSet())
-			);
-		}
+		setBoundingBox(this::getBoundingBox);
+		setOcclusionBoxes(this::getOcclusionBoxes);
+		setSelectionBoxes(this::getSelectionBoxes);
 		isCube(false);
 		isOpaqueCube(false);
+	}
+
+	public Cuboid getBoundingBox() {
+		if (blockContainer.has(MicroblockContainer.class)) {
+			//Do ray trace to see which microblock is being looked at.
+			if (NetworkTarget.Side.get().isClient()) {
+				Entity player = MicroblockPlugin.instance.client.getPlayer();
+
+				Optional<RayTracer.RayTraceBlockResult> result = new RayTracer(player)
+					.setDistance(7)
+					.rayTraceBlocks(Collections.singleton(blockContainer))
+					.findFirst();
+
+				return result.map(res -> res.hitCuboid.subtract(blockContainer.transform().position())).orElseGet(() -> Cuboid.ZERO);
+			}
+		}
+		//TODO: Is this the right thing to return?
+		return Cuboid.ONE;
+	}
+
+	public Set<Cuboid> getOcclusionBoxes(Optional<Entity> entity) {
+		if (blockContainer.has(MicroblockContainer.class)) {
+			MicroblockContainer microblockContainer = blockContainer.get(MicroblockContainer.class);
+			return microblockContainer.microblocks(Collider.class)
+				.flatMap(collider -> collider.occlusionBoxes.apply(entity).stream())
+				.collect(Collectors.toSet());
+		}
+
+		return Collections.emptySet();
+	}
+
+	public Set<Cuboid> getSelectionBoxes(Optional<Entity> entity) {
+		if (blockContainer.has(MicroblockContainer.class)) {
+			MicroblockContainer microblockContainer = blockContainer.get(MicroblockContainer.class);
+			return microblockContainer.microblocks(Collider.class)
+				.flatMap(collider -> collider.selectionBoxes.apply(entity).stream())
+				.collect(Collectors.toSet());
+		}
+
+		return Collections.emptySet();
 	}
 }

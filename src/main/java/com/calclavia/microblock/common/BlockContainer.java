@@ -24,13 +24,6 @@ public class BlockContainer extends Block implements Updater, Stateful, Storable
 
 	public BlockContainer(String id) {
 		this.id = id;
-
-		/*
-		rightClickEvent.add(event -> {
-			System.out.println("--- " + this + " ---");
-			printComponents(components());
-		});*/
-
 		events.on(RemoveEvent.class).bind(evt -> ContainerRemove.interactEventHandler(this, evt));
 	}
 
