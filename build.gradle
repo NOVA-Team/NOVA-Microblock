@@ -1,85 +1,39 @@
 buildscript {
 	repositories {
-		mavenCentral()
+		maven {
+			url "http://mvn.rx14.co.uk/local/"
+		}
 		jcenter()
-		maven {
-			name = "sonatype"
-			url = "https://oss.sonatype.org/content/repositories/snapshots/"
-		}
-		maven {
-			url 'http://maven.novaapi.net/'
-		}
+	}
+	dependencies {
+		classpath "nova.gradle:NovaGradle:0.2.0-SNAPSHOT"
 	}
 }
 
-apply plugin: "java"
-apply plugin: "eclipse"
-apply plugin: "idea"
-apply plugin: "jacoco"
-
-configurations.all {
-	resolutionStrategy.cacheChangingModulesFor 5, 'minutes'
+plugins {
+	id "java"
+	id "idea"
+	id "eclipse"
 }
 
-compileJava {
-	sourceCompatibility = 1.8
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven {
-        url 'http://maven.novaapi.net/'
-    }
-}
+apply plugin: "nova.gradle"
 
 dependencies {
-	compile 'com.google.guava:guava:18.0'
-	compile 'org.msgpack:msgpack-core:0.7.0-p4'
-	compile 'com.typesafe:config:1.2.1'
-	compile 'se.jbee:silk-di:0.6'
-	compile 'org.slf4j:slf4j-api:1.7.10'
-    compile group: "nova.core", name: "NovaCore", version: novaVersion, changing: true
-	
-    testCompile group: "nova.core", name: "NovaCore", version: novaVersion, classifier: "wrappertests", changing: true
+	compile "nova.core:NovaCore:0.1.0-SNAPSHOT"
+
+	testCompile "org.assertj:assertj-core:3.0.0"
 	testCompile "junit:junit:4.12"
-	testCompile 'org.assertj:assertj-core:3.0.0'
-	testCompile "org.mockito:mockito-core:1.+"
-	testRuntime 'org.slf4j:slf4j-simple:1.7.10'
+	testCompile group: "nova.core", name: "NovaCore", version: novaVersion, classifier: "wrappertests", changing: true
 }
 
-artifacts {
-	archives jar
-}
 
-javadoc {
-	include 'com/calclavia/**'
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-	from 'build/docs/javadoc'
-	classifier 'javadoc'
-}
-
-jacocoTestReport {
-	reports {
-		xml.enabled = true // coveralls plugin depends on xml format report
-		html.enabled = true
-	}
-}
-
-test {
-	forkEvery = 1
-	maxParallelForks = 4
-
-	testLogging {
-		exceptionFormat = 'full'
-	}
-
-	testLogging.showStandardStreams = true
-
-	beforeTest {descriptor ->
-		def classPadded = String.format("%-50s", descriptor.className)
-		logger.lifecycle("Running test ${classPadded} ${descriptor.name}()")
+nova {
+	wrappers {
+		"17" {
+			wrapper "nova.wrapper.mc18:NovaWrapper-MC1.7.10:0.1-SNAPSHOT"
+		}
+		"18" {
+			wrapper "nova.wrapper.mc18:NovaWrapper-MC1.8:0.1-SNAPSHOT"
+		}
 	}
 }
