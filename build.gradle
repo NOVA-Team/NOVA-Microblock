@@ -1,18 +1,16 @@
 plugins {
 	id "java"
-	id "nova.gradle" version "0.2.2"
+	id "nova.gradle" version "0.2.4"
+	id "maven-publish"
+	id "com.jfrog.artifactory" version "3.1.1"
 }
 
-configurations.all {
-	resolutionStrategy.cacheChangingModulesFor 5, 'minutes'
-}
+apply from: "https://raw.githubusercontent.com/NOVA-Team/NOVA-Gradle/master/shared-scripts/java.gradle"
 
 dependencies {
-	compile group: "nova.core", name: "NovaCore", version: novaVersion, classifier: "api", changing: true
+	compile "nova.core:NovaCore:$novaVersion"
 
-	testCompile "org.assertj:assertj-core:3.0.0"
-	testCompile "junit:junit:4.12"
-	testCompile group: "nova.core", name: "NovaCore", version: novaVersion, classifier: "wrappertests", changing: true
+	testCompile "nova.core:NovaCore:$novaVersion:wrappertests"
 }
 
 nova {
@@ -22,6 +20,28 @@ nova {
 		}
 		"18" {
 			wrapper "nova.wrapper.mc18:NovaWrapper-MC1.8:0.1-SNAPSHOT"
+		}
+	}
+}
+
+publishing {
+	publications {
+		main(MavenPublication) {
+			from components.java
+
+			artifact sourcesJar
+			artifact javadocJar
+
+			pom.withXml(writePom(project.properties))
+		}
+	}
+}
+
+artifactory {
+	publish {
+		defaults {
+			publications("main")
+			publishPom = true
 		}
 	}
 }
