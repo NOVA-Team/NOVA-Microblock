@@ -1,13 +1,13 @@
 package nova.microblock.injection.component;
 
-import nova.microblock.MicroblockPlugin;
-import nova.microblock.micro.MicroblockContainer;
 import nova.core.block.Block;
 import nova.core.component.misc.Collider;
 import nova.core.entity.Entity;
 import nova.core.network.NetworkTarget;
 import nova.core.util.RayTracer;
 import nova.core.util.shape.Cuboid;
+import nova.microblock.MicroblockPlugin;
+import nova.microblock.micro.MicroblockContainer;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -21,6 +21,7 @@ public class ContainerCollider extends Collider {
 	public final Block blockContainer;
 
 	public ContainerCollider(Block container) {
+		super(container);
 		this.blockContainer = container;
 		setBoundingBox(this::getBoundingBox);
 		setOcclusionBoxes(this::getOcclusionBoxes);

@@ -40,7 +40,7 @@ public class TestMicroblockMod implements Loadable {
 		singleMultiblock = MicroblockPlugin.instance.blocks.register(args -> {
 			FakeBlock fakeBlock = new FakeBlock(singleMultiblockID);
 			fakeBlock.add(new Multiblock(fakeBlock));
-			fakeBlock.add(new Collider()).setBoundingBox(new Cuboid(Vector3D.ZERO, new Vector3D(1, 2, 1)));
+			fakeBlock.add(new Collider(fakeBlock)).setBoundingBox(new Cuboid(Vector3D.ZERO, new Vector3D(1, 2, 1)));
 			return fakeBlock;
 		});
 
@@ -48,7 +48,7 @@ public class TestMicroblockMod implements Loadable {
 			FakeBlock fakeBlock = new FakeBlock(multiMicroblockID);
 			fakeBlock.add(new Multiblock(fakeBlock));
 			fakeBlock.add(new Microblock(fakeBlock)).setOnPlace(blockPlaceEvent -> Optional.of(Vector3D.ZERO));
-			fakeBlock.add(new Collider()).setBoundingBox(new Cuboid(Vector3D.ZERO, new Vector3D(1, 1.5, 1)));
+			fakeBlock.add(new Collider(fakeBlock)).setBoundingBox(new Cuboid(Vector3D.ZERO, new Vector3D(1, 1.5, 1)));
 			return fakeBlock;
 		});
 

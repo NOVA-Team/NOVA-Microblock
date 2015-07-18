@@ -97,7 +97,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 			//Invoke neighbor change event
 			microblocks().stream()
 				.filter(m -> m != microblock)
-				.forEach(m -> m.events.publish(new Microblock.MicroblockChangeEvent(Optional.of(localPos))));
+				.forEach(m -> m.block.events.publish(new Microblock.MicroblockChangeEvent(Optional.of(localPos))));
 
 			block.world().markChange(block.position());
 
@@ -146,7 +146,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 
 			//Invoke neighbor change event
 			microblocks().stream()
-				.forEach(m -> m.events.publish(new Microblock.MicroblockChangeEvent(Optional.of(localPos))));
+				.forEach(m -> m.block.events.publish(new Microblock.MicroblockChangeEvent(Optional.of(localPos))));
 
 			block.world().markChange(block.position());
 			return true;
