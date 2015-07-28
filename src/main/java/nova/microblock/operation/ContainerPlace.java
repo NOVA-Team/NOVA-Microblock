@@ -205,7 +205,7 @@ public class ContainerPlace extends ContainerOperation {
 				world.setBlock(pos, injectFactory);
 				handledPositions.add(pos);
 				return world.getBlock(pos);
-			} else if (checkBlock.sameType(injectFactory)) {
+			} else if (checkBlock.getID().startsWith("blockContainer-")) {
 				//There's already a microblock there.
 				return Optional.of(checkBlock);
 			}
