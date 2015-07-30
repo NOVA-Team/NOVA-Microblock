@@ -14,7 +14,7 @@ public class ContainerItemRenderer extends ItemRenderer {
 
 	public ContainerItemRenderer(Block provider) {
 		if (provider.has(MicroblockContainer.class)) {
-			setOnRender(model -> provider
+			onRender(model -> provider
 					.get(MicroblockContainer.class)
 					.microblocks(ItemRenderer.class)
 					.forEach(renderer -> renderer.onRender.accept(model))
@@ -23,7 +23,7 @@ public class ContainerItemRenderer extends ItemRenderer {
 	}
 
 	public ContainerItemRenderer(Block provider, Block contained) {
-		setOnRender(contained.get(ItemRenderer.class).onRender::accept);
+		onRender(contained.get(ItemRenderer.class).onRender::accept);
 		Optional<Texture> texture = contained.get(ItemRenderer.class).texture;
 		if (texture.isPresent()) {
 			setTexture(texture.get());

@@ -13,7 +13,7 @@ public class ContainerStaticRenderer extends StaticRenderer {
 		super(provider);
 
 		if (provider.has(MicroblockContainer.class)) {
-			setOnRender(model -> provider
+			onRender(model -> provider
 					.get(MicroblockContainer.class)
 					.microblocks(StaticRenderer.class)
 					.forEach(renderer -> renderer.onRender.accept(model))

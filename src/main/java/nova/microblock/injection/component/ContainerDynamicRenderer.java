@@ -11,7 +11,7 @@ public class ContainerDynamicRenderer extends DynamicRenderer {
 
 	public ContainerDynamicRenderer(Block provider) {
 		if (provider.has(MicroblockContainer.class)) {
-			setOnRender(model -> provider
+			onRender(model -> provider
 					.get(MicroblockContainer.class)
 					.microblocks(DynamicRenderer.class)
 					.forEach(renderer -> renderer.onRender.accept(model))
