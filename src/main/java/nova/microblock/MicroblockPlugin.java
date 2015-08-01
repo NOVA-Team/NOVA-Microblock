@@ -1,16 +1,5 @@
 package nova.microblock;
 
-import nova.microblock.common.BlockContainer;
-import nova.microblock.injection.ComponentInjection;
-import nova.microblock.injection.ComponentInjectionModule;
-import nova.microblock.injection.component.ContainerCollider;
-import nova.microblock.injection.component.ContainerDynamicRenderer;
-import nova.microblock.injection.component.ContainerItemRenderer;
-import nova.microblock.injection.component.ContainerStaticRenderer;
-import nova.microblock.injection.prefab.CopyInjector;
-import nova.microblock.injection.prefab.ForwardInjector;
-import nova.microblock.micro.Microblock;
-import nova.microblock.multi.Multiblock;
 import nova.core.block.Block;
 import nova.core.block.BlockFactory;
 import nova.core.block.BlockManager;
@@ -24,9 +13,20 @@ import nova.core.event.EventBus;
 import nova.core.game.ClientManager;
 import nova.core.item.ItemManager;
 import nova.core.loader.Loadable;
-import nova.core.loader.NovaMod;
+import nova.core.loader.Mod;
 import nova.core.network.NetworkManager;
 import nova.internal.core.tick.UpdateTicker;
+import nova.microblock.common.BlockContainer;
+import nova.microblock.injection.ComponentInjection;
+import nova.microblock.injection.ComponentInjectionModule;
+import nova.microblock.injection.component.ContainerCollider;
+import nova.microblock.injection.component.ContainerDynamicRenderer;
+import nova.microblock.injection.component.ContainerItemRenderer;
+import nova.microblock.injection.component.ContainerStaticRenderer;
+import nova.microblock.injection.prefab.CopyInjector;
+import nova.microblock.injection.prefab.ForwardInjector;
+import nova.microblock.micro.Microblock;
+import nova.microblock.multi.Multiblock;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
@@ -34,9 +34,10 @@ import java.util.Map;
 
 /**
  * Make sure your mod loads AFTER this mod, if your mod uses microblocks or multiblock.
+ *
  * @author Calclavia
  */
-@NovaMod(id = "microblock", name = "Microblock", version = "0.0.1", novaVersion = "0.0.1", modules = { ComponentInjectionModule.class }, isPlugin = true)
+@Mod(id = "microblock", name = "Microblock", version = "0.0.1", novaVersion = "0.0.1", modules = { ComponentInjectionModule.class }, priority = 1)
 public class MicroblockPlugin implements Loadable {
 
 	public static MicroblockPlugin instance;

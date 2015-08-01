@@ -6,7 +6,7 @@ import nova.microblock.multi.Multiblock;
 import nova.core.block.BlockFactory;
 import nova.core.component.misc.Collider;
 import nova.core.loader.Loadable;
-import nova.core.loader.NovaMod;
+import nova.core.loader.Mod;
 import nova.core.util.shape.Cuboid;
 import nova.testutils.FakeBlock;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
@@ -16,7 +16,7 @@ import java.util.Optional;
 /**
  * @author Calclavia
  */
-@NovaMod(id = "testMicroblock", name = "Test Microblock", version = "1.0", novaVersion = "0.0.1", dependencies = { "microblock" })
+@Mod(id = "testMicroblock", name = "Test Microblock", version = "1.0", novaVersion = "0.0.1", dependencies = { "microblock" })
 public class TestMicroblockMod implements Loadable {
 
 	public static final String containerID = "blockContainer";
