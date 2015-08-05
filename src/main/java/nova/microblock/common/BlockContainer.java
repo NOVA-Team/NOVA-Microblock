@@ -1,6 +1,5 @@
 package nova.microblock.common;
 
-import nova.core.event.Event;
 import nova.microblock.MicroblockPlugin;
 import nova.microblock.micro.MicroblockContainer;
 import nova.microblock.operation.ContainerRemove;
@@ -26,9 +25,6 @@ public class BlockContainer extends Block implements Updater, Stateful, Storable
 	public BlockContainer(String id) {
 		this.id = id;
 		events.on(RemoveEvent.class).bind(evt -> ContainerRemove.interactEventHandler(this, evt));
-		events.on(Event.class).bind(evt ->
-				getOp(MicroblockContainer.class).ifPresent(cont -> cont.microblocks().forEach(uB -> uB.block.events.publish(evt)))
-		);
 	}
 
 	private void printComponents(Collection<Component> components) {
