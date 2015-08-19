@@ -1,17 +1,17 @@
 package nova.microblock.common;
 
-import nova.core.event.Event;
-import nova.microblock.MicroblockPlugin;
-import nova.microblock.micro.MicroblockContainer;
-import nova.microblock.operation.ContainerRemove;
 import nova.core.block.Block;
 import nova.core.block.Stateful;
 import nova.core.component.Component;
 import nova.core.component.Updater;
+import nova.core.event.bus.Event;
 import nova.core.network.Packet;
 import nova.core.network.Syncable;
 import nova.core.retention.Data;
 import nova.core.retention.Storable;
+import nova.microblock.MicroblockPlugin;
+import nova.microblock.micro.MicroblockContainer;
+import nova.microblock.operation.ContainerRemove;
 
 import java.util.Collection;
 
