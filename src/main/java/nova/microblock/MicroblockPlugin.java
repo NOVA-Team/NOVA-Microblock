@@ -9,7 +9,7 @@ import nova.core.component.renderer.DynamicRenderer;
 import nova.core.component.renderer.ItemRenderer;
 import nova.core.component.renderer.StaticRenderer;
 import nova.core.component.transform.BlockTransform;
-import nova.core.event.EventBus;
+import nova.core.event.bus.EventBus;
 import nova.core.game.ClientManager;
 import nova.core.item.ItemManager;
 import nova.core.loader.Loadable;
