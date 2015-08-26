@@ -1,8 +1,8 @@
 package nova.microblock.injection.component;
 
-import nova.microblock.micro.MicroblockContainer;
 import nova.core.block.Block;
 import nova.core.component.renderer.StaticRenderer;
+import nova.microblock.micro.MicroblockContainer;
 
 /**
  * @author Calclavia
@@ -10,8 +10,6 @@ import nova.core.component.renderer.StaticRenderer;
 public class ContainerStaticRenderer extends StaticRenderer {
 
 	public ContainerStaticRenderer(Block provider) {
-		super(provider);
-
 		if (provider.has(MicroblockContainer.class)) {
 			onRender(model -> provider
 					.get(MicroblockContainer.class)
