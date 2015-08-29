@@ -1,6 +1,6 @@
 plugins {
 	id "java"
-	id "nova.gradle" version "0.2.4"
+	id "nova.gradle" version "0.2.5"
 	id "maven-publish"
 	id "com.jfrog.artifactory" version "3.1.1"
 }
@@ -8,18 +8,21 @@ plugins {
 apply from: "https://raw.githubusercontent.com/NOVA-Team/NOVA-Gradle/master/shared-scripts/java.gradle"
 
 dependencies {
-	compile "nova.core:NovaCore:$novaVersion"
+	compile nova(novaVersion)
 
-	testCompile "nova.core:NovaCore:$novaVersion:wrappertests"
+	//We use nova.internal package
+	compile group: "nova.core", name: "NOVA-Core", version: novaVersion
+
+	testCompile group: "nova.core", name: "NOVA-Core", version: novaVersion, classifier: "wrappertests", changing: true
 }
-
 nova {
 	wrappers {
 		"17" {
-			wrapper "nova.wrapper.mc1710:NovaWrapper-MC1.7.10:0.1-SNAPSHOT"
+			wrapper "nova.core:NOVA-Core-Wrapper-MC1.7:$novaVersion"
 		}
+
 		"18" {
-			wrapper "nova.wrapper.mc18:NovaWrapper-MC1.8:0.1-SNAPSHOT"
+			wrapper "nova.core:NOVA-Core-Wrapper-MC1.8:$novaVersion"
 		}
 	}
 }
