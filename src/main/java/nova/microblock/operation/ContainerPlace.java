@@ -1,16 +1,16 @@
 package nova.microblock.operation;
 
+import nova.core.block.Block;
+import nova.core.network.NetworkTarget;
+import nova.core.util.math.Vector3DUtil;
+import nova.core.util.shape.Cuboid;
+import nova.core.world.World;
 import nova.microblock.MicroblockPlugin;
 import nova.microblock.common.BlockContainer;
 import nova.microblock.micro.Microblock;
 import nova.microblock.micro.MicroblockContainer;
 import nova.microblock.multi.Multiblock;
 import nova.microblock.multi.MultiblockContainer;
-import nova.core.block.Block;
-import nova.core.network.NetworkTarget;
-import nova.core.util.math.Vector3DUtil;
-import nova.core.util.shape.Cuboid;
-import nova.core.world.World;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.HashSet;
@@ -200,7 +200,7 @@ public class ContainerPlace extends ContainerOperation {
 
 		if (opCheckBlock.isPresent()) {
 			Block checkBlock = opCheckBlock.get();
-			if (checkBlock.sameType(MicroblockPlugin.instance.blocks.getAirBlockFactory())) {
+			if (checkBlock.sameType(MicroblockPlugin.instance.blocks.getAirBlock())) {
 				//It's air, so let's create a container
 				world.setBlock(pos, injectFactory);
 				handledPositions.add(pos);
