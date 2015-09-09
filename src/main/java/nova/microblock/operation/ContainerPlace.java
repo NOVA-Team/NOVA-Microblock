@@ -42,14 +42,14 @@ public class ContainerPlace extends ContainerOperation {
 	public ContainerPlace(World world, MicroblockPlugin.MicroblockInjectFactory injectFactory, Vector3D globalPos, Block.PlaceEvent evt) {
 		super(world, globalPos);
 		this.injectFactory = injectFactory;
-		this.newBlock = injectFactory.containedFactory.makeBlock();
+		this.newBlock = injectFactory.containedFactory.build();
 		this.localPos = newBlock.get(Microblock.class).onPlace.apply(evt);
 	}
 
 	public ContainerPlace(World world, MicroblockPlugin.MicroblockInjectFactory injectFactory, Vector3D globalPos) {
 		super(world, globalPos);
 		this.injectFactory = injectFactory;
-		this.newBlock = injectFactory.containedFactory.makeBlock();
+		this.newBlock = injectFactory.containedFactory.build();
 		this.localPos = Optional.empty();
 	}
 

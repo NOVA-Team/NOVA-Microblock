@@ -9,7 +9,6 @@ import nova.core.network.Packet;
 import nova.core.network.Syncable;
 import nova.core.retention.Data;
 import nova.core.retention.Storable;
-import nova.microblock.MicroblockPlugin;
 import nova.microblock.micro.MicroblockContainer;
 import nova.microblock.operation.ContainerRemove;
 
@@ -48,12 +47,6 @@ public class BlockContainer extends Block implements Updater, Stateful, Storable
 					});
 			}
 		});
-	}
-
-	@Override
-	public void onRegister() {
-		//Register a custom itemblock
-		MicroblockPlugin.instance.items.register((args) -> new ItemBlockContainer(factory()));
 	}
 
 	@Override

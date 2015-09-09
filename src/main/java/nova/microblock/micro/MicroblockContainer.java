@@ -1,7 +1,5 @@
 package nova.microblock.micro;
 
-import nova.microblock.MicroblockPlugin;
-import nova.microblock.common.BlockComponent;
 import nova.core.block.Block;
 import nova.core.block.Stateful;
 import nova.core.component.Component;
@@ -16,6 +14,8 @@ import nova.core.util.Direction;
 import nova.core.util.math.MathUtil;
 import nova.core.util.math.Vector3DUtil;
 import nova.core.util.shape.Cuboid;
+import nova.microblock.MicroblockPlugin;
+import nova.microblock.common.BlockComponent;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.Collection;
@@ -224,7 +224,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 
 				//Find microblock registered withPriority such ID
 				MicroblockPlugin.MicroblockInjectFactory injectionFactory = MicroblockPlugin.instance.containedIDToFactory.get(microID);
-				Block microblock = injectionFactory.containedFactory.makeBlock();
+				Block microblock = injectionFactory.containedFactory.build();
 
 				put(microPos, microblock.get(Microblock.class));
 

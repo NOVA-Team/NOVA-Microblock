@@ -68,7 +68,8 @@ public class ItemBlockContainer extends ItemBlock {
 
 				MicroblockPlugin.MicroblockInjectFactory injectFactory = (MicroblockPlugin.MicroblockInjectFactory) this.blockFactory;
 				BlockFactory containedFactory = injectFactory.containedFactory;
-				Block dummy = containedFactory.getDummy();
+				//TODO: Dummies are bad
+				Block dummy = containedFactory.build();
 
 				if (dummy.has(Microblock.class)) {
 					//Ask the microblock about how it would like to be placed.

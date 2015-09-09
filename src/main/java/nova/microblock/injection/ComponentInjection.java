@@ -2,21 +2,23 @@ package nova.microblock.injection;
 
 import nova.core.block.Block;
 import nova.core.component.Component;
+import nova.core.component.ComponentProvider;
 import nova.core.util.Factory;
 import nova.core.util.Manager;
 import nova.core.util.Registry;
 
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
  * Inject components across containers from the contained block
  * @author Calclavia
  */
-public class ComponentInjection extends Manager<ComponentInjector, Factory<ComponentInjector>> {
+public class ComponentInjection extends Manager<ComponentInjector, ComponentInjection.ComponentInjectionFactory> {
 
-	public ComponentInjection(Registry<Factory<ComponentInjector>> registry) {
+	public ComponentInjection(Registry<ComponentInjectionFactory> registry) {
 		super(registry);
 	}
 
@@ -34,8 +36,8 @@ public class ComponentInjection extends Manager<ComponentInjector, Factory<Compo
 
 		//TODO: Test component added after constructor.
 		//When future components are added to the contained, it will auto-inject to the container.
-		contained.onComponentAdded.add(evt -> findInjectors(evt.component.getClass()).forEach(injector -> injector.injectForward(evt.component, contained, container)));
-		contained.onComponentRemoved.add(event -> container.remove(event.component));
+		contained.events.on(ComponentProvider.ComponentAdded.class).bind(evt -> findInjectors(evt.component.getClass()).forEach(injector -> injector.injectForward(evt.component, contained, container)));
+		contained.events.on(ComponentProvider.ComponentRemoved.class).bind(evt -> container.remove(evt.component));
 
 		//TODO: Maybe events should not be injected this way.
 		//Forward events to -> from (container -> contained)
@@ -58,14 +60,28 @@ public class ComponentInjection extends Manager<ComponentInjector, Factory<Compo
 	public <C extends Component> Set<ComponentInjector> findInjectors(Class<C> clazz) {
 		return registry
 			.stream()
-			.map(Factory::getDummy)
+			.map(Factory::build)
 			.filter(injector -> injector.componentType().isAssignableFrom(clazz))
 			.collect(Collectors.toSet());
 	}
 
 	@Override
-	public Factory<ComponentInjector> register(Function<Object[], ComponentInjector> constructor) {
-		return register(new Factory<>(constructor));
+	public ComponentInjectionFactory register(Supplier<ComponentInjector> constructor) {
+		return register(new ComponentInjectionFactory(constructor));
 	}
 
+	public static class ComponentInjectionFactory extends Factory<ComponentInjectionFactory, ComponentInjector> {
+		public ComponentInjectionFactory(Supplier<ComponentInjector> constructor, Function<ComponentInjector, ComponentInjector> processor) {
+			super(constructor, processor);
+		}
+
+		public ComponentInjectionFactory(Supplier<ComponentInjector> constructor) {
+			super(constructor);
+		}
+
+		@Override
+		public ComponentInjectionFactory selfConstructor(Supplier<ComponentInjector> constructor, Function<ComponentInjector, ComponentInjector> processor) {
+			return new ComponentInjectionFactory(constructor, processor);
+		}
+	}
 }

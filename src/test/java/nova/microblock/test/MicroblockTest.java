@@ -1,15 +1,15 @@
 package nova.microblock.test;
 
+import nova.core.block.Block;
+import nova.core.util.math.Vector3DUtil;
+import nova.core.util.shape.Cuboid;
+import nova.internal.core.launch.NovaLauncher;
 import nova.microblock.MicroblockPlugin;
 import nova.microblock.common.BlockContainer;
 import nova.microblock.micro.Microblock;
 import nova.microblock.micro.MicroblockContainer;
 import nova.microblock.multi.MultiblockContainer;
 import nova.microblock.operation.ContainerPlace;
-import nova.core.block.Block;
-import nova.core.util.math.Vector3DUtil;
-import nova.core.util.shape.Cuboid;
-import nova.internal.core.launch.NovaLauncher;
 import nova.testutils.FakeWorld;
 import nova.wrappertests.NovaLauncherTestFactory;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
@@ -39,7 +39,7 @@ public class MicroblockTest {
 	public void testMicroblockInjection() {
 		NovaLauncher launcher = new NovaLauncherTestFactory(MicroblockPlugin.class, TestMicroblockMod.class).createLauncher();
 		//Microblock should be replaced withPriority a container.
-		assertThat(TestMicroblockMod.singleMicroblock.makeBlock() instanceof BlockContainer).isTrue();
+		assertThat(TestMicroblockMod.singleMicroblock.build() instanceof BlockContainer).isTrue();
 
 		MicroblockPlugin.MicroblockInjectFactory injectionFactory = (MicroblockPlugin.MicroblockInjectFactory) TestMicroblockMod.singleMicroblock;
 		assertThat(injectionFactory.containedFactory.getID()).isEqualTo(TestMicroblockMod.singleMicroblockID);
