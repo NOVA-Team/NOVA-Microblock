@@ -41,7 +41,7 @@ public class ComponentInjection extends Manager<ComponentInjector, ComponentInje
 
 		//TODO: Maybe events should not be injected this way.
 		//Forward events to -> from (container -> contained)
-		container.events.add(contained.events::publish);
+		container.events.on().bind(contained.events::publish);
 	}
 
 	/**
