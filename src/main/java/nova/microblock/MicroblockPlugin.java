@@ -1,5 +1,6 @@
 package nova.microblock;
 
+import nova.core.block.Block;
 import nova.core.block.BlockFactory;
 import nova.core.block.BlockManager;
 import nova.core.component.Category;
@@ -10,6 +11,7 @@ import nova.core.component.renderer.StaticRenderer;
 import nova.core.component.transform.BlockTransform;
 import nova.core.event.BlockEvent;
 import nova.core.event.bus.EventBus;
+import nova.core.event.bus.EventListener;
 import nova.core.event.bus.GlobalEvents;
 import nova.core.game.ClientManager;
 import nova.core.item.ItemManager;
@@ -86,12 +88,14 @@ public class MicroblockPlugin implements Loadable {
 	private void blockRegisterEvent(BlockEvent.Register evt) {
 		BlockFactory blockFactory = evt.blockFactory;
 
-		if (blockFactory.build().has(Microblock.class) || blockFactory.build().has(Multiblock.class)) {
+		Block dummy = blockFactory.build();
+		if (dummy.has(Microblock.class) || dummy.has(Multiblock.class)) {
 			//Sneaky block factory replacement
 			MicroblockInjectFactory microblockInjectFactory = new MicroblockInjectFactory(evt.blockFactory);
 			containedIDToFactory.put(evt.blockFactory.getID(), microblockInjectFactory);
 			containedFactoryToFactory.put(evt.blockFactory, microblockInjectFactory);
 			evt.blockFactory = microblockInjectFactory;
+			evt.cancel();
 		}
 	}
 
@@ -99,10 +103,7 @@ public class MicroblockPlugin implements Loadable {
 		public final BlockFactory containedFactory;
 
 		public MicroblockInjectFactory(BlockFactory containedFactory) {
-			super(() -> new BlockContainer("blockContainer-" + containedFactory.getID()), block -> {
-				MicroblockPlugin.instance.items.register(() -> new ItemBlockContainer(block.factory()));
-				return block;
-			});
+			super(() -> new BlockContainer("blockContainer-" + containedFactory.getID()), evt -> MicroblockPlugin.instance.items.register(() -> new ItemBlockContainer(evt.blockFactory)));
 
 			this.containedFactory = containedFactory;
 			//Check the contained factory's dummy, and injectToContainer components.
@@ -114,6 +115,11 @@ public class MicroblockPlugin implements Loadable {
 			}
 			//TODO: Changes in MB injection might not work
 			MicroblockPlugin.instance.componentInjection.injectToContainer(containedFactory.build(), dummy);
+		}
+
+		@Override
+		protected void postCreate(EventListener<BlockEvent.Register> postCreate) {
+			super.postCreate(evt -> MicroblockPlugin.instance.items.register(() -> new ItemBlockContainer(evt.blockFactory)));
 		}
 	}
 }
