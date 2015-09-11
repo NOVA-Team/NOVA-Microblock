@@ -73,12 +73,12 @@ public class MicroblockPlugin implements Loadable {
 	public void preInit() {
 		MicroblockPlugin.instance.network.register(new MicroblockPacket());
 
-		componentInjection.register(() -> new ForwardInjector<>(Collider.class, ContainerCollider::new));
-		componentInjection.register(() -> new ForwardInjector<>(DynamicRenderer.class, ContainerDynamicRenderer::new));
-		componentInjection.register(() -> new ForwardInjector<>(ItemRenderer.class, ContainerItemRenderer::new));
-		componentInjection.register(() -> new ForwardInjector<>(StaticRenderer.class, ContainerStaticRenderer::new));
-		componentInjection.register(() -> new CopyInjector<>(BlockTransform.class));
-		componentInjection.register(() -> new CopyInjector<>(Category.class));
+		componentInjection.register("collider", () -> new ForwardInjector<>(Collider.class, ContainerCollider::new));
+		componentInjection.register("dynamicRenderer", () -> new ForwardInjector<>(DynamicRenderer.class, ContainerDynamicRenderer::new));
+		componentInjection.register("itemRenderer", () -> new ForwardInjector<>(ItemRenderer.class, ContainerItemRenderer::new));
+		componentInjection.register("staticRenderer", () -> new ForwardInjector<>(StaticRenderer.class, ContainerStaticRenderer::new));
+		componentInjection.register("blockTransform", () -> new CopyInjector<>(BlockTransform.class));
+		componentInjection.register("category", () -> new CopyInjector<>(Category.class));
 
 		//Replace block registration by sneakily providing our own way to put container blocks instead of the actual block.
 		events.on(BlockEvent.Register.class).withPriority(EventBus.PRIORITY_HIGH).bind(this::blockRegisterEvent);
@@ -103,11 +103,16 @@ public class MicroblockPlugin implements Loadable {
 		public final BlockFactory containedFactory;
 
 		public MicroblockInjectFactory(BlockFactory containedFactory) {
-			super(() -> new BlockContainer("blockContainer-" + containedFactory.getID()), evt -> MicroblockPlugin.instance.items.register(() -> new ItemBlockContainer(evt.blockFactory)));
+			super("blockContainer-" + containedFactory.getID(),
+				BlockContainer::new,
+				evt -> {
+					MicroblockPlugin.instance.items.register("blockContainer-" + containedFactory.getID(), () -> new ItemBlockContainer(evt.blockFactory));
+				}
+			);
 
 			this.containedFactory = containedFactory;
 			//Check the contained factory's dummy, and injectToContainer components.
-			BlockContainer dummy = new BlockContainer("blockContainer-" + containedFactory.getID());
+			BlockContainer dummy = (BlockContainer) build();
 
 			//Inject item renderer
 			if (containedFactory.build().has(ItemRenderer.class)) {
@@ -119,7 +124,7 @@ public class MicroblockPlugin implements Loadable {
 
 		@Override
 		protected void postCreate(EventListener<BlockEvent.Register> postCreate) {
-			super.postCreate(evt -> MicroblockPlugin.instance.items.register(() -> new ItemBlockContainer(evt.blockFactory)));
+			super.postCreate(evt -> MicroblockPlugin.instance.items.register(getID(), () -> new ItemBlockContainer(evt.blockFactory)));
 		}
 	}
 }

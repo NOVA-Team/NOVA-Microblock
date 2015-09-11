@@ -10,6 +10,8 @@ import nova.core.util.Identifiable;
  */
 public abstract class ComponentInjector<COMPONENT extends Component> implements Identifiable {
 
+	public ComponentInjection.ComponentInjectionFactory factory;
+
 	//The component componentType being injected
 	public abstract Class<COMPONENT> componentType();
 
@@ -37,7 +39,7 @@ public abstract class ComponentInjector<COMPONENT extends Component> implements 
 	}
 
 	@Override
-	public String getID() {
-		return componentType().getCanonicalName();
+	public final String getID() {
+		return factory.getID();
 	}
 }

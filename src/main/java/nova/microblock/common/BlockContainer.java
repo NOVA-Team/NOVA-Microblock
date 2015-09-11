@@ -20,10 +20,7 @@ import java.util.Collection;
  */
 public class BlockContainer extends Block implements Updater, Stateful, Storable, Syncable {
 
-	public final String id;
-
-	public BlockContainer(String id) {
-		this.id = id;
+	public BlockContainer() {
 		events.on(RemoveEvent.class).bind(evt -> ContainerRemove.interactEventHandler(this, evt));
 		events.on(Event.class).bind(evt ->
 				getOp(MicroblockContainer.class).ifPresent(cont -> cont.microblocks().forEach(uB -> uB.block.events.publish(evt)))
@@ -82,10 +79,5 @@ public class BlockContainer extends Block implements Updater, Stateful, Storable
 	@Override
 	public void save(Data data) {
 		getOp(MicroblockContainer.class).ifPresent(c -> c.save(data));
-	}
-
-	@Override
-	public String getID() {
-		return id;
 	}
 }

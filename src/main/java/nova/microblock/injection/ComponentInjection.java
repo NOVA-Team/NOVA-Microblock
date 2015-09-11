@@ -66,22 +66,29 @@ public class ComponentInjection extends Manager<ComponentInjector, ComponentInje
 	}
 
 	@Override
-	public ComponentInjectionFactory register(Supplier<ComponentInjector> constructor) {
-		return register(new ComponentInjectionFactory(constructor));
+	public ComponentInjectionFactory register(String id, Supplier<ComponentInjector> constructor) {
+		return register(new ComponentInjectionFactory(id, constructor));
 	}
 
 	public static class ComponentInjectionFactory extends Factory<ComponentInjectionFactory, ComponentInjector> {
-		public ComponentInjectionFactory(Supplier<ComponentInjector> constructor, Function<ComponentInjector, ComponentInjector> processor) {
-			super(constructor, processor);
+		public ComponentInjectionFactory(String id, Supplier<ComponentInjector> constructor, Function<ComponentInjector, ComponentInjector> processor) {
+			super(id, constructor, processor);
 		}
 
-		public ComponentInjectionFactory(Supplier<ComponentInjector> constructor) {
-			super(constructor);
+		public ComponentInjectionFactory(String id, Supplier<ComponentInjector> constructor) {
+			super(id, constructor);
 		}
 
 		@Override
-		public ComponentInjectionFactory selfConstructor(Supplier<ComponentInjector> constructor, Function<ComponentInjector, ComponentInjector> processor) {
-			return new ComponentInjectionFactory(constructor, processor);
+		protected ComponentInjectionFactory selfConstructor(String id, Supplier<ComponentInjector> constructor, Function<ComponentInjector, ComponentInjector> processor) {
+			return new ComponentInjectionFactory(id, constructor, processor);
+		}
+
+		@Override
+		public ComponentInjector build() {
+			ComponentInjector build = super.build();
+			build.factory = this;
+			return build;
 		}
 	}
 }

@@ -93,7 +93,7 @@ public class ContainerPlace extends ContainerOperation {
 							MicroblockContainer outerContainer = outerContainerBlock.getOrAdd(new MicroblockContainer(outerContainerBlock));
 
 							//Create a new multiblock inner container that lives inside the microblock structure.
-							BlockContainer innerContainer = new BlockContainer("blockContainer");
+							BlockContainer innerContainer = new BlockContainer();
 							innerContainer.add(new MultiblockContainer(innerContainer, newBlock));
 							innerContainer.add(new Microblock(innerContainer)).setOnPlace(blockPlaceEvent -> localPos);
 
