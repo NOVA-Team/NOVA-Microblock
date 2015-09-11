@@ -6,7 +6,7 @@ import nova.core.util.Direction;
 import nova.core.util.RayTracer;
 import nova.core.util.shape.Cuboid;
 import nova.core.world.World;
-import nova.microblock.MicroblockPlugin;
+import nova.microblock.NovaMicroblock;
 import nova.microblock.injection.component.ContainerCollider;
 import nova.microblock.micro.Microblock;
 import nova.microblock.micro.MicroblockContainer;
@@ -53,7 +53,7 @@ public class ContainerRemove extends ContainerOperation {
 					}
 					//If single player
 					//TODO: HACKS TEMPORARY
-					MicroblockPlugin.instance.client.getPlayer().world().setBlock(block.position(), block.getFactory());
+					NovaMicroblock.instance.client.getPlayer().world().setBlock(block.position(), block.getFactory());
 					//System.out.println("client: " + MicroblockPlugin.instance.clientManager().getPlayer().world().getBlock(block.position()).get().getID());
 				}
 			}

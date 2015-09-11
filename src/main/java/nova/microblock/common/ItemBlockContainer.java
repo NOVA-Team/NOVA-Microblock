@@ -10,7 +10,7 @@ import nova.core.util.Direction;
 import nova.core.util.RayTracer;
 import nova.core.util.math.Vector3DUtil;
 import nova.core.world.World;
-import nova.microblock.MicroblockPlugin;
+import nova.microblock.NovaMicroblock;
 import nova.microblock.micro.Microblock;
 import nova.microblock.micro.MicroblockContainer;
 import nova.microblock.multi.Multiblock;
@@ -66,7 +66,7 @@ public class ItemBlockContainer extends ItemBlock {
 			Optional<Block> checkBlock = world.getBlock(placePos);
 			if (checkBlock.isPresent()) {
 
-				MicroblockPlugin.MicroblockInjectFactory injectFactory = (MicroblockPlugin.MicroblockInjectFactory) this.blockFactory;
+				NovaMicroblock.MicroblockInjectFactory injectFactory = (NovaMicroblock.MicroblockInjectFactory) this.blockFactory;
 				BlockFactory containedFactory = injectFactory.containedFactory;
 				//TODO: Dummies are bad
 				Block dummy = containedFactory.build();

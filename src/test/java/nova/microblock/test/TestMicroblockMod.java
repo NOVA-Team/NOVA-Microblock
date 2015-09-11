@@ -6,7 +6,7 @@ import nova.core.component.misc.Collider;
 import nova.core.loader.Loadable;
 import nova.core.loader.Mod;
 import nova.core.util.shape.Cuboid;
-import nova.microblock.MicroblockPlugin;
+import nova.microblock.NovaMicroblock;
 import nova.microblock.micro.Microblock;
 import nova.microblock.multi.Multiblock;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
@@ -30,8 +30,8 @@ public class TestMicroblockMod implements Loadable {
 
 	@Override
 	public void preInit() {
-		MicroblockPlugin.instance.logger.info("Preinit on TestMicroblockMod");
-		singleMicroblock = MicroblockPlugin.instance.blocks.register(
+		NovaMicroblock.instance.logger.info("Preinit on TestMicroblockMod");
+		singleMicroblock = NovaMicroblock.instance.blocks.register(
 			singleMicroblockID,
 			() -> {
 				Block Block = new Block();
@@ -40,7 +40,7 @@ public class TestMicroblockMod implements Loadable {
 			}
 		);
 
-		singleMultiblock = MicroblockPlugin.instance.blocks.register(
+		singleMultiblock = NovaMicroblock.instance.blocks.register(
 			singleMultiblockID,
 			() -> {
 				Block Block = new Block();
@@ -50,7 +50,7 @@ public class TestMicroblockMod implements Loadable {
 			}
 		);
 
-		multiMicroblock1 = MicroblockPlugin.instance.blocks.register(
+		multiMicroblock1 = NovaMicroblock.instance.blocks.register(
 			multiMicroblockID,
 			() -> {
 				Block Block = new Block();
@@ -61,6 +61,6 @@ public class TestMicroblockMod implements Loadable {
 			}
 		);
 
-		MicroblockPlugin.instance.logger.info("Registered blocks");
+		NovaMicroblock.instance.logger.info("Registered blocks");
 	}
 }

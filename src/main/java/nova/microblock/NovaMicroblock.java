@@ -41,9 +41,9 @@ import java.util.Map;
  * @author Calclavia
  */
 @Mod(id = "microblock", name = "Microblock", version = "0.0.1", novaVersion = "0.0.1", modules = { ComponentInjectionModule.class }, priority = 1)
-public class MicroblockPlugin implements Loadable {
+public class NovaMicroblock implements Loadable {
 
-	public static MicroblockPlugin instance;
+	public static NovaMicroblock instance;
 
 	public final ComponentInjection componentInjection;
 	public final ClientManager client;
@@ -57,7 +57,7 @@ public class MicroblockPlugin implements Loadable {
 	public final Map<String, MicroblockInjectFactory> containedIDToFactory = new HashMap<>();
 	public final Map<BlockFactory, MicroblockInjectFactory> containedFactoryToFactory = new HashMap<>();
 
-	public MicroblockPlugin(ComponentInjection componentInjection, ClientManager client, NetworkManager network, UpdateTicker.SynchronizedTicker ticker, ItemManager items, BlockManager blocks, GlobalEvents events, Logger logger) {
+	public NovaMicroblock(ComponentInjection componentInjection, ClientManager client, NetworkManager network, UpdateTicker.SynchronizedTicker ticker, ItemManager items, BlockManager blocks, GlobalEvents events, Logger logger) {
 		this.componentInjection = componentInjection;
 		this.client = client;
 		this.network = network;
@@ -71,7 +71,7 @@ public class MicroblockPlugin implements Loadable {
 
 	@Override
 	public void preInit() {
-		MicroblockPlugin.instance.network.register(new MicroblockPacket());
+		NovaMicroblock.instance.network.register(new MicroblockPacket());
 
 		componentInjection.register("collider", () -> new ForwardInjector<>(Collider.class, ContainerCollider::new));
 		componentInjection.register("dynamicRenderer", () -> new ForwardInjector<>(DynamicRenderer.class, ContainerDynamicRenderer::new));
@@ -106,7 +106,7 @@ public class MicroblockPlugin implements Loadable {
 			super("blockContainer-" + containedFactory.getID(),
 				BlockContainer::new,
 				evt -> {
-					MicroblockPlugin.instance.items.register("blockContainer-" + containedFactory.getID(), () -> new ItemBlockContainer(evt.blockFactory));
+					NovaMicroblock.instance.items.register("blockContainer-" + containedFactory.getID(), () -> new ItemBlockContainer(evt.blockFactory));
 				}
 			);
 
@@ -119,12 +119,12 @@ public class MicroblockPlugin implements Loadable {
 				dummy.add(new ContainerItemRenderer(dummy, containedFactory.build()));
 			}
 			//TODO: Changes in MB injection might not work
-			MicroblockPlugin.instance.componentInjection.injectToContainer(containedFactory.build(), dummy);
+			NovaMicroblock.instance.componentInjection.injectToContainer(containedFactory.build(), dummy);
 		}
 
 		@Override
 		protected void postCreate(EventListener<BlockEvent.Register> postCreate) {
-			super.postCreate(evt -> MicroblockPlugin.instance.items.register(getID(), () -> new ItemBlockContainer(evt.blockFactory)));
+			super.postCreate(evt -> NovaMicroblock.instance.items.register(getID(), () -> new ItemBlockContainer(evt.blockFactory)));
 		}
 	}
 }

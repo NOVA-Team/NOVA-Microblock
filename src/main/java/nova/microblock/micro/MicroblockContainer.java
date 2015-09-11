@@ -14,7 +14,7 @@ import nova.core.util.Direction;
 import nova.core.util.math.MathUtil;
 import nova.core.util.math.Vector3DUtil;
 import nova.core.util.shape.Cuboid;
-import nova.microblock.MicroblockPlugin;
+import nova.microblock.NovaMicroblock;
 import nova.microblock.common.BlockComponent;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
@@ -121,12 +121,12 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 			blockMap.put(localPos, microblock);
 
 			//Inject components
-			MicroblockPlugin.instance.componentInjection.injectToContained(microblock.block, block);
-			MicroblockPlugin.instance.componentInjection.injectToContainer(microblock.block, block);
+			NovaMicroblock.instance.componentInjection.injectToContained(microblock.block, block);
+			NovaMicroblock.instance.componentInjection.injectToContainer(microblock.block, block);
 
 			//If this is not the first microblock (first one already sent via default packet)
-			if (MicroblockPlugin.instance.network.isServer() && microblocks().size() > 1) {
-				MicroblockPlugin.instance.network.sync(block);
+			if (NovaMicroblock.instance.network.isServer() && microblocks().size() > 1) {
+				NovaMicroblock.instance.network.sync(block);
 			}
 
 			return true;
@@ -140,8 +140,8 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 			get(localPos).get().block.events.publish(new Stateful.UnloadEvent());
 			blockMap.remove(localPos);
 
-			if (microblocks().size() > 0 && MicroblockPlugin.instance.network.isServer()) {
-				MicroblockPlugin.instance.network.sync(block);
+			if (microblocks().size() > 0 && NovaMicroblock.instance.network.isServer()) {
+				NovaMicroblock.instance.network.sync(block);
 			}
 
 			//Invoke neighbor change event
@@ -223,7 +223,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 				String microID = packet.readString();
 
 				//Find microblock registered withPriority such ID
-				MicroblockPlugin.MicroblockInjectFactory injectionFactory = MicroblockPlugin.instance.containedIDToFactory.get(microID);
+				NovaMicroblock.MicroblockInjectFactory injectionFactory = NovaMicroblock.instance.containedIDToFactory.get(microID);
 				Block microblock = injectionFactory.containedFactory.build();
 
 				put(microPos, microblock.get(Microblock.class));

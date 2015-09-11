@@ -5,7 +5,7 @@ import nova.core.network.NetworkTarget;
 import nova.core.util.math.Vector3DUtil;
 import nova.core.util.shape.Cuboid;
 import nova.core.world.World;
-import nova.microblock.MicroblockPlugin;
+import nova.microblock.NovaMicroblock;
 import nova.microblock.common.BlockContainer;
 import nova.microblock.micro.Microblock;
 import nova.microblock.micro.MicroblockContainer;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class ContainerPlace extends ContainerOperation {
 	//Positions that the operation handled.
 	public final Set<Vector3D> handledPositions = new HashSet<>();
-	private final MicroblockPlugin.MicroblockInjectFactory injectFactory;
+	private final NovaMicroblock.MicroblockInjectFactory injectFactory;
 	private final Block newBlock;
 	private final Optional<Vector3D> localPos;
 
@@ -39,14 +39,14 @@ public class ContainerPlace extends ContainerOperation {
 	 * @param globalPos The world position to handle wth block
 	 * @param evt The block place event
 	 */
-	public ContainerPlace(World world, MicroblockPlugin.MicroblockInjectFactory injectFactory, Vector3D globalPos, Block.PlaceEvent evt) {
+	public ContainerPlace(World world, NovaMicroblock.MicroblockInjectFactory injectFactory, Vector3D globalPos, Block.PlaceEvent evt) {
 		super(world, globalPos);
 		this.injectFactory = injectFactory;
 		this.newBlock = injectFactory.containedFactory.build();
 		this.localPos = newBlock.get(Microblock.class).onPlace.apply(evt);
 	}
 
-	public ContainerPlace(World world, MicroblockPlugin.MicroblockInjectFactory injectFactory, Vector3D globalPos) {
+	public ContainerPlace(World world, NovaMicroblock.MicroblockInjectFactory injectFactory, Vector3D globalPos) {
 		super(world, globalPos);
 		this.injectFactory = injectFactory;
 		this.newBlock = injectFactory.containedFactory.build();
@@ -200,7 +200,7 @@ public class ContainerPlace extends ContainerOperation {
 
 		if (opCheckBlock.isPresent()) {
 			Block checkBlock = opCheckBlock.get();
-			if (checkBlock.sameType(MicroblockPlugin.instance.blocks.getAirBlock())) {
+			if (checkBlock.sameType(NovaMicroblock.instance.blocks.getAirBlock())) {
 				//It's air, so let's create a container
 				world.setBlock(pos, injectFactory);
 				handledPositions.add(pos);

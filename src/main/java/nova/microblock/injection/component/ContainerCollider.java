@@ -6,7 +6,7 @@ import nova.core.entity.Entity;
 import nova.core.network.NetworkTarget;
 import nova.core.util.RayTracer;
 import nova.core.util.shape.Cuboid;
-import nova.microblock.MicroblockPlugin;
+import nova.microblock.NovaMicroblock;
 import nova.microblock.micro.MicroblockContainer;
 
 import java.util.Collections;
@@ -34,7 +34,7 @@ public class ContainerCollider extends Collider {
 		if (blockContainer.has(MicroblockContainer.class)) {
 			//Do ray trace to see which microblock is being looked at.
 			if (NetworkTarget.Side.get().isClient()) {
-				Entity player = MicroblockPlugin.instance.client.getPlayer();
+				Entity player = NovaMicroblock.instance.client.getPlayer();
 
 				Optional<RayTracer.RayTraceBlockResult> result = new RayTracer(player)
 					.setDistance(7)
