@@ -5,6 +5,7 @@ import nova.core.block.BlockFactory;
 import nova.core.block.BlockManager;
 import nova.core.component.Category;
 import nova.core.component.misc.Collider;
+import nova.core.component.misc.FactoryProvider;
 import nova.core.component.renderer.DynamicRenderer;
 import nova.core.component.renderer.ItemRenderer;
 import nova.core.component.renderer.StaticRenderer;
@@ -78,6 +79,7 @@ public class NovaMicroblock implements Loadable {
 		componentInjection.register("itemRenderer", () -> new ForwardInjector<>(ItemRenderer.class, ContainerItemRenderer::new));
 		componentInjection.register("staticRenderer", () -> new ForwardInjector<>(StaticRenderer.class, ContainerStaticRenderer::new));
 		componentInjection.register("blockTransform", () -> new CopyInjector<>(BlockTransform.class));
+		componentInjection.register("factoryProvider", () -> new CopyInjector<>(FactoryProvider.class));
 		componentInjection.register("category", () -> new CopyInjector<>(Category.class));
 
 		//Replace block registration by sneakily providing our own way to put container blocks instead of the actual block.

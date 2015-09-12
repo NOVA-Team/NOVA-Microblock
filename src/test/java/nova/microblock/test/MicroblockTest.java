@@ -3,7 +3,6 @@ package nova.microblock.test;
 import nova.core.block.Block;
 import nova.core.util.math.Vector3DUtil;
 import nova.core.util.shape.Cuboid;
-import nova.internal.core.launch.NovaLauncher;
 import nova.microblock.NovaMicroblock;
 import nova.microblock.common.BlockContainer;
 import nova.microblock.micro.Microblock;
@@ -14,6 +13,7 @@ import nova.testutils.FakeWorld;
 import nova.wrappertests.NovaLauncherTestFactory;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -24,6 +24,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Calclavia
  */
 public class MicroblockTest {
+
+	@Before
+	public void setUp() throws Exception {
+		new NovaLauncherTestFactory(NovaMicroblock.class, TestMicroblockMod.class).createLauncher();
+	}
 
 	@Test
 	public void testVectorToID() {
@@ -37,7 +42,6 @@ public class MicroblockTest {
 
 	@Test
 	public void testMicroblockInjection() {
-		NovaLauncher launcher = new NovaLauncherTestFactory(NovaMicroblock.class, TestMicroblockMod.class).createLauncher();
 		//Microblock should be replaced withPriority a container.
 		assertThat(TestMicroblockMod.singleMicroblock.build() instanceof BlockContainer).isTrue();
 
@@ -47,8 +51,6 @@ public class MicroblockTest {
 
 	@Test
 	public void testMicroblockPlacement() {
-		NovaLauncher launcher = new NovaLauncherTestFactory(NovaMicroblock.class, TestMicroblockMod.class).createLauncher();
-
 		/**
 		 * Microblock placement
 		 */
@@ -70,8 +72,6 @@ public class MicroblockTest {
 
 	@Test
 	public void testMultiblockPlacement() {
-		NovaLauncher launcher = new NovaLauncherTestFactory(NovaMicroblock.class, TestMicroblockMod.class).createLauncher();
-
 		/**
 		 * Microblock placement
 		 */
@@ -100,8 +100,6 @@ public class MicroblockTest {
 
 	@Test
 	public void testMultiMicroblock1() {
-		NovaLauncher launcher = new NovaLauncherTestFactory(NovaMicroblock.class, TestMicroblockMod.class).createLauncher();
-
 		/**
 		 * Microblock placement
 		 */

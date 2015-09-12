@@ -34,30 +34,30 @@ public class TestMicroblockMod implements Loadable {
 		singleMicroblock = NovaMicroblock.instance.blocks.register(
 			singleMicroblockID,
 			() -> {
-				Block Block = new Block();
-				Block.add(new Microblock(Block)).setOnPlace(blockPlaceEvent -> Optional.of(new Vector3D(0, 0, 0)));
-				return Block;
+				Block block = new Block();
+				block.add(new Microblock(block)).setOnPlace(blockPlaceEvent -> Optional.of(new Vector3D(0, 0, 0)));
+				return block;
 			}
 		);
 
 		singleMultiblock = NovaMicroblock.instance.blocks.register(
 			singleMultiblockID,
 			() -> {
-				Block Block = new Block();
-				Block.add(new Multiblock(Block));
-				Block.add(new Collider(Block)).setBoundingBox(new Cuboid(Vector3D.ZERO, new Vector3D(1, 2, 1)));
-				return Block;
+				Block block = new Block();
+				block.add(new Multiblock(block));
+				block.add(new Collider(block)).setBoundingBox(new Cuboid(Vector3D.ZERO, new Vector3D(1, 2, 1)));
+				return block;
 			}
 		);
 
 		multiMicroblock1 = NovaMicroblock.instance.blocks.register(
 			multiMicroblockID,
 			() -> {
-				Block Block = new Block();
-				Block.add(new Multiblock(Block));
-				Block.add(new Microblock(Block)).setOnPlace(blockPlaceEvent -> Optional.of(Vector3D.ZERO));
-				Block.add(new Collider(Block)).setBoundingBox(new Cuboid(Vector3D.ZERO, new Vector3D(1, 1.5, 1)));
-				return Block;
+				Block block = new Block();
+				block.add(new Multiblock(block));
+				block.add(new Microblock(block)).setOnPlace(blockPlaceEvent -> Optional.of(Vector3D.ZERO));
+				block.add(new Collider(block)).setBoundingBox(new Cuboid(Vector3D.ZERO, new Vector3D(1, 1.5, 1)));
+				return block;
 			}
 		);
 
