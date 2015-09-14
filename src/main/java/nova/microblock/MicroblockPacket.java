@@ -1,14 +1,14 @@
 package nova.microblock;
 
-import nova.microblock.common.BlockContainer;
-import nova.microblock.micro.Microblock;
-import nova.microblock.micro.MicroblockContainer;
 import nova.core.block.Block;
 import nova.core.network.NetworkException;
 import nova.core.network.Packet;
 import nova.core.network.Syncable;
 import nova.core.network.handler.PacketHandler;
 import nova.core.world.World;
+import nova.microblock.common.BlockContainer;
+import nova.microblock.micro.Microblock;
+import nova.microblock.micro.MicroblockContainer;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.Optional;
@@ -29,7 +29,7 @@ public class MicroblockPacket implements PacketHandler<Microblock> {
 		if (opBlock.isPresent()) {
 			Block block = opBlock.get();
 
-			Optional<MicroblockContainer> opContainer = block.getOp(MicroblockContainer.class);
+			Optional<MicroblockContainer> opContainer = block.components.getOp(MicroblockContainer.class);
 			if (opContainer.isPresent()) {
 				MicroblockContainer microblockContainer = opContainer.get();
 				Optional<Microblock> opMicroblock = microblockContainer.get(localPos);

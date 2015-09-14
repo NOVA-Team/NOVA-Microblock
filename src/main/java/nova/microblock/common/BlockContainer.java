@@ -23,7 +23,7 @@ public class BlockContainer extends Block implements Updater, Stateful, Storable
 	public BlockContainer() {
 		events.on(RemoveEvent.class).bind(evt -> ContainerRemove.interactEventHandler(this, evt));
 		events.on(Event.class).bind(evt ->
-				getOp(MicroblockContainer.class).ifPresent(cont -> cont.microblocks().forEach(uB -> uB.block.events.publish(evt)))
+				components.getOp(MicroblockContainer.class).ifPresent(cont -> cont.microblocks().forEach(uB -> uB.block.events.publish(evt)))
 		);
 	}
 
@@ -50,34 +50,34 @@ public class BlockContainer extends Block implements Updater, Stateful, Storable
 	public void read(Packet packet) {
 		if (packet.getID() == 0) {
 			if (packet.readBoolean()) {
-				getOrAdd(new MicroblockContainer(this));
+				components.getOrAdd(new MicroblockContainer(this));
 			}
 		}
 
-		getOp(MicroblockContainer.class).ifPresent(c -> c.read(packet));
+		components.getOp(MicroblockContainer.class).ifPresent(c -> c.read(packet));
 	}
 
 	@Override
 	public void write(Packet packet) {
 		if (packet.getID() == 0) {
 			//Write the need to add components
-			packet.writeBoolean(has(MicroblockContainer.class));
+			packet.writeBoolean(components.has(MicroblockContainer.class));
 		}
 
-		getOp(MicroblockContainer.class).ifPresent(c -> c.write(packet));
+		components.getOp(MicroblockContainer.class).ifPresent(c -> c.write(packet));
 	}
 
 	@Override
 	public void load(Data data) {
 		if (data.containsKey("microblockContainer")) {
-			getOrAdd(new MicroblockContainer(this));
+			components.getOrAdd(new MicroblockContainer(this));
 		}
 
-		getOp(MicroblockContainer.class).ifPresent(c -> c.load(data));
+		components.getOp(MicroblockContainer.class).ifPresent(c -> c.load(data));
 	}
 
 	@Override
 	public void save(Data data) {
-		getOp(MicroblockContainer.class).ifPresent(c -> c.save(data));
+		components.getOp(MicroblockContainer.class).ifPresent(c -> c.save(data));
 	}
 }

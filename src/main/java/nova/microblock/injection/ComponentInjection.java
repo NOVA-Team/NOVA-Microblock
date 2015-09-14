@@ -37,7 +37,7 @@ public class ComponentInjection extends Manager<ComponentInjector, ComponentInje
 		//TODO: Test component added after constructor.
 		//When future components are added to the contained, it will auto-inject to the container.
 		contained.events.on(ComponentProvider.ComponentAdded.class).bind(evt -> findInjectors(evt.component.getClass()).forEach(injector -> injector.injectForward(evt.component, contained, container)));
-		contained.events.on(ComponentProvider.ComponentRemoved.class).bind(evt -> container.remove(evt.component));
+		contained.events.on(ComponentProvider.ComponentRemoved.class).bind(evt -> container.components.remove(evt.component));
 
 		//TODO: Maybe events should not be injected this way.
 		//Forward events to -> from (container -> contained)

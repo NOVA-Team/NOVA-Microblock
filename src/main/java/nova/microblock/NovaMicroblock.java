@@ -91,7 +91,7 @@ public class NovaMicroblock implements Loadable {
 		BlockFactory blockFactory = evt.blockFactory;
 
 		Block dummy = blockFactory.build();
-		if (dummy.has(Microblock.class) || dummy.has(Multiblock.class)) {
+		if (dummy.components.has(Microblock.class) || dummy.components.has(Multiblock.class)) {
 			//Sneaky block factory replacement
 			MicroblockInjectFactory microblockInjectFactory = new MicroblockInjectFactory(evt.blockFactory);
 			containedIDToFactory.put(evt.blockFactory.getID(), microblockInjectFactory);
@@ -117,8 +117,8 @@ public class NovaMicroblock implements Loadable {
 			BlockContainer dummy = (BlockContainer) build();
 
 			//Inject item renderer
-			if (containedFactory.build().has(ItemRenderer.class)) {
-				dummy.add(new ContainerItemRenderer(dummy, containedFactory.build()));
+			if (containedFactory.build().components.has(ItemRenderer.class)) {
+				dummy.components.add(new ContainerItemRenderer(dummy, containedFactory.build()));
 			}
 			//TODO: Changes in MB injection might not work
 			NovaMicroblock.instance.componentInjection.injectToContainer(containedFactory.build(), dummy);

@@ -32,8 +32,8 @@ public class ContainerRemove extends ContainerOperation {
 		if (evt.entity.isPresent()) {
 			Entity player = evt.entity.get();
 
-			if (block.has(MicroblockContainer.class) && block.has(ContainerCollider.class)) {
-				MicroblockContainer microblockContainer = block.get(MicroblockContainer.class);
+			if (block.components.has(MicroblockContainer.class) && block.components.has(ContainerCollider.class)) {
+				MicroblockContainer microblockContainer = block.components.get(MicroblockContainer.class);
 
 				//Ray trace through each microblock
 				Stream<RayTraceMicroblockResult> traces = Stream.empty();
@@ -67,8 +67,8 @@ public class ContainerRemove extends ContainerOperation {
 		if (opBlock.isPresent()) {
 			Block block = opBlock.get();
 
-			if (block.has(MicroblockContainer.class)) {
-				MicroblockContainer microblockContainer = block.get(MicroblockContainer.class);
+			if (block.components.has(MicroblockContainer.class)) {
+				MicroblockContainer microblockContainer = block.components.get(MicroblockContainer.class);
 
 				if (microblockContainer.remove(localPos)) {
 					if (microblockContainer.microblocks().size() == 0) {

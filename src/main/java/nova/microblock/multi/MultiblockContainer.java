@@ -1,7 +1,7 @@
 package nova.microblock.multi;
 
-import nova.microblock.common.BlockComponent;
 import nova.core.block.Block;
+import nova.microblock.common.BlockComponent;
 
 /**
  * A component attached to any block that is a multiblock container.
@@ -21,8 +21,8 @@ public class MultiblockContainer extends BlockComponent {
 	 */
 	public MultiblockContainer(Block containerBlock, Block containedBlock) {
 		super(containerBlock);
-		assert containedBlock.has(Multiblock.class);
+		assert containedBlock.components.has(Multiblock.class);
 		this.containedBlock = containedBlock;
-		containedBlock.get(Multiblock.class).containers.add(this);
+		containedBlock.components.get(Multiblock.class).containers.add(this);
 	}
 }

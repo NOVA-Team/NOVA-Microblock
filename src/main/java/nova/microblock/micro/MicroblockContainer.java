@@ -77,7 +77,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 	 */
 	public <C extends Component> Stream<C> microblocks(Class<C> componentClass) {
 		return stream()
-			.map(microblock -> microblock.block.getOp(componentClass))
+			.map(microblock -> microblock.block.components.getOp(componentClass))
 			.filter(Optional::isPresent)
 			.map(Optional::get);
 	}
@@ -214,7 +214,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 			new HashSet<>(block.components())
 				.stream()
 				.filter(c -> !(c instanceof BlockTransform) && !(c instanceof MicroblockContainer))
-				.forEach(block::remove);
+				.forEach(block.components::remove);
 
 			int size = packet.readInt();
 
@@ -226,7 +226,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 				NovaMicroblock.MicroblockInjectFactory injectionFactory = NovaMicroblock.instance.containedIDToFactory.get(microID);
 				Block microblock = injectionFactory.containedFactory.build();
 
-				put(microPos, microblock.get(Microblock.class));
+				put(microPos, microblock.components.get(Microblock.class));
 
 				if (microblock instanceof Syncable) {
 					((Syncable) microblock).read(packet);
@@ -262,7 +262,7 @@ public class MicroblockContainer extends BlockComponent implements Syncable, Sto
 		blockMap.clear();
 		((Data) data.get(saveID)).forEach((k, v) -> {
 			Block savedBlock = (Block) Data.unserialize((Data) v);
-			Microblock microblock = savedBlock.get(Microblock.class);
+			Microblock microblock = savedBlock.components.get(Microblock.class);
 			put(idToPos(Integer.parseInt(k)), microblock);
 			microblock.block.events.publish(new Stateful.LoadEvent());
 		});

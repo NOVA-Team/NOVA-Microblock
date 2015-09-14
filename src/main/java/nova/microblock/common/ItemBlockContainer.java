@@ -43,7 +43,7 @@ public class ItemBlockContainer extends ItemBlock {
 						opBlock.ifPresent(
 							block ->
 							{
-								if (block.has(MicroblockContainer.class) || block.has(MultiblockContainer.class)) {
+								if (block.components.has(MicroblockContainer.class) || block.components.has(MultiblockContainer.class)) {
 									placeContainer(evt.entity, evt.entity.world(), result.block.position(), result.side, Vector3DUtil.floor(result.hit.subtract(result.block.position())));
 								}
 							}
@@ -71,13 +71,13 @@ public class ItemBlockContainer extends ItemBlock {
 				//TODO: Dummies are bad
 				Block dummy = containedFactory.build();
 
-				if (dummy.has(Microblock.class)) {
+				if (dummy.components.has(Microblock.class)) {
 					//Ask the microblock about how it would like to be placed.
 					Block.PlaceEvent evt = new Block.PlaceEvent(entity, side, hit, this);
 					boolean b = new ContainerPlace(world, injectFactory, placePos, evt).operate();
 					System.out.println("Attempt to place microblock: " + b);
 					return b;
-				} else if (dummy.has(Multiblock.class)) {
+				} else if (dummy.components.has(Multiblock.class)) {
 					return new ContainerPlace(world, injectFactory, placePos).operate();
 				} else {
 					throw new InventoryException("Invalid blockFactory contained in ItemBlockContainer: " + containedFactory);

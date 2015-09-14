@@ -10,9 +10,9 @@ import nova.microblock.micro.MicroblockContainer;
 public class ContainerStaticRenderer extends StaticRenderer {
 
 	public ContainerStaticRenderer(Block provider) {
-		if (provider.has(MicroblockContainer.class)) {
+		if (provider.components.has(MicroblockContainer.class)) {
 			onRender(model -> provider
-					.get(MicroblockContainer.class)
+					.components.get(MicroblockContainer.class)
 					.microblocks(StaticRenderer.class)
 					.forEach(renderer -> renderer.onRender.accept(model))
 			);

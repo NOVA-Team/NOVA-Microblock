@@ -43,7 +43,7 @@ public class ContainerPlace extends ContainerOperation {
 		super(world, globalPos);
 		this.injectFactory = injectFactory;
 		this.newBlock = injectFactory.containedFactory.build();
-		this.localPos = newBlock.get(Microblock.class).onPlace.apply(evt);
+		this.localPos = newBlock.components.get(Microblock.class).onPlace.apply(evt);
 	}
 
 	public ContainerPlace(World world, NovaMicroblock.MicroblockInjectFactory injectFactory, Vector3D globalPos) {
@@ -66,20 +66,20 @@ public class ContainerPlace extends ContainerOperation {
 			Block container = opContainer.get();
 
 			//Add transform component
-			//newBlock.add(container.transform());
+			//newBlock.components.add(container.transform());
 
-			if (newBlock.has(Microblock.class)) {
+			if (newBlock.components.has(Microblock.class)) {
 				assert localPos.isPresent();
 
 				//This is a microblock
 				//Attach microblock container to the container
-				MicroblockContainer microblockContainer = container.getOrAdd(new MicroblockContainer(container));
+				MicroblockContainer microblockContainer = container.components.getOrAdd(new MicroblockContainer(container));
 
-				if (newBlock.has(Multiblock.class)) {
+				if (newBlock.components.has(Multiblock.class)) {
 					/**
 					 * Generate multiblock containers to wrap this microblock
 					 */
-					Multiblock multiblock = newBlock.get(Multiblock.class);
+					Multiblock multiblock = newBlock.components.get(Multiblock.class);
 
 					//A set of world block space that are being occupied
 					Set<Vector3D> blockSpace = multiblock.getOccupiedSpace(1)
@@ -90,15 +90,15 @@ public class ContainerPlace extends ContainerOperation {
 
 					populateBlockSpace(blockSpace,
 						(relativeBlockVec, outerContainerBlock) -> {
-							MicroblockContainer outerContainer = outerContainerBlock.getOrAdd(new MicroblockContainer(outerContainerBlock));
+							MicroblockContainer outerContainer = outerContainerBlock.components.getOrAdd(new MicroblockContainer(outerContainerBlock));
 
 							//Create a new multiblock inner container that lives inside the microblock structure.
 							BlockContainer innerContainer = new BlockContainer();
-							innerContainer.add(new MultiblockContainer(innerContainer, newBlock));
-							innerContainer.add(new Microblock(innerContainer)).setOnPlace(blockPlaceEvent -> localPos);
+							innerContainer.components.add(new MultiblockContainer(innerContainer, newBlock));
+							innerContainer.components.add(new Microblock(innerContainer)).setOnPlace(blockPlaceEvent -> localPos);
 
 							//Add transform component
-							innerContainer.add(outerContainerBlock.transform());
+							innerContainer.components.add(outerContainerBlock.transform());
 
 							Set<Vector3D> localPositions = occupiedSpace.stream()
 								.map(vec -> vec.subtract(relativeBlockVec)) //Maps positions relative to its own block space
@@ -107,29 +107,29 @@ public class ContainerPlace extends ContainerOperation {
 								.collect(Collectors.toSet());
 
 							localPositions.forEach(vec -> {
-								if (!outerContainer.put(vec, innerContainer.get(Microblock.class))) {
+								if (!outerContainer.put(vec, innerContainer.components.get(Microblock.class))) {
 									fail = true;
 								}
 							});
 						}
 					);
 
-					newBlock.get(Microblock.class).position = localPos.get();
+					newBlock.components.get(Microblock.class).position = localPos.get();
 					//TODO: Handle injection
 					return handleFail();
 				} else {
 					/**
 					 * Build microblocks without multiblocks
 					 */
-					if (!microblockContainer.putNew(localPos.get(), newBlock.get(Microblock.class))) {
+					if (!microblockContainer.putNew(localPos.get(), newBlock.components.get(Microblock.class))) {
 						fail = true;
 					}
 
 					return handleFail();
 				}
-			} else if (newBlock.has(Multiblock.class)) {
+			} else if (newBlock.components.has(Multiblock.class)) {
 
-				Multiblock multiblock = newBlock.get(Multiblock.class);
+				Multiblock multiblock = newBlock.components.get(Multiblock.class);
 
 				//Build multiblock without microblocks
 				Set<Vector3D> blockSpace = multiblock.getOccupiedSpace(1)
@@ -139,7 +139,7 @@ public class ContainerPlace extends ContainerOperation {
 				populateBlockSpace(blockSpace,
 					(relativeBlockVec, outerContainerBlock) -> {
 						//Creates the outer container block that will exist in the world.
-						outerContainerBlock.getOrAdd(new MultiblockContainer(outerContainerBlock, newBlock));
+						outerContainerBlock.components.getOrAdd(new MultiblockContainer(outerContainerBlock, newBlock));
 					}
 				);
 				//TODO: Handle injection

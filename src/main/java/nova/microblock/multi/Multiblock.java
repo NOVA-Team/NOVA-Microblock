@@ -1,11 +1,11 @@
 package nova.microblock.multi;
 
-import nova.microblock.common.BlockComponent;
 import nova.core.block.Block;
 import nova.core.component.Require;
 import nova.core.component.misc.Collider;
 import nova.core.util.math.MathUtil;
 import nova.core.util.shape.Cuboid;
+import nova.microblock.common.BlockComponent;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.HashSet;
@@ -34,7 +34,7 @@ public class Multiblock extends BlockComponent {
 	 * @return A set of vectors relative to the center block's bottom corner.
 	 */
 	public Set<Vector3D> getOccupiedSpace(float blockLength) {
-		Set<Cuboid> collisionBoxes = block.get(Collider.class).occlusionBoxes.apply(Optional.empty());
+		Set<Cuboid> collisionBoxes = block.components.get(Collider.class).occlusionBoxes.apply(Optional.empty());
 
 		Set<Vector3D> set = new HashSet<>();
 		int truncation = (int) (1 / blockLength);

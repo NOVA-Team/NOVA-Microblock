@@ -35,7 +35,7 @@ public class TestMicroblockMod implements Loadable {
 			singleMicroblockID,
 			() -> {
 				Block block = new Block();
-				block.add(new Microblock(block)).setOnPlace(blockPlaceEvent -> Optional.of(new Vector3D(0, 0, 0)));
+				block.components.add(new Microblock(block)).setOnPlace(blockPlaceEvent -> Optional.of(new Vector3D(0, 0, 0)));
 				return block;
 			}
 		);
@@ -44,8 +44,8 @@ public class TestMicroblockMod implements Loadable {
 			singleMultiblockID,
 			() -> {
 				Block block = new Block();
-				block.add(new Multiblock(block));
-				block.add(new Collider(block)).setBoundingBox(new Cuboid(Vector3D.ZERO, new Vector3D(1, 2, 1)));
+				block.components.add(new Multiblock(block));
+				block.components.add(new Collider(block)).setBoundingBox(new Cuboid(Vector3D.ZERO, new Vector3D(1, 2, 1)));
 				return block;
 			}
 		);
@@ -54,9 +54,9 @@ public class TestMicroblockMod implements Loadable {
 			multiMicroblockID,
 			() -> {
 				Block block = new Block();
-				block.add(new Multiblock(block));
-				block.add(new Microblock(block)).setOnPlace(blockPlaceEvent -> Optional.of(Vector3D.ZERO));
-				block.add(new Collider(block)).setBoundingBox(new Cuboid(Vector3D.ZERO, new Vector3D(1, 1.5, 1)));
+				block.components.add(new Multiblock(block));
+				block.components.add(new Microblock(block)).setOnPlace(blockPlaceEvent -> Optional.of(Vector3D.ZERO));
+				block.components.add(new Collider(block)).setBoundingBox(new Cuboid(Vector3D.ZERO, new Vector3D(1, 1.5, 1)));
 				return block;
 			}
 		);

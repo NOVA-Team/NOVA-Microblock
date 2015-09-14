@@ -64,9 +64,9 @@ public class MicroblockTest {
 
 		Block block = fakeWorld.getBlock(testPosition).get();
 		assertThat(block.getID()).contains(TestMicroblockMod.containerID);
-		assertThat(block.has(MicroblockContainer.class)).isTrue();
+		assertThat(block.components.has(MicroblockContainer.class)).isTrue();
 
-		MicroblockContainer microblockContainer = block.get(MicroblockContainer.class);
+		MicroblockContainer microblockContainer = block.components.get(MicroblockContainer.class);
 		Assertions.assertThat(microblockContainer.get(new Vector3D(0, 0, 0)).get().block.getID()).isEqualTo(TestMicroblockMod.singleMicroblockID);
 	}
 
@@ -90,10 +90,10 @@ public class MicroblockTest {
 		Arrays.stream(multiblocks)
 			.forEach(block -> {
 					assertThat(block.getID()).contains(TestMicroblockMod.containerID);
-					assertThat(block.has(MultiblockContainer.class)).isTrue();
-					MultiblockContainer container = blockA.get(MultiblockContainer.class);
+					assertThat(block.components.has(MultiblockContainer.class)).isTrue();
+					MultiblockContainer container = blockA.components.get(MultiblockContainer.class);
 					assertThat(container.containedBlock.getID()).isEqualTo(TestMicroblockMod.singleMultiblockID);
-					assertThat(Arrays.stream(multiblocks).allMatch(blockMatch -> blockMatch.get(MultiblockContainer.class).containedBlock == container.containedBlock)).isTrue();
+					assertThat(Arrays.stream(multiblocks).allMatch(blockMatch -> blockMatch.components.get(MultiblockContainer.class).containedBlock == container.containedBlock)).isTrue();
 				}
 			);
 	}
@@ -119,12 +119,12 @@ public class MicroblockTest {
 		Arrays.stream(multiblocks)
 			.forEach(block -> {
 					assertThat(block.getID()).contains(TestMicroblockMod.containerID);
-					assertThat(block.has(MicroblockContainer.class)).isTrue();
+					assertThat(block.components.has(MicroblockContainer.class)).isTrue();
 				}
 			);
 
 		//Check bottom part
-		MicroblockContainer microblockContainerA = blockA.get(MicroblockContainer.class);
+		MicroblockContainer microblockContainerA = blockA.components.get(MicroblockContainer.class);
 		int sub = microblockContainerA.subdivision;
 		assertThat(microblockContainerA.map().size()).isEqualTo(sub * sub * sub);
 
@@ -132,7 +132,7 @@ public class MicroblockTest {
 		new Cuboid(Vector3D.ZERO, Vector3DUtil.ONE.scalarMultiply(sub)).forEach(pos -> assertThat(microblockContainerA.get(pos)).contains(sampleA));
 
 		//Check top part
-		MicroblockContainer microblockContainerB = blockB.get(MicroblockContainer.class);
+		MicroblockContainer microblockContainerB = blockB.components.get(MicroblockContainer.class);
 		Microblock sampleB = microblockContainerB.get(new Vector3D(0, 0, 0)).get();
 		assertThat(microblockContainerB.map().size()).isEqualTo(sub * sub / 2 * sub);
 		new Cuboid(Vector3D.ZERO, new Vector3D(sub, sub / 2, sub)).forEach(pos -> assertThat(microblockContainerB.get(pos)).contains(sampleB));

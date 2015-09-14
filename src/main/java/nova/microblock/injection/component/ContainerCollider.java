@@ -31,7 +31,7 @@ public class ContainerCollider extends Collider {
 	}
 
 	public Cuboid getBoundingBox() {
-		if (blockContainer.has(MicroblockContainer.class)) {
+		if (blockContainer.components.has(MicroblockContainer.class)) {
 			//Do ray trace to see which microblock is being looked at.
 			if (NetworkTarget.Side.get().isClient()) {
 				Entity player = NovaMicroblock.instance.client.getPlayer();
@@ -49,8 +49,8 @@ public class ContainerCollider extends Collider {
 	}
 
 	public Set<Cuboid> getOcclusionBoxes(Optional<Entity> entity) {
-		if (blockContainer.has(MicroblockContainer.class)) {
-			MicroblockContainer microblockContainer = blockContainer.get(MicroblockContainer.class);
+		if (blockContainer.components.has(MicroblockContainer.class)) {
+			MicroblockContainer microblockContainer = blockContainer.components.get(MicroblockContainer.class);
 			return microblockContainer.microblocks(Collider.class)
 				.flatMap(collider -> collider.occlusionBoxes.apply(entity).stream())
 				.collect(Collectors.toSet());
@@ -60,8 +60,8 @@ public class ContainerCollider extends Collider {
 	}
 
 	public Set<Cuboid> getSelectionBoxes(Optional<Entity> entity) {
-		if (blockContainer.has(MicroblockContainer.class)) {
-			MicroblockContainer microblockContainer = blockContainer.get(MicroblockContainer.class);
+		if (blockContainer.components.has(MicroblockContainer.class)) {
+			MicroblockContainer microblockContainer = blockContainer.components.get(MicroblockContainer.class);
 			return microblockContainer.microblocks(Collider.class)
 				.flatMap(collider -> collider.selectionBoxes.apply(entity).stream())
 				.collect(Collectors.toSet());

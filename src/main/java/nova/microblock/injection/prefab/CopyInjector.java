@@ -13,16 +13,16 @@ public class CopyInjector<COMPONENT extends Component> extends DefaultInjector<C
 
 	@Override
 	public boolean injectForward(COMPONENT component, Block contained, Block container) {
-		if (!container.has(component.getClass())) {
-			container.add(component);
+		if (!container.components.has(component.getClass())) {
+			container.components.add(component);
 		}
 		return true;
 	}
 
 	@Override
 	public boolean injectBackward(COMPONENT component, Block contained, Block container) {
-		if (!contained.has(component.getClass())) {
-			contained.add(component);
+		if (!contained.components.has(component.getClass())) {
+			contained.components.add(component);
 		}
 		return true;
 	}

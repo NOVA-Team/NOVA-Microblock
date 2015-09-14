@@ -1,9 +1,9 @@
 package nova.microblock.injection.component;
 
-import nova.microblock.micro.MicroblockContainer;
 import nova.core.block.Block;
 import nova.core.component.renderer.ItemRenderer;
 import nova.core.render.texture.Texture;
+import nova.microblock.micro.MicroblockContainer;
 
 import java.util.Optional;
 
@@ -13,9 +13,9 @@ import java.util.Optional;
 public class ContainerItemRenderer extends ItemRenderer {
 
 	public ContainerItemRenderer(Block provider) {
-		if (provider.has(MicroblockContainer.class)) {
+		if (provider.components.has(MicroblockContainer.class)) {
 			onRender(model -> provider
-					.get(MicroblockContainer.class)
+					.components.get(MicroblockContainer.class)
 					.microblocks(ItemRenderer.class)
 					.forEach(renderer -> renderer.onRender.accept(model))
 			);
@@ -23,8 +23,8 @@ public class ContainerItemRenderer extends ItemRenderer {
 	}
 
 	public ContainerItemRenderer(Block provider, Block contained) {
-		onRender(contained.get(ItemRenderer.class).onRender::accept);
-		Optional<Texture> texture = contained.get(ItemRenderer.class).texture;
+		onRender(contained.components.get(ItemRenderer.class).onRender::accept);
+		Optional<Texture> texture = contained.components.get(ItemRenderer.class).texture;
 		if (texture.isPresent()) {
 			setTexture(texture.get());
 		}
