@@ -4,6 +4,12 @@
 # Microblock Plugin
 Microblock Plugin is a NOVA Plugin that adds a microblock and multiblock system to NOVA. This API makes it easy to create microblocks and multiblocks.
 
+## Workspace Setup
+Type the following command in the root directory of the repository.
+```
+gradlew idea
+```
+
 ## Dependency
 * NOVA-Core
 
