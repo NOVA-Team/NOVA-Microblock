@@ -3,9 +3,9 @@ package nova.microblock.injection;
 import nova.core.block.Block;
 import nova.core.component.Component;
 import nova.core.component.ComponentProvider;
-import nova.core.util.Factory;
-import nova.core.util.Manager;
-import nova.core.util.Registry;
+import nova.core.util.registry.Factory;
+import nova.core.util.registry.FactoryManager;
+import nova.core.util.registry.Registry;
 
 import java.util.Set;
 import java.util.function.Function;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * Inject components across containers from the contained block
  * @author Calclavia
  */
-public class ComponentInjection extends Manager<ComponentInjector, ComponentInjection.ComponentInjectionFactory> {
+public class ComponentInjection extends FactoryManager<ComponentInjection, ComponentInjector, ComponentInjection.ComponentInjectionFactory> {
 
 	public ComponentInjection(Registry<ComponentInjectionFactory> registry) {
 		super(registry);
@@ -68,6 +68,11 @@ public class ComponentInjection extends Manager<ComponentInjector, ComponentInje
 	@Override
 	public ComponentInjectionFactory register(String id, Supplier<ComponentInjector> constructor) {
 		return register(new ComponentInjectionFactory(id, constructor));
+	}
+
+	@Override
+	public void init() {
+
 	}
 
 	public static class ComponentInjectionFactory extends Factory<ComponentInjectionFactory, ComponentInjector> {
