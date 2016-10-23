@@ -1,3 +1,5 @@
+# NOVA is no longer maintained
+
 [![Build Status](https://img.shields.io/travis/NOVA-Team/NOVA-Microblock.svg?style=flat-square)](https://travis-ci.org/NOVA-Team/NOVA-Microblock)
 [![Coverage](https://img.shields.io/codecov/c/github/NOVA-Team/NOVA-Microblock.svg?style=flat-square)](https://codecov.io/github/NOVA-Team/NOVA-Microblock)
 
