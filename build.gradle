@@ -8,21 +8,21 @@ plugins {
 apply from: "https://raw.githubusercontent.com/NOVA-Team/NOVA-Gradle/master/shared-scripts/java.gradle"
 
 dependencies {
-	compile nova(novaVersion)
+	compile nova(nova_version)
 
 	//We use nova.internal package
-	compile group: "nova.core", name: "NOVA-Core", version: novaVersion
+	compile group: "nova.core", name: "NOVA-Core", version: nova_version
 
-	testCompile group: "nova.core", name: "NOVA-Core", version: novaVersion, classifier: "wrappertests", changing: true
+	testCompile group: "nova.core", name: "NOVA-Core", version: nova_version, classifier: "wrappertests", changing: true
 }
 nova {
 	wrappers {
 		"17" {
-			wrapper "nova.core:NOVA-Core-Wrapper-MC1.7:$novaVersion"
+			wrapper "nova.core:NOVA-Core-Wrapper-MC1.7:$nova_version"
 		}
 
 		"18" {
-			wrapper "nova.core:NOVA-Core-Wrapper-MC1.8:$novaVersion"
+			wrapper "nova.core:NOVA-Core-Wrapper-MC1.8:$nova_version"
 		}
 	}
 }

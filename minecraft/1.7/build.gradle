@@ -1,0 +1,85 @@
+apply plugin: "maven-publish"
+apply plugin: "com.jfrog.artifactory"
+apply from: "https://raw.githubusercontent.com/NOVA-Team/NOVA-Gradle/master/shared-scripts/java.gradle"
+
+apply plugin: 'scala'
+
+repositories {
+	maven {
+		name = "chickenbones"
+		url = "http://chickenbones.net/maven"
+	}
+}
+
+idea.module.name = "Microblock-MC-1.7"
+archivesBaseName = "NOVA-Microblock-Wrapper-MC1.7"
+
+publishing {
+	publications {
+		main(MavenPublication) {
+			from components.java
+
+			artifactId archivesBaseName
+
+			artifact sourcesJar
+			artifact javadocJar
+
+			pom.withXml(writePom(project.properties))
+		}
+	}
+}
+
+artifactory {
+	publish {
+		defaults {
+			publications("main")
+			publishPom = true
+		}
+	}
+}
+
+task deobfJar(type: Jar) {
+	from sourceSets.main.output
+	classifier = 'deobf'
+}
+
+artifacts {
+	archives jar
+	archives deobfJar
+}
+
+apply plugin: 'forge'
+
+minecraft {
+	version = property("minecraft.version") + "-" + property("forge.version")
+	mappings = 'stable_12'
+	runDir = "run"
+}
+
+dependencies {
+	compile rootProject
+    compile group: "codechicken", name: "CodeChickenLib", version: "${minecraft.version}-${ccl_version}", classifier: "dev"
+    compile group: "codechicken", name: "NotEnoughItems", version: "${minecraft.version}-${nei_version}", classifier: "dev"
+	compile group: "codechicken", name: "ForgeMultipart", version: "${minecraft.version}-${forgeMultipartVersion}", classifier: "dev"
+	compile group: "nova.core", name: "NOVA-Core", version: property("nova_version"), changing: true
+	compile group: "nova.core", name: "NOVA-Core-Wrapper-MC1.7", version: property("nova_version"), classifier: "deobf", changing: true
+}
+
+processResources {
+	// this will ensure that this task is redone when the versions change.
+	inputs.property "version", project.version
+	inputs.property "mcversion", project.minecraft.version
+
+	// replace stuff in mcmod.info, nothing else
+	from(sourceSets.main.resources.srcDirs) {
+		include "mcmod.info"
+
+		// replace version and mcversion
+		expand "version": project.version, "mcversion": project.minecraft.version
+	}
+
+	// copy everything else, thats not the mcmod.info
+	from(sourceSets.main.resources.srcDirs) {
+		exclude "mcmod.info"
+	}
+}

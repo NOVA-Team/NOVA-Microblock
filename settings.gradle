@@ -1,1 +1,3 @@
 rootProject.name = "NOVA-Microblock"
+
+include "minecraft:1.7"
